@@ -5,14 +5,9 @@ const refreshFrequency = 100000; // ms
 
 const renderClass = `
   ${defaultTheme}
-  width: auto;
-  right: auto;
-  bottom: auto;
-  left: 50%;
-  text-align: center;
-  transform: translate(-50%);
+  order: 2;
 `;
 
-const render = ({ output }) => <div>{`${output}`}</div>;
+const render = ({ output }) => <div>{output}</div>;
 
 export { command, refreshFrequency, renderClass as className, render };
