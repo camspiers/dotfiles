@@ -5,6 +5,7 @@ const lineHeight = "24px";
 // Nord
 const background = "#2E3440";
 const color = "#ffffff";
+const borderRadius = "3px";
 
 const defaultTheme = `
     position: static;
@@ -15,6 +16,10 @@ const defaultTheme = `
     background-color: ${background};
     padding: 0 2ch;
     margin: 15px 0;
+    border-top-left-radius: ${borderRadius};
+    border-top-right-radius: ${borderRadius};
+    border-bottom-right-radius: ${borderRadius};
+    border-bottom-left-radius: ${borderRadius};
 `;
 
 export { defaultTheme };
