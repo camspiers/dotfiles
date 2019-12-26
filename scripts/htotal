@@ -1,0 +1,5 @@
+#!/bin/bash
+
+OUTPUT=$(hcl show | grep 'total' | cut -d$'\t' -f 2,3 | tr -d '\n' | tr '\t' ' '| cut -d ' ' -f 1)
+
+echo -n "${OUTPUT}"

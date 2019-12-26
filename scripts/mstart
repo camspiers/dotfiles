@@ -1,0 +1,3 @@
+#!/bin/bash
+
+tmuxinator start $(tmuxinator list | tail -1 | tr -s '[:space:]' | tr ' ' '\n' | fzf --reverse --height 50%)

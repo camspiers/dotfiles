@@ -1,0 +1,3 @@
+#!/bin/bash
+
+hcl alias "$1" $(hcl-tasks)

@@ -1,0 +1,3 @@
+#!/bin/bash
+
+hcl tasks | fzf -i -q "'Technology\ Lead | 'Senior\ Server-side\ Developer '" --reverse --height 50% | cut -d$'\t' -f -1

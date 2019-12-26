@@ -1,0 +1,7 @@
+name: Drive System Hub
+root: ~/dev/system-hub
+attach: false
+windows:
+  - Editor: nvim
+  - Git: lazygit
+  - Docker: docker-compose up

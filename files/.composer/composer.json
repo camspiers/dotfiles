@@ -1,0 +1,5 @@
+{
+    "require": {
+        "silverstripe/upgrader": "^1.4"
+    }
+}

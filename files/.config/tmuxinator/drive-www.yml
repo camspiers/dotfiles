@@ -1,0 +1,14 @@
+name: Drive WWW
+root: ~/dev/drive-website
+attach: false
+windows:
+  - Editor: nvim
+  - Git: lazygit
+  - Harvest: hstartinteractive
+  - Build:
+      - cd app
+      - yarn start
+  - Storybook:
+      - cd app
+      - yarn storybook
+  - Docker: docker-compose up
