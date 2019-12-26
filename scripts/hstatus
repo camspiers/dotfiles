@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 OUTPUT="$(hcl show | grep '(running)' | cut -d$'\t' -f 2,3 | cut -d ':' -f -2 | tr -d '\n' | tr '\t' ' ' | sed 's/(running)//g' | sed 's/  / /g')"
 TIME="$(echo ${OUTPUT} | cut -d ' ' -f 1)"

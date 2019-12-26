@@ -105,7 +105,7 @@ call plug#begin(stdpath('data') . '/plugged')
     " Motions for inside camel case
     Plug 'bkad/CamelCaseMotion'
 
-    " Dev icons especially for NERDTree
+    " Dev icons
     Plug 'ryanoasis/vim-devicons'
 
     " Docker compose tools
@@ -118,11 +118,8 @@ call plug#begin(stdpath('data') . '/plugged')
     " Nice theme, use this theme with terminal too
     Plug 'arcticicestudio/nord-vim'
 
-    " Using nerdtree with custom version of vinegar so I can get nice icons
-    Plug 'scrooloose/nerdtree'
-
-    " Custom version to make NERDTree more like netrw
-    Plug 'dhruvasagar/vim-vinegar'
+    " Improves netrw
+    Plug 'tpope/vim-vinegar'
 
     " Allows for opening multiple files
     Plug 'PhilRunninger/nerdtree-visual-selection'
@@ -259,9 +256,6 @@ let g:airline#extensions#tabline#formatter = 'unique_tail'
 
 " Fix netrw buffer issue
 let g:netrw_fastbrowse = 0
-
-" Tree view
-let g:netrw_liststyle=3
 
 " Cycle through relativenumber + number, number (only), and no numbering.
 function! CycleNumbering() abort

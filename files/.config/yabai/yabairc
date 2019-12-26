@@ -39,4 +39,10 @@ yabai -m config window_shadow float
 yabai -m rule --add app="^System Preferences$" manage=off border=off
 yabai -m rule --add app=Preview manage=off border=off
 
+yabai -m signal --add event=space_changed \
+    action="osascript -e 'tell application \"Übersicht\" to refresh widget id \"workspace-jsx\"'"
+
+yabai -m signal --add event=display_changed \
+    action="osascript -e 'tell application \"Übersicht\" to refresh widget id \"workspace-jsx\"'"
+
 echo "yabai configuration loaded.."

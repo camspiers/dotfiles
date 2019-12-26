@@ -1,7 +1,7 @@
 import { defaultTheme } from "./lib/style";
 
-const command = "bash ~/.dotfiles/scripts/ubersicht-workspace";
-const refreshFrequency = 100; // ms
+const command = "ubersicht-workspace";
+const refreshFrequency = false;
 
 const renderClass = `
   ${defaultTheme}

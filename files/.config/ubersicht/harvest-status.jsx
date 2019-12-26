@@ -1,13 +1,14 @@
 import { defaultTheme } from "./lib/style";
 
-const command = "ubersicht-network";
-const refreshFrequency = 5000; // ms
+const command = "hstatus";
+const refreshFrequency = 2000; // ms
 
 const renderClass = `
   ${defaultTheme}
-  right: auto;
   bottom: auto;
-  margin-left: calc(5ch + 20px);
+  font-weight: bold;
+  left: auto;
+  margin-right: calc(22ch + 20px);
 `;
 
 const render = ({ output }) => <div>{`${output}`}</div>;
