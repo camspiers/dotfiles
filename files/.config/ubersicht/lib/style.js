@@ -14,7 +14,7 @@ const defaultTheme = `
     height: ${lineHeight};
     background-color: ${background};
     padding: 0 2ch;
-    margin: 15px 20px;
+    margin: 15px 0;
 `;
 
 export { defaultTheme };

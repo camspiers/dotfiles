@@ -56,7 +56,7 @@ const container = css`
     justify-content: space-between;
     vertical-align: top;
     margin: 0;
-    margin-left: 20px;
+    margin-left: 10px;
 `;
 
 const totalContainer = css`

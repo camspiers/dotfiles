@@ -49,7 +49,7 @@ const container = css`
     justify-content: space-between;
     vertical-align: top;
     margin: 0;
-    margin-right: 20px;
+    margin-right: 10px;
 `;
 
 const render = ({ workspace, network }, dispatch) => {
