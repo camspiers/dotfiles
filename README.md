@@ -1,12 +1,10 @@
 # Dotfiles
 
+macOS environment managed by git and GNU Stow.
+
 ## Overview
 
-This is a macOS environment managed by git and GNU Stow.
-
-It contains:
-
-- Homebrew defaults
+- Homebrew Defaults
 - NeoVim Config
 - Tmux Config
 - macOS Defaults

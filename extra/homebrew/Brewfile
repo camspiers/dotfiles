@@ -5,15 +5,15 @@ tap "homebrew/cask-fonts"
 tap "homebrew/cask-versions"
 tap "homebrew/bundle"
 tap "homebrew/services"
+
+# Custom taps
 tap "Schniz/tap"
 tap "koekeishiya/formulae"
 
-# Core
-brew "automake"
+# Homebrew essentials
 brew "bash-completion"
 brew "composer"
 brew "coreutils"
-brew "curl"
 brew "editorconfig"
 brew "fnm"
 brew "fontconfig"
@@ -26,7 +26,6 @@ brew "mosh"
 brew "ncurses"
 brew "neovim"
 brew "node"
-brew "openssl"
 brew "php"
 brew "python"
 brew "ranger"
@@ -41,6 +40,7 @@ brew "wget"
 brew "yabai"
 brew "yarn"
 
+# App essentials
 cask "docker"
 cask "fontforge"
 cask "keycastr"
