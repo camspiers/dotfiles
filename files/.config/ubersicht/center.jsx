@@ -1,9 +1,8 @@
 import { defaultTheme } from "./lib/style";
 
-const command = 'date +"%a, %d %b %y"';
-const refreshFrequency = 100000; // ms
-
-const renderClass = `
+export const command = 'date +"%a, %d %b %y"';
+export const refreshFrequency = 100000; // ms
+export const className = `
     ${defaultTheme}
     position: absolute;
     width: auto;
@@ -13,7 +12,4 @@ const renderClass = `
     text-align: center;
     transform: translate(-50%);
 `;
-
-const render = ({ output }) => <div>{output}</div>;
-
-export { command, refreshFrequency, renderClass as className, render };
+export const render = ({ output }) => <div>{output}</div>;

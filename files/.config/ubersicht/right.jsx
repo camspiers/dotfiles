@@ -37,15 +37,15 @@ export const updateState = (event, pState) => {
   }
 }
 
-const command = (dispatch) => {
+export const command = (dispatch) => {
     run('htotal').then(total => dispatch({type: 'TOTAL_CHANGED', total}));
     run('hstatus').then(status => dispatch({type: 'STATUS_CHANGED', status}));
     run('date +"%I:%M %p"').then(time => dispatch({type: 'TIME_CHANGED', time}));
 };
 
-const refreshFrequency = 2000; // ms
+export const refreshFrequency = 2000; // ms
 
-const className = `
+export const className = `
     display: flex;
     justify-content: space-between;
     margin: 15px 20px;
@@ -79,7 +79,7 @@ const greyscale = css`
     filter: grayscale(100%);
 `;
 
-const render = ({ total, running, status, time, loading }, dispatch) => {
+export const render = ({ total, running, status, time, loading }, dispatch) => {
     return (
         <div>
             {!loading && running ? <div className={container}>{status}</div> : null}
@@ -100,4 +100,3 @@ const render = ({ total, running, status, time, loading }, dispatch) => {
     );
 };
 
-export { command, refreshFrequency, className, render };

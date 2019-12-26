@@ -1,40 +1,42 @@
-import { defaultTheme } from "./lib/style";
+import getSpacesForDisplay from "./lib/getSpacesForDisplay";
 import { css, run } from 'uebersicht';
+import { defaultTheme } from "./lib/style";
 
 export const initialState = {
-    workspace: '1',
     network: '',
+    spaces: [],
 };
 
-export const updateState = (event, pState) => {
+export const updateState = (event, state) => {
   switch(event.type) {
-      case 'WORKSPACE_CHANGED':
-        return {
-            ...pState,
-            workspace: event.workspace,
-        };
       case 'NETWORK_CHANGED':
         return {
-            ...pState,
+            ...state,
             network: event.network,
         };
+      case 'SPACES_UPDATED':
+        return {
+            ...state,
+            spaces: event.spaces,
+        };
       default:
-        return pState;
+        return state;
   }
 }
 
-const command = (dispatch) => {
-    run('ubersicht-workspace').then(workspace => {
-        dispatch({type: 'WORKSPACE_CHANGED', workspace});
-    });
-    run('ubersicht-network').then(network => {
-        dispatch({type: 'NETWORK_CHANGED', network});
-    });
+let networkTimeout = null;
+
+export const command = (dispatch) => {
+    clearTimeout(networkTimeout);
+    getSpacesForDisplay(1).then(spaces => dispatch({ type: 'SPACES_UPDATED', spaces }));
+    const updateNetwork = () => run('ubersicht-network').then(network => dispatch({type: 'NETWORK_CHANGED', network}));
+    networkTimeout = setTimeout(updateNetwork, 5000);
+    updateNetwork();
 };
 
-const refreshFrequency = 2000; // ms
+export const refreshFrequency = false;
 
-const className = `
+export const className = `
     display: flex;
     justify-content: space-between;
     margin: 15px 20px;
@@ -52,13 +54,17 @@ const container = css`
     margin-right: 10px;
 `;
 
-const render = ({ workspace, network }, dispatch) => {
+const containerFocused = css`
+    ${container}
+    box-shadow:inset 0px 0px 0px 1px #fff;
+`;
+
+export const render = ({ network , spaces }) => {
     return (
         <div>
-            <div className={container}>{workspace}</div>
+            {spaces.map(space => <div className={space.focused ? containerFocused : container}>{space.index}</div>)}
             <div className={container}>{network}</div>
         </div>
     );
 };
 
-export { command, refreshFrequency, className, render };
