@@ -27,7 +27,7 @@ PATHS+=("$HOME/.composer/vendor/bin")
 # Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
 PATHS+=("$HOME/.rv")
 
-export PATH="$PATH:$(join ":" $PATHS)"
+export PATH="$PATH:$(join ":" "${PATHS[@]}")"
 
 export HISTSIZE=100000                   # big big history
 export HISTFILESIZE=100000               # big big history

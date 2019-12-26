@@ -1,10 +1,12 @@
 cask_args appdir: '/Applications'
 
-tap "caskroom/cask"
-tap "caskroom/fonts"
-tap "caskroom/versions"
+tap "homebrew/cask"
+tap "homebrew/cask-fonts"
+tap "homebrew/cask-versions"
 tap "homebrew/bundle"
 tap "homebrew/services"
+tap "Schniz/tap"
+tap "koekeishiya/formulae"
 
 # Core
 brew "automake"
@@ -40,7 +42,6 @@ brew "yabai"
 brew "yarn"
 
 cask "docker"
-cask "font-hack-nerd-font"
 cask "fontforge"
 cask "keycastr"
 cask "kitty"

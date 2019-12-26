@@ -10,7 +10,8 @@
 
 call plug#begin(stdpath('data') . '/plugged')
     " Fuzzy file finding
-    Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+    Plug '/usr/local/opt/fzf'
+    Plug 'junegunn/fzf'
     Plug 'junegunn/fzf.vim'
 
     " Syntax
@@ -194,6 +195,7 @@ let g:indent_guides_enable_on_vim_startup = 1
 
 " NERD Tree Config
 let NERDTreeShowHidden=1
+let NERDTreeIgnore=['\.DS_Store$', '\.git$']
 
 " Configures ripgrep with fzf
 command! -bang -nargs=* FzfRg call fzf#vim#grep("rg --column --line-number --no-heading --color=always --smart-case ".shellescape(<q-args>), 1, {'options': '--delimiter : --nth 4..'}, <bang>0)
@@ -204,7 +206,7 @@ command! -nargs=* -complete=file Ripgrep :call s:Rg(<q-args>)
 command! -nargs=* -complete=file Rg :call s:Rg(<q-args>)
 
 " Use ripgrep for fzf
-let $FZF_DEFAULT_COMMAND='rg --files --no-ignore'
+let $FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --iglob "!.DS_Store" --iglob "!.git"'
 
 " Configure FZF to use a floating window configuration
 let $FZF_DEFAULT_OPTS = '--layout=reverse'
@@ -402,7 +404,7 @@ let g:indentLine_setConceal = 0
 " set conceallevel=3
 
 " Use docker files and git
-let g:rooter_patterns = ['docker-compose.yml']
+let g:rooter_patterns = ['docker-compose.yml', '.git']
 
 " Vedebug needs to be able to load files and understand how the file in the docker container maps to the local system
 autocmd VimEnter * :call Vdebug_load_options( { 'path_maps' : { '/var/www/html/' : getcwd() } } )

@@ -10,5 +10,7 @@ homebrew:
 	brew bundle --file="$(DOTFILES)/extra/homebrew/Brewfile"
 	brew cleanup
 	brew doctor
+neovim:
+	curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
 .PHONY: all install homebrew neovim
