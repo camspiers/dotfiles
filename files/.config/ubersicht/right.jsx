@@ -6,10 +6,16 @@ export const initialState = {
     running: false,
     status: '',
     time: '',
+    loading: true,
 };
 
 export const updateState = (event, pState) => {
   switch(event.type) {
+      case 'LOADING_CHANGED':
+        return {
+            ...pState,
+            loading: event.loading,
+        };
       case 'STATUS_CHANGED':
         return {
             ...pState,
@@ -33,9 +39,7 @@ export const updateState = (event, pState) => {
 
 const command = (dispatch) => {
     run('htotal').then(total => dispatch({type: 'TOTAL_CHANGED', total}));
-    run('hstatus').then(status => {
-        dispatch({type: 'STATUS_CHANGED', status});
-    });
+    run('hstatus').then(status => dispatch({type: 'STATUS_CHANGED', status}));
     run('date +"%I:%M %p"').then(time => dispatch({type: 'TIME_CHANGED', time}));
 };
 
@@ -75,13 +79,21 @@ const greyscale = css`
     filter: grayscale(100%);
 `;
 
-const render = ({ total, running, status, time }, dispatch) => {
+const render = ({ total, running, status, time, loading }, dispatch) => {
     return (
         <div>
-            {running ? <div className={container}>{status}</div> : null}
-            <div className={totalContainer} onClick={() => command(dispatch)}>
-                <img src="./assets/harvest-logo-icon.png" className={running ? img : greyscale} />
-                <span>{total}</span>
+            {!loading && running ? <div className={container}>{status}</div> : null}
+                <div className={totalContainer} onClick={() => {
+                    dispatch({ type: 'LOADING_CHANGED', loading: true });
+                    run('hcl stop').then(() => {
+                        Promise.all([
+                            run('htotal').then(total => dispatch({type: 'TOTAL_CHANGED', total})),
+                            run('hstatus').then(status => dispatch({type: 'STATUS_CHANGED', status})),
+                        ]).then(() => dispatch({ type: 'LOADING_CHANGED', loading: false }));
+                    });
+                }}>
+                <img src="./assets/harvest-logo-icon.png" className={!loading && running ? img : greyscale} />
+                <span>{loading ? '--' : total}</span>
             </div>
             <div className={container}>{time}</div>
         </div>
