@@ -39,16 +39,7 @@ yabai -m config window_shadow float
 yabai -m rule --add app="^System Preferences$" manage=off border=off
 yabai -m rule --add app=Preview manage=off border=off
 
-yabai -m signal --add event=space_changed \
-    action="osascript -e 'tell application \"Übersicht\" to refresh widget id \"left-jsx\"'"
-
-yabai -m signal --add event=display_changed \
-    action="osascript -e 'tell application \"Übersicht\" to refresh widget id \"left-jsx\"'"
-
-yabai -m signal --add event=space_changed \
-    action="osascript -e 'tell application \"Übersicht\" to refresh widget id \"left-secondary-jsx\"'"
-
-yabai -m signal --add event=display_changed \
-    action="osascript -e 'tell application \"Übersicht\" to refresh widget id \"left-secondary-jsx\"'"
+yabai -m signal --add event=space_changed action="~/.dotfiles/scripts/ubersicht-refresh-left"
+yabai -m signal --add event=display_changed action="~/.dotfiles/scripts/ubersicht-refresh-left"
 
 echo "yabai configuration loaded.."
