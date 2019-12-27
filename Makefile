@@ -1,7 +1,7 @@
 DOTFILES="${HOME}/.dotfiles"
 SCRIPTS="${DOTFILES}/scripts"
 
-all: homebrew neovim
+all: homebrew neovim ubersicht
 
 install:
 	stow --restow --ignore ".DS_Store" --target="$(HOME)" --dir="$(DOTFILES)" files
@@ -16,4 +16,4 @@ neovim:
 ubersicht:
 	ln -s "${DOTFILES}/files/.config/ubersicht" "${HOME}/Library/Application Support/Übersicht/widgets/dotfiles"
 
-.PHONY: all install homebrew neovim
+.PHONY: all install homebrew neovim ubersicht
