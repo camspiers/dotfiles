@@ -36,14 +36,51 @@ yabai -m config mouse_follows_focus on
 yabai -m config window_topmost on
 yabai -m config window_shadow float
 
-yabai -m rule --add app="^System Preferences$" manage=off border=off
-yabai -m rule --add app=Preview manage=off border=off
-
+# Space labels
 yabai -m space 1 --label Primary
-yabai -m space 2 --label Tools
-yabai -m space 3 --label Float
-yabai -m space 4 --label Secondary
+yabai -m space 2 --label Communication
+yabai -m space 3 --label Tools
+yabai -m space 4 --label Media
+yabai -m space 5 --label Social
+yabai -m space 6 --label Float
+yabai -m space 7 --label Secondary
 
+# Space config
+yabai -m config --space 6 layout             float
+
+# Unmanaged
+yabai -m rule --add app="^System Preferences$" manage=off border=off
+yabai -m rule --add app="Preview" manage=off border=off
+yabai -m rule --add app="Harvest" manage=off border=off
+
+# Primary
+yabai -m rule --add app="Brave Browser" space=1
+yabai -m rule --add app="kitty" space=1
+
+# Communication
+yabai -m rule --add app="Slack" space=2
+yabai -m rule --add app="Notability" space=2
+yabai -m rule --add app="Microsoft Outlook" space=2
+
+# Tools
+yabai -m rule --add app="Finder" space=3
+yabai -m rule --add app="Microsoft Word" space=3
+yabai -m rule --add app="Sequel Pro" space=3
+yabai -m rule --add app="Postman" space=3
+yabai -m rule --add app="Sourcetree" space=3
+
+# Media
+yabai -m rule --add app="Music" space=4
+yabai -m rule --add app="QuickTime Player" space=4
+yabai -m rule --add app="VLC" space=4
+
+# Social
+yabai -m rule --add app="Discord" space=5
+
+# Floating
+yabai -m rule --add app="^System Preferences$" space=6
+
+# Signals
 yabai -m signal --add event=space_changed action="~/.dotfiles/scripts/ubersicht-refresh-left"
 yabai -m signal --add event=display_changed action="~/.dotfiles/scripts/ubersicht-refresh-left"
 

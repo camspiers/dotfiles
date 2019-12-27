@@ -12,6 +12,9 @@ PATHS=()
 # Brew scripts
 PATHS+=("/usr/local/bin:/usr/local/sbin")
 
+# Python 3
+PATHS+=("/usr/local/opt/python/libexec/bin")
+
 # Fzf
 PATHS+=("/usr/local/opt/fzf/bin")
 
@@ -28,6 +31,8 @@ PATHS+=("$HOME/.dotfiles/scripts")
 PATHS+=("$HOME/.composer/vendor/bin")
 
 PATH="$PATH:$(join_paths ":" "${PATHS[@]}")"
+
+export PATH="/usr/local/opt/python/libexec/bin:$PATH"
 
 # Normalize the path and export it
 eval $(/usr/libexec/path_helper -s)
