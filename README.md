@@ -2,6 +2,8 @@
 
 macOS environment managed by git and GNU Stow.
 
+![img](assets/screenshot.png)
+
 ## Overview
 
 - Homebrew Defaults
