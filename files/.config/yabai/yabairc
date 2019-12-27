@@ -39,6 +39,11 @@ yabai -m config window_shadow float
 yabai -m rule --add app="^System Preferences$" manage=off border=off
 yabai -m rule --add app=Preview manage=off border=off
 
+yabai -m space 1 --label Primary
+yabai -m space 2 --label Tools
+yabai -m space 3 --label Float
+yabai -m space 4 --label Secondary
+
 yabai -m signal --add event=space_changed action="~/.dotfiles/scripts/ubersicht-refresh-left"
 yabai -m signal --add event=display_changed action="~/.dotfiles/scripts/ubersicht-refresh-left"
 

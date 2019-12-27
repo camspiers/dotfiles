@@ -62,18 +62,35 @@ const spaceContainerClass = css`
 
     div {
         padding: 0 2ch;
+        cusor: pointer;
     }
 `;
 
 const spaceFocusedClass = css`
+    font-weight: bold;
     box-shadow: inset 0px 0px 0px 1px #fff;
 `;
 
-export const render = ({ network , spaces }) => {
+export const render = ({ network , spaces }, dispatch) => {
     return (
         <div>
             <div className={spaceContainerClass}>
-                {spaces.map(space => <div className={space.focused ? spaceFocusedClass : null}>{space.index}</div>)}
+                {spaces.map(space =>
+                    <div key={space.index} className={space.focused ? spaceFocusedClass : null} onClick={() => {
+                        if (space.focused) {
+                            return;
+                        }
+
+                        dispatch({
+                            type: 'SPACES_UPDATED',
+                            spaces: spaces.map(s => ({...s, focused: space.index === s.index})),
+                        });
+
+                        run(`yabai -m space --focus ${space.index}`);
+                    }}>
+                        {space.label ? `${space.label} (${space.index})` : space.index}
+                    </div>
+                )}
             </div>
             <div className={containerClass}>{network}</div>
         </div>
