@@ -14,9 +14,9 @@ yabai -m config window_border                off
 
 yabai -m config window_opacity               on
 yabai -m config active_window_opacity        1.0
-yabai -m config normal_window_opacity        0.7
+yabai -m config normal_window_opacity        0.8
 yabai -m config split_ratio                  0.50
-yabai -m config auto_balance                 off
+yabai -m config auto_balance                 on
 yabai -m config mouse_modifier               fn
 yabai -m config mouse_action1                move
 yabai -m config mouse_action2                resize
@@ -54,29 +54,29 @@ yabai -m rule --add app="Preview" manage=off border=off
 yabai -m rule --add app="Harvest" manage=off border=off
 
 # Primary
-yabai -m rule --add app="Brave Browser" space=1
-yabai -m rule --add app="kitty" space=1
+yabai -m rule --add app="Brave Browser" space=^1
+yabai -m rule --add app="kitty" space=^1
 
 # Communication
-yabai -m rule --add app="Slack" space=2
-yabai -m rule --add app="Notability" space=2
-yabai -m rule --add app="WhatsApp" space=2
-yabai -m rule --add app="Microsoft Outlook" space=2
+yabai -m rule --add app="Slack" space=^2
+yabai -m rule --add app="Notability" space=^2
+yabai -m rule --add app="Microsoft Outlook" space=^2
 
 # Tools
-yabai -m rule --add app="Finder" space=3
-yabai -m rule --add app="Microsoft Word" space=3
-yabai -m rule --add app="Sequel Pro" space=3
-yabai -m rule --add app="Postman" space=3
-yabai -m rule --add app="Sourcetree" space=3
+yabai -m rule --add app="Finder" space=^3
+yabai -m rule --add app="Microsoft Word" space=^3
+yabai -m rule --add app="Sequel Pro" space=^3
+yabai -m rule --add app="Postman" space=^3
+yabai -m rule --add app="Sourcetree" space=^3
 
 # Media
-yabai -m rule --add app="Music" space=4
-yabai -m rule --add app="QuickTime Player" space=4
-yabai -m rule --add app="VLC" space=4
+yabai -m rule --add app="Music" space=^4
+yabai -m rule --add app="QuickTime Player" space=^4
+yabai -m rule --add app="VLC" space=^4
 
 # Social
-yabai -m rule --add app="Discord" space=5
+yabai -m rule --add app="Discord" space=^5
+yabai -m rule --add app="WhatsApp" space=^5
 
 # Floating
 yabai -m rule --add app="^System Preferences$" space=6
