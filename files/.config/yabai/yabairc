@@ -41,7 +41,7 @@ yabai -m space 1 --label "🌈 Primary"
 yabai -m space 2 --label "💬 Comms"
 yabai -m space 3 --label "🧰 Tools"
 yabai -m space 4 --label "🎧 Media"
-yabai -m space 5 --label "🐧 Social"
+yabai -m space 5 --label "🦄 Social"
 yabai -m space 6 --label "🎈 Float"
 yabai -m space 7 --label Secondary
 
