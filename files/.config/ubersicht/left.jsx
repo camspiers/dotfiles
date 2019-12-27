@@ -46,23 +46,35 @@ const containerClass = css`
 const spaceContainerClass = css`
     ${containerClass}
     padding: 0;
-
-    div {
-        padding: 0 2ch;
-        cusor: pointer;
-    }
 `;
+
+const spaceClass = css`
+    position: relative;
+    padding: 0 2ch;
+    cusor: pointer;
+`
 
 const spaceFocusedClass = css`
+    ${spaceClass}
     font-weight: bold;
+    font-style: italic;
     box-shadow: inset 0px 0px 0px 1px #fff;
 `;
+
+const indexClass = css`
+    position: absolute;
+    top: 1px;
+    right: 5px;
+    font-size: 9px;
+    height: 12px;
+    line-height: 12px;
+`
 
 export const render = ({ spaces }, dispatch) => {
     return (
         <div className={spaceContainerClass}>
             {spaces.map(space =>
-                <div key={space.index} className={space.focused ? spaceFocusedClass : null} onClick={() => {
+                <div key={space.index} className={space.focused ? spaceFocusedClass : spaceClass} onClick={() => {
                     if (space.focused) {
                         return;
                     }
@@ -74,7 +86,8 @@ export const render = ({ spaces }, dispatch) => {
 
                     run(`yabai -m space --focus ${space.index}`);
                 }}>
-                    {space.label ? `${space.label} [${space.index}]` : space.index}
+                    {space.label ? space.label : space.index}
+                    {space.label && <span className={indexClass}>{space.index}</span>}
                 </div>
             )}
         </div>
