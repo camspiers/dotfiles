@@ -37,13 +37,34 @@ export const updateState = (event, pState) => {
   }
 }
 
+let timeTimeout = null;
+let harvestTimeout = null;
+
 export const command = (dispatch) => {
-    run('htotal').then(total => dispatch({type: 'TOTAL_CHANGED', total}));
-    run('hstatus').then(status => dispatch({type: 'STATUS_CHANGED', status}));
-    run('date +"%I:%M %p"').then(time => dispatch({type: 'TIME_CHANGED', time}));
+    clearInterval(timeTimeout);
+    clearInterval(harvestTimeout);
+    
+    dispatch({ type: 'LOADING_CHANGED', loading: true });
+
+    function updateHarvest() {
+        Promise.all([
+            run('htotal').then(total => dispatch({type: 'TOTAL_CHANGED', total})),
+            run('hstatus').then(status => dispatch({type: 'STATUS_CHANGED', status})),
+        ]).then(() => dispatch({ type: 'LOADING_CHANGED', loading: false }));
+    }
+
+    function updateTime() {
+        run('date +"%I:%M %p"').then(time => dispatch({type: 'TIME_CHANGED', time}));
+    }
+
+    timeTimeout = setInterval(updateTime, 5000);
+    harvestTimeout = setInterval(updateHarvest, 5000);
+
+    updateTime();
+    updateHarvest();
 };
 
-export const refreshFrequency = 2000; // ms
+export const refreshFrequency = false;
 
 export const className = `
     display: flex;

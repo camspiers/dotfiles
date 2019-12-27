@@ -27,10 +27,10 @@ export const updateState = (event, state) => {
 let networkTimeout = null;
 
 export const command = (dispatch) => {
-    clearTimeout(networkTimeout);
+    clearInterval(networkTimeout);
     getSpacesForDisplay(1).then(spaces => dispatch({ type: 'SPACES_UPDATED', spaces }));
     const updateNetwork = () => run('ubersicht-network').then(network => dispatch({type: 'NETWORK_CHANGED', network}));
-    networkTimeout = setTimeout(updateNetwork, 5000);
+    networkTimeout = setInterval(updateNetwork, 5000);
     updateNetwork();
 };
 

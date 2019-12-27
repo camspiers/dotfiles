@@ -390,8 +390,6 @@ let g:tmuxline_preset = {
       \'b'    : '#(whoami)',
       \'win'  : ['#I', '#W'],
       \'cwin' : ['#I', '#W'],
-      \'x'    : ['#(hstatus)', '#(htotal)'],
-      \'y'    : ['♫: #{current_track}'],
       \'z'    : ['%R', '%a', '%Y']}
 
 let g:indentLine_setConceal = 0
