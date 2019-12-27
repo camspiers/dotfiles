@@ -35,3 +35,6 @@ shopt -s histappend                      # append to history, don't overwrite it
 
 # Configure fzf
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
+# Configure starship
+eval "$(starship init bash)"
