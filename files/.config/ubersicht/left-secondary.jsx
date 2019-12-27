@@ -9,9 +9,7 @@ export const initialState = {
 
 const command = (dispatch) => {
     getSpacesForDisplay(2).then(spaces => dispatch({ type: 'SPACES_UPDATED', spaces }));
-    run('ubersicht-network').then(network => {
-        dispatch({type: 'NETWORK_CHANGED', network});
-    });
+    run('ubersicht-network').then(network => dispatch({type: 'NETWORK_CHANGED', network}));
 };
 
 export { command, updateState, refreshFrequency, className, render };

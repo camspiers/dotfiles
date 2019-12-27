@@ -24,13 +24,14 @@ export const updateState = (event, state) => {
   }
 }
 
-let networkTimeout = null;
-
+let networkInterval = null;
 export const command = (dispatch) => {
-    clearInterval(networkTimeout);
+    clearInterval(networkInterval);
     getSpacesForDisplay(1).then(spaces => dispatch({ type: 'SPACES_UPDATED', spaces }));
-    const updateNetwork = () => run('ubersicht-network').then(network => dispatch({type: 'NETWORK_CHANGED', network}));
-    networkTimeout = setInterval(updateNetwork, 5000);
+    function updateNetwork() {
+        run('ubersicht-network').then(network => dispatch({type: 'NETWORK_CHANGED', network}));
+    }
+    networkInterval = setInterval(updateNetwork, 5000);
     updateNetwork();
 };
 
@@ -44,7 +45,7 @@ export const className = `
     position: static;
 `;
 
-const container = css`
+const containerClass = css`
     ${defaultTheme}
     align-items: center;
     display: inline-flex;
@@ -52,18 +53,29 @@ const container = css`
     vertical-align: top;
     margin: 0;
     margin-right: 10px;
+    border-radius: unset;
 `;
 
-const containerFocused = css`
-    ${container}
-    box-shadow:inset 0px 0px 0px 1px #fff;
+const spaceContainerClass = css`
+    ${containerClass}
+    padding: 0;
+
+    div {
+        padding: 0 2ch;
+    }
+`;
+
+const spaceFocusedClass = css`
+    box-shadow: inset 0px 0px 0px 1px #fff;
 `;
 
 export const render = ({ network , spaces }) => {
     return (
         <div>
-            {spaces.map(space => <div className={space.focused ? containerFocused : container}>{space.index}</div>)}
-            <div className={container}>{network}</div>
+            <div className={spaceContainerClass}>
+                {spaces.map(space => <div className={space.focused ? spaceFocusedClass : null}>{space.index}</div>)}
+            </div>
+            <div className={containerClass}>{network}</div>
         </div>
     );
 };
