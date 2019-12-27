@@ -37,16 +37,16 @@ yabai -m config window_topmost on
 yabai -m config window_shadow float
 
 # Space labels
-yabai -m space 1 --label Primary
-yabai -m space 2 --label Communication
-yabai -m space 3 --label Tools
-yabai -m space 4 --label Media
-yabai -m space 5 --label Social
-yabai -m space 6 --label Float
+yabai -m space 1 --label "🌈 Primary"
+yabai -m space 2 --label "💬 Comms"
+yabai -m space 3 --label "🧰 Tools"
+yabai -m space 4 --label "🎧 Media"
+yabai -m space 5 --label "🐧 Social"
+yabai -m space 6 --label "🎈 Float"
 yabai -m space 7 --label Secondary
 
 # Space config
-yabai -m config --space 6 layout             float
+yabai -m config --space 6 layout float
 
 # Unmanaged
 yabai -m rule --add app="^System Preferences$" manage=off border=off
@@ -60,6 +60,7 @@ yabai -m rule --add app="kitty" space=1
 # Communication
 yabai -m rule --add app="Slack" space=2
 yabai -m rule --add app="Notability" space=2
+yabai -m rule --add app="WhatsApp" space=2
 yabai -m rule --add app="Microsoft Outlook" space=2
 
 # Tools

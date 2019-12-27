@@ -3,17 +3,11 @@ import { css, run } from 'uebersicht';
 import { defaultTheme } from "./lib/style";
 
 export const initialState = {
-    network: '',
     spaces: [],
 };
 
 export const updateState = (event, state) => {
   switch(event.type) {
-      case 'NETWORK_CHANGED':
-        return {
-            ...state,
-            network: event.network,
-        };
       case 'SPACES_UPDATED':
         return {
             ...state,
@@ -24,15 +18,8 @@ export const updateState = (event, state) => {
   }
 }
 
-let networkInterval = null;
 export const command = (dispatch) => {
-    clearInterval(networkInterval);
     getSpacesForDisplay(1).then(spaces => dispatch({ type: 'SPACES_UPDATED', spaces }));
-    function updateNetwork() {
-        run('ubersicht-network').then(network => dispatch({type: 'NETWORK_CHANGED', network}));
-    }
-    networkInterval = setInterval(updateNetwork, 5000);
-    updateNetwork();
 };
 
 export const refreshFrequency = false;
@@ -71,28 +58,25 @@ const spaceFocusedClass = css`
     box-shadow: inset 0px 0px 0px 1px #fff;
 `;
 
-export const render = ({ network , spaces }, dispatch) => {
+export const render = ({ spaces }, dispatch) => {
     return (
-        <div>
-            <div className={spaceContainerClass}>
-                {spaces.map(space =>
-                    <div key={space.index} className={space.focused ? spaceFocusedClass : null} onClick={() => {
-                        if (space.focused) {
-                            return;
-                        }
+        <div className={spaceContainerClass}>
+            {spaces.map(space =>
+                <div key={space.index} className={space.focused ? spaceFocusedClass : null} onClick={() => {
+                    if (space.focused) {
+                        return;
+                    }
 
-                        dispatch({
-                            type: 'SPACES_UPDATED',
-                            spaces: spaces.map(s => ({...s, focused: space.index === s.index})),
-                        });
+                    dispatch({
+                        type: 'SPACES_UPDATED',
+                        spaces: spaces.map(s => ({...s, focused: space.index === s.index})),
+                    });
 
-                        run(`yabai -m space --focus ${space.index}`);
-                    }}>
-                        {space.label ? `${space.label} (${space.index})` : space.index}
-                    </div>
-                )}
-            </div>
-            <div className={containerClass}>{network}</div>
+                    run(`yabai -m space --focus ${space.index}`);
+                }}>
+                    {space.label ? `${space.label} [${space.index}]` : space.index}
+                </div>
+            )}
         </div>
     );
 };
