@@ -58,7 +58,7 @@ export const command = (dispatch) => {
     }
 
     timeTimeout = setInterval(updateTime, 5000);
-    harvestTimeout = setInterval(updateHarvest, 5000);
+    harvestTimeout = setInterval(updateHarvest, 10000);
 
     updateTime();
     updateHarvest();
@@ -78,7 +78,6 @@ const container = css`
     ${defaultTheme}
     align-items: center;
     display: inline-flex;
-    justify-content: space-between;
     vertical-align: top;
     margin: 0;
     margin-left: 10px;
