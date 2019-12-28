@@ -8,7 +8,7 @@ alt - j : yabai -m window --focus south
 alt - k : yabai -m window --focus north
 alt - l : yabai -m window --focus east
 
-# Spaces:  Cmd + Alt + [NUM]
+# Spaces:  Alt + [NUM]
 alt - 1 : yabai -m space --focus 1
 alt - 2 : yabai -m space --focus 2
 alt - 3 : yabai -m space --focus 3
@@ -93,7 +93,7 @@ alt - y : yabai -m space --mirror y-axis
 alt - x : yabai -m space --mirror x-axis
 
 ##############################################
-# Sizing: Shift + [Alt/Cmd] + [WASD]
+# Sizing: Shift + [Alt/Cmd] + [DIR]
 ##############################################
 
 # Auto
