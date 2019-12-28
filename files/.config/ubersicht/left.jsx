@@ -24,17 +24,9 @@ export const refreshFrequency = false;
 
 export const className = `
   ${defaultTheme}
-  align-items: center;
   display: flex;
-  display: inline-flex;
-  justify-content: space-between;
-  justify-content: space-between;
-  margin-right: 10px;
-  margin: 0;
   order: 1;
   padding: 0;
-  position: static;
-  vertical-align: top;
   div:first-child {
     border-top-left-radius: 3px;
     border-bottom-left-radius: 3px;
@@ -46,7 +38,6 @@ export const className = `
 `;
 
 const spaceClass = css`
-  cusor: pointer;
   padding: 0 2ch;
   position: relative;
 `;
@@ -58,12 +49,12 @@ const spaceFocusedClass = css`
 `;
 
 const indexClass = css`
-  font-size: 9px;
+  font-size: 10px;
   height: 12px;
   line-height: 12px;
   position: absolute;
   right: 5px;
-  top: 1px;
+  top: 2px;
 `;
 
 function onClick(dispatch, spaces, space) {
