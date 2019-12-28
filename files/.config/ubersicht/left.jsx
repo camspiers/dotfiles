@@ -65,19 +65,20 @@ const indexClass = css`
     line-height: 12px;
 `
 
-export const render = ({ spaces }, dispatch) => {
-    function onClick(space) {
-        if (space.focused) {
-            return;
-        }
-
-        dispatch({
-            type: 'SPACES_UPDATED',
-            spaces: spaces.map(s => ({...s, focused: space.index === s.index})),
-        });
-
-        run(`yabai -m space --focus ${space.index}`);
+function onClick(dispatch, spaces, space) {
+    if (space.focused) {
+        return;
     }
+
+    dispatch({
+        type: 'SPACES_UPDATED',
+        spaces: spaces.map(s => ({...s, focused: space.index === s.index})),
+    });
+
+    run(`yabai -m space --focus ${space.index}`);
+}
+
+export const render = ({ spaces }, dispatch) => {
 
     return (
         <div className={spaceContainerClass}>
@@ -85,7 +86,7 @@ export const render = ({ spaces }, dispatch) => {
                 <div
                     key={space.index}
                     className={space.focused ? spaceFocusedClass : spaceClass}
-                    onClick={() => onClick(space)}>
+                    onClick={() => onClick(dispatch, spaces, space)}>
                     {space.label ? space.label : space.index}
                     {space.label && <span className={indexClass}>{space.index}</span>}
                 </div>
