@@ -18,9 +18,7 @@ export const updateState = (event, state) => {
   }
 }
 
-export const command = (dispatch) => {
-    getSpacesForDisplay(1).then(spaces => dispatch({ type: 'SPACES_UPDATED', spaces }));
-};
+export const command = (dispatch) => getSpacesForDisplay(1).then(spaces => dispatch({ type: 'SPACES_UPDATED', spaces }));
 
 export const refreshFrequency = false;
 
