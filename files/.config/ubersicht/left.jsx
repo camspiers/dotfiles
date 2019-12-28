@@ -44,8 +44,8 @@ const spaceClass = css`
 
 const spaceFocusedClass = css`
   ${spaceClass}
-  background-color: #88C0D0;
-  color: #2E3440;
+  background-color: #81A1C1;
+  color: #2e3440;
 `;
 
 const indexClass = css`
