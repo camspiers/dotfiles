@@ -4,7 +4,7 @@ attach: false
 windows:
   - Editor: nvim
   - Git: lazygit
-  - Harvest: hstartinteractive
+  - Harvest: hstarti
   - Build:
       - cd app
       - yarn start
