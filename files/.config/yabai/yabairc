@@ -61,6 +61,7 @@ yabai -m rule --add app="kitty" space=^1
 yabai -m rule --add app="Slack" space=^2
 yabai -m rule --add app="Notability" space=^2
 yabai -m rule --add app="Microsoft Outlook" space=^2
+yabai -m rule --add app="Messages" space=^2
 
 # Tools
 yabai -m rule --add app="Finder" space=^3

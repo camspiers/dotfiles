@@ -145,7 +145,11 @@ call plug#begin(stdpath('data') . '/plugged')
     " Jump to interesting places with a Git or Mercurial repo
     Plug 'wincent/vcs-jump'
 
+    " Split and join programming lines
     Plug 'AndrewRadev/splitjoin.vim'
+
+    " File browser
+    Plug 'vifm/vifm.vim'
 call plug#end()
 
 set shell=bash
@@ -196,10 +200,6 @@ set termguicolors
 let g:indent_guides_guide_size = 1
 let g:indent_guides_color_change_percent = 3
 let g:indent_guides_enable_on_vim_startup = 1
-
-" NERD Tree Config
-let NERDTreeShowHidden=1
-let NERDTreeIgnore=['\.DS_Store$', '\.git$']
 
 set wildignore+=.git,.DS_Store
 
@@ -400,9 +400,6 @@ let g:tmuxline_preset = {
       \'z'    : ['%R', '%a', '%Y']}
 
 let g:indentLine_setConceal = 0
-
-" For NERDTree brackets conceal
-" set conceallevel=3
 
 " Use docker files and git
 let g:rooter_patterns = ['docker-compose.yml', '.git']
