@@ -1,5 +1,3 @@
-# /Users/cspiers/.config/tmuxinator/dotfiles.yml
-
 name: Dotfiles
 root: ~/.dotfiles
 windows:
