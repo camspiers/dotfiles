@@ -1,19 +1,13 @@
-const font = "Hasklug Nerd Font";
-const fontSize = "12px";
 const lineHeight = "24px";
-
-// Nord
-const background = "#2E3440";
-const color = "#ECEFF4";
-
 const defaultTheme = `
     position: static;
-    font: ${fontSize} ${font};
-    color: ${color};
+    font: 12px Hasklug Nerd Font;
+    color: #ECEFF4;
     line-height: ${lineHeight};
     height: ${lineHeight};
-    background-color: ${background};
+    background-color: #2E3440;
     padding: 0 2ch;
+    border-radius: 3px;
 `;
 
 export { defaultTheme };
