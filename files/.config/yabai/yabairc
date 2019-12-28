@@ -58,10 +58,11 @@ yabai -m config --space 6 layout float
 yabai -m rule --add app="^System Preferences$"  manage=off border=off
 yabai -m rule --add app="Preview"               manage=off border=off
 yabai -m rule --add app="Harvest"               manage=off border=off
+yabai -m rule --add app="ScreenFlow 9"          manage=off border=off
 
 # Primary
-yabai -m rule --add app="Brave Browser"         space=^1
-yabai -m rule --add app="kitty"                 space=^1
+yabai -m rule --add app="Brave Browser"         space=1
+yabai -m rule --add app="kitty"                 space=1
 
 # Communication
 yabai -m rule --add app="Slack"                 space=^2
@@ -88,6 +89,7 @@ yabai -m rule --add app="WhatsApp"              space=^5
 
 # Floating
 yabai -m rule --add app="^System Preferences$"  space=6
+yabai -m rule --add app="ScreenFlow 9"          space=6
 
 # Signals
 yabai -m signal --add event=space_changed action="~/.dotfiles/scripts/ubersicht-refresh-left"

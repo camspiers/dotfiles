@@ -6,9 +6,11 @@ windows:
   - Git: lazygit
   - Harvest: hstarti
   - Build:
-      - cd app
+      - cd app/client
       - yarn start
   - Storybook:
-      - cd app
+      - cd app/client
       - yarn storybook
-  - Docker: docker-compose up
+  - Docker:
+      - docker-compose up -d
+      - lazydocker

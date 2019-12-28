@@ -4,4 +4,6 @@ attach: false
 windows:
   - Editor: nvim
   - Git: lazygit
-  - Docker: docker-compose up
+  - Docker:
+      - docker-compose up -d
+      - lazydocker
