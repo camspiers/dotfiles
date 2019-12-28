@@ -23,11 +23,11 @@ yabai -m config mouse_action2                resize
 
 # general space settings
 yabai -m config layout                       bsp
-yabai -m config top_padding                  54
-yabai -m config bottom_padding               20
-yabai -m config left_padding                 20
-yabai -m config right_padding                20
-yabai -m config window_gap                   10
+yabai -m config top_padding                  44
+yabai -m config bottom_padding               10
+yabai -m config left_padding                 10
+yabai -m config right_padding                10
+yabai -m config window_gap                   5
 
 yabai -m config mouse_modifier fn
 yabai -m config focus_follows_mouse autoraise
@@ -68,6 +68,7 @@ yabai -m rule --add app="Microsoft Word" space=^3
 yabai -m rule --add app="Sequel Pro" space=^3
 yabai -m rule --add app="Postman" space=^3
 yabai -m rule --add app="Sourcetree" space=^3
+yabai -m rule --add app="Activity Monitor" space=^3
 
 # Media
 yabai -m rule --add app="Music" space=^4

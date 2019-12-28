@@ -4,7 +4,7 @@ const lineHeight = "24px";
 
 // Nord
 const background = "#2E3440";
-const color = "#ffffff";
+const color = "#ECEFF4";
 
 const defaultTheme = `
     position: static;
@@ -14,7 +14,6 @@ const defaultTheme = `
     height: ${lineHeight};
     background-color: ${background};
     padding: 0 2ch;
-    margin: 15px 0;
 `;
 
 export { defaultTheme };

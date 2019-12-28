@@ -69,9 +69,9 @@ export const refreshFrequency = false;
 export const className = `
     display: flex;
     justify-content: space-between;
-    margin: 15px 20px;
     order: 5;
     position: static;
+    margin-right: 20px;
 `;
 
 const container = css`

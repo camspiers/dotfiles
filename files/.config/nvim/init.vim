@@ -144,6 +144,8 @@ call plug#begin(stdpath('data') . '/plugged')
 
     " Jump to interesting places with a Git or Mercurial repo
     Plug 'wincent/vcs-jump'
+
+    Plug 'AndrewRadev/splitjoin.vim'
 call plug#end()
 
 set shell=bash

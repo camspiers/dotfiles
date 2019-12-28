@@ -27,7 +27,6 @@ export const refreshFrequency = false;
 export const className = `
     display: flex;
     justify-content: space-between;
-    margin: 15px 20px;
     order: 1;
     position: static;
 `;
@@ -56,9 +55,7 @@ const spaceClass = css`
 
 const spaceFocusedClass = css`
     ${spaceClass}
-    font-weight: bold;
-    font-style: italic;
-    box-shadow: inset 0px 0px 0px 1px #fff;
+    background-color: #4C566A;
 `;
 
 const indexClass = css`
