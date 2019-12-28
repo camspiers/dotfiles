@@ -53,9 +53,8 @@ const spaceClass = css`
 
 const spaceFocusedClass = css`
   ${spaceClass}
-  background-color: #D8DEE9;
+  background-color: #88C0D0;
   color: #2E3440;
-  font-weight: bold;
 `;
 
 const indexClass = css`

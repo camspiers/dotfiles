@@ -1,7 +1,7 @@
 const lineHeight = "24px";
 const defaultTheme = `
     position: static;
-    font: 12px Hasklug Nerd Font;
+    font: 14px Hasklug Nerd Font;
     color: #ECEFF4;
     line-height: ${lineHeight};
     height: ${lineHeight};
