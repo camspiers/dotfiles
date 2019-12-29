@@ -2,17 +2,36 @@ import getSpacesForDisplay from './lib/getSpacesForDisplay';
 import {css, run} from 'uebersicht';
 import {defaultTheme} from './lib/style';
 
-export const initialState = [];
+export const initialState = {
+  spaces: [],
+  focused: 0,
+};
 
 export const updateState = (event, state) => {
   switch (event.type) {
     case 'SPACES_UPDATED':
-      return event.spaces;
+      const focused = event.spaces.find(s => s.focused);
+      return {
+        spaces: event.spaces,
+        focused: focused ? focused.index : 0,
+      };
+    case 'FOCUSED_UPDATED':
+      return {
+        ...state,
+        focused: event.focused,
+      };
   }
   return state;
 };
 
-export const command = dispatch =>
+// This whole feature is a ridiculous bit of shenanigans
+// A swift commandline tool can't ActiveSpace was created to report changes to
+// the active space. A node commandline tool activeSpaceServer runs this
+// command and then uses SSE's to send the active spaces to the following
+// event source. This is all because the yabai -> AppleScript Ubersicht -> Widget
+// solution was very slow (probably because of AppleScript + Ubersicht
+// refresh functionality)
+export const init = dispatch => {
   getSpacesForDisplay(1).then(spaces =>
     dispatch({
       type: 'SPACES_UPDATED',
@@ -20,6 +39,26 @@ export const command = dispatch =>
     }),
   );
 
+  // Create the new event source for the active spaces server
+  const activeSpace = new EventSource('//127.0.0.1:15997');
+
+  // Check whether the server is running
+  activeSpace.onerror = () => {
+    // Failed to connect, start the activeSpaceServer then init again
+    run('node ./lib/activespaceServer.js &').then(() => {
+      init(dispatch);
+    });
+  };
+
+  activeSpace.onmessage = event => {
+    dispatch({
+      type: 'FOCUSED_UPDATED',
+      focused: Number(event.data),
+    });
+  };
+};
+
+export const command = undefined;
 export const refreshFrequency = false;
 
 export const className = `
@@ -27,11 +66,11 @@ export const className = `
   display: flex;
   order: 1;
   padding: 0;
-  div:first-child {
+  div:first-of-type {
     border-top-left-radius: 3px;
     border-bottom-left-radius: 3px;
   }
-  div:last-child {
+  div:last-of-type {
     border-top-right-radius: 3px;
     border-bottom-right-radius: 3px;
   }
@@ -57,32 +96,27 @@ const indexClass = css`
   top: 2px;
 `;
 
-function onClick(dispatch, spaces, space) {
-  if (space.focused) {
-    return;
-  }
-
+function onClick(dispatch, space) {
   run(`yabai -m space --focus ${space.index}`);
 
   // Optimistic update
   dispatch({
-    type: 'SPACES_UPDATED',
-    spaces: spaces.map(s => ({...s, focused: space.index === s.index})),
+    type: 'FOCUSED_UPDATED',
+    focused: space.index,
   });
 }
 
-const Space = ({spaces, space, dispatch}) => (
+const Space = ({space, focused, dispatch}) => (
   <div
     key={space.index}
-    className={space.focused ? spaceFocusedClass : spaceClass}
-    onClick={() => onClick(dispatch, spaces, space)}
-    onMouseOver={() => onClick(dispatch, spaces, space)}>
+    className={space.index === focused ? spaceFocusedClass : spaceClass}
+    onClick={() => onClick(dispatch, space)}>
     {space.label ? space.label : space.index}
     {space.label && <span className={indexClass}>{space.index}</span>}
   </div>
 );
 
-export const render = (spaces, dispatch) =>
+export const render = ({spaces, focused}, dispatch) =>
   spaces.map(space => (
-    <Space spaces={spaces} space={space} dispatch={dispatch} />
+    <Space focused={focused} space={space} dispatch={dispatch} />
   ));

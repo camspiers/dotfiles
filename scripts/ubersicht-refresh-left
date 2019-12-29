@@ -1,4 +1,0 @@
-#!/usr/bin/osascript
-
-tell application "Übersicht" to refresh widget id "left-jsx"
-tell application "Übersicht" to refresh widget id "left-secondary-jsx"

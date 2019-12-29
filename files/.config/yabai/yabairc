@@ -43,12 +43,12 @@ yabai -m config window_topmost                  on
 yabai -m config window_shadow                   float
 
 # Space labels
-yabai -m space 1 --label "🌈 Primary"
-yabai -m space 2 --label "💬 Comms"
-yabai -m space 3 --label "🧰 Tools"
-yabai -m space 4 --label "🎧 Media"
-yabai -m space 5 --label "🦄 Social"
-yabai -m space 6 --label "🎈 Float"
+yabai -m space 1 --label "Primary"
+yabai -m space 2 --label "Comms"
+yabai -m space 3 --label "Tools"
+yabai -m space 4 --label "Media"
+yabai -m space 5 --label "Social"
+yabai -m space 6 --label "Float"
 yabai -m space 7 --label Secondary
 
 # Space config
@@ -90,9 +90,5 @@ yabai -m rule --add app="WhatsApp"              space=^5
 # Floating
 yabai -m rule --add app="^System Preferences$"  space=6
 yabai -m rule --add app="ScreenFlow 9"          space=6
-
-# Signals
-yabai -m signal --add event=space_changed action="~/.dotfiles/scripts/ubersicht-refresh-left"
-yabai -m signal --add event=display_changed action="~/.dotfiles/scripts/ubersicht-refresh-left"
 
 echo "yabai configuration loaded.."

@@ -150,6 +150,8 @@ call plug#begin(stdpath('data') . '/plugged')
 
     " File browser
     Plug 'vifm/vifm.vim'
+
+    Plug 'lilyball/vim-swift'
 call plug#end()
 
 set shell=bash
