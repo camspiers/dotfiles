@@ -24,7 +24,7 @@ activeSpaces.stdout.on('data', data => {
 const app = express();
 
 // Setup cors
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   next();
 });

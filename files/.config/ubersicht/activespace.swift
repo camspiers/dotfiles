@@ -1,11 +1,3 @@
-//
-//  main.swift
-//  ActiveSpace
-//
-//  Created by Cam Spiers on 29/12/19.
-//  Copyright © 2019 Cam Spiers. All rights reserved.
-//
-
 import Cocoa
 
 let _ = NSWindow()

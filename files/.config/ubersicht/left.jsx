@@ -25,7 +25,7 @@ export const updateState = (event, state) => {
 };
 
 // This whole feature is a ridiculous bit of shenanigans
-// A swift commandline tool can't ActiveSpace was created to report changes to
+// A swift commandline tool called activespace was created to report changes to
 // the active space. A node commandline tool activeSpaceServer runs this
 // command and then uses SSE's to send the active spaces to the following
 // event source. This is all because the yabai -> AppleScript Ubersicht -> Widget
