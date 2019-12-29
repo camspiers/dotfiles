@@ -151,6 +151,7 @@ call plug#begin(stdpath('data') . '/plugged')
     " File browser
     Plug 'vifm/vifm.vim'
 
+    " Syntax support for swift
     Plug 'lilyball/vim-swift'
 call plug#end()
 
