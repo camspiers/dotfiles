@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# Wait until another process has released the lock
+while [[ -e /tmp/dockerwait.lock ]]; do
+    echo "Waiting for dockerwait to release lock"
+    sleep 1
+done
+
+# Add a lock to be respectful with concurrent dockerwait commands
+echo "Obtaining lock"
+touch /tmp/dockerwait.lock
+
+echo "Checking if docker is running"
+if (! docker stats --no-stream 2> /dev/null ); then
+    echo "Starting Docker.app"
+    open /Applications/Docker.app
+
+    while (! docker stats --no-stream 2> /dev/null ); do
+        echo "Docker starting..."
+        sleep 1
+    done
+fi
+
+# Remove the lock
+echo "Removing lock"
+rm /tmp/dockerwait.lock

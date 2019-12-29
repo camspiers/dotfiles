@@ -12,5 +12,6 @@ windows:
       - cd app/client
       - yarn storybook
   - Docker:
+      - dockerwait
       - docker-compose up -d
       - lazydocker

@@ -98,8 +98,7 @@ const indexClass = css`
 const Space = ({space, focused, dispatch}) => (
   <div
     key={space.index}
-    className={space.index === focused ? spaceFocusedClass : spaceClass}
-    onClick={() => run(`yabai -m space --focus ${space.index}`)}>
+    className={space.index === focused ? spaceFocusedClass : spaceClass}>
     {space.label ? space.label : space.index}
     {space.label && <span className={indexClass}>{space.index}</span>}
   </div>

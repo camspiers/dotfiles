@@ -6,4 +6,7 @@ windows:
   - Git: lazygit
   - Harvest: hstarti
   - Build: yarn start
-  - Docker: docker-compose up
+  - Docker:
+      - dockerwait
+      - docker-compose up -d
+      - lazydocker
