@@ -53,13 +53,19 @@ export const command = dispatch => {
     ]).then(() => dispatch({type: 'LOADING_CHANGED', loading: false}));
   }
 
-  function updateTime() {
-    run('date +"%I:%M %p"').then(time =>
-      dispatch({type: 'TIME_CHANGED', time}),
-    );
+  function zeroPad(num, places) {
+    return String(num).padStart(places, '0');
   }
 
-  timeTimeout = setInterval(updateTime, 5000);
+  function updateTime() {
+    const date = new Date();
+    dispatch({
+      type: 'TIME_CHANGED',
+      time: `${zeroPad(date.getHours(), 2)}:${zeroPad(date.getMinutes(), 2)}:${zeroPad(date.getSeconds(), 2)}`,
+    });
+  }
+
+  timeTimeout = setInterval(updateTime, 100);
   harvestTimeout = setInterval(updateHarvest, 10000);
 
   updateTime();

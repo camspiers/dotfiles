@@ -4,20 +4,23 @@ const EventEmitter = require('events');
 
 // We only want one ActivesSpaces command running
 class ActiveSpaceEventEmitter extends EventEmitter {}
-
 // Set up and event emitter for the actives spaces process
 const activeSpaceEvents = new ActiveSpaceEventEmitter();
-const activeSpaces = spawn(
-  'stdbuf', //the stdbuf command
-  [
-    '-i0',
-    '-o0',
-    '-e0', //disable all buffering
-    'activespace',
-  ],
-);
 
-activeSpaces.stdout.on('data', data => {
+// Start the activespace process
+const activeSpace = spawn('activespace');
+
+function exit() {
+    activeSpace.kill();
+    process.exit();
+}
+
+// Kill the activespace command when the process exits
+process.on('SIGTERM', exit);
+process.on('SIGINT', exit);
+process.on('exit', exit);
+
+activeSpace.stdout.on('data', data => {
   activeSpaceEvents.emit('changed', data.toString());
 });
 

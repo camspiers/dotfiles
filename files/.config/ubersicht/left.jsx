@@ -45,11 +45,10 @@ export const init = dispatch => {
   // Check whether the server is running
   activeSpace.onerror = () => {
     // Failed to connect, start the activeSpaceServer then init again
-    run('node ./lib/activespaceServer.js &').then(() => {
-      init(dispatch);
-    });
+    run('node ./lib/activespaceServer.js &').then(() => init(dispatch));
   };
 
+  // Set the active spacce when we receive data from the server
   activeSpace.onmessage = event => {
     dispatch({
       type: 'FOCUSED_UPDATED',
@@ -96,21 +95,11 @@ const indexClass = css`
   top: 2px;
 `;
 
-function onClick(dispatch, space) {
-  run(`yabai -m space --focus ${space.index}`);
-
-  // Optimistic update
-  dispatch({
-    type: 'FOCUSED_UPDATED',
-    focused: space.index,
-  });
-}
-
 const Space = ({space, focused, dispatch}) => (
   <div
     key={space.index}
     className={space.index === focused ? spaceFocusedClass : spaceClass}
-    onClick={() => onClick(dispatch, space)}>
+    onClick={() => run(`yabai -m space --focus ${space.index}`)}>
     {space.label ? space.label : space.index}
     {space.label && <span className={indexClass}>{space.index}</span>}
   </div>

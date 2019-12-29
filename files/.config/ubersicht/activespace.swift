@@ -1,5 +1,7 @@
 import AppKit
 
+setbuf(__stdoutp, nil)
+
 // This is needed otherwise the activeSpaceDidChangeNotification never is
 // received
 let _ = NSWindow()
