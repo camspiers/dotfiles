@@ -35,9 +35,9 @@ yabai -m config left_padding                    10
 yabai -m config right_padding                   10
 yabai -m config window_gap                      5
 
-yabai -m config mouse_modifier                  fn
-yabai -m config focus_follows_mouse             autoraise
-yabai -m config mouse_follows_focus             on
+# yabai -m config mouse_modifier                  fn
+# yabai -m config focus_follows_mouse             autoraise
+# yabai -m config mouse_follows_focus             on
 
 yabai -m config window_topmost                  on
 yabai -m config window_shadow                   float
@@ -49,7 +49,7 @@ yabai -m space 3 --label "Tools"
 yabai -m space 4 --label "Media"
 yabai -m space 5 --label "Social"
 yabai -m space 6 --label "Float"
-yabai -m space 7 --label Secondary
+yabai -m space 7 --label "Secondary"
 
 # Space config
 yabai -m config --space 6 layout float

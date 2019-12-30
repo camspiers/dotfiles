@@ -4,6 +4,9 @@
 # Stop System Preferences from overriding stuff
 osascript -e 'tell application "System Preferences" to quit'
 
+# hide menu bar
+defaults write NSGlobalDomain _HIHideMenuBar -bool true
+
 # show battery percentage in menu bar
 defaults write com.apple.menuextra.battery ShowPercent -string "YES"
 

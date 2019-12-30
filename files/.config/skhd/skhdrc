@@ -16,6 +16,7 @@ alt - 4 : yabai -m space --focus 4
 alt - 5 : yabai -m space --focus 5
 alt - 6 : yabai -m space --focus 6
 alt - 7 : yabai -m space --focus 7
+alt - 8 : yabai -m space --focus 8
 # Cycle
 alt - x : yabai -m space --focus recent
 alt - z : yabai -m space --focus prev
@@ -57,6 +58,7 @@ shift + cmd - 4 : yabai -m window --space  4; yabai -m space --focus 4
 shift + cmd - 5 : yabai -m window --space  5; yabai -m space --focus 5
 shift + cmd - 6 : yabai -m window --space  6; yabai -m space --focus 6
 shift + cmd - 7 : yabai -m window --space  7; yabai -m space --focus 7
+shift + cmd - 8 : yabai -m window --space  8; yabai -m space --focus 8
 
 shift + cmd - x : yabai -m window --space recent; yabai -m space --focus recent
 shift + cmd - z : yabai -m window --space prev; yabai -m space --focus prev
