@@ -153,6 +153,9 @@ call plug#begin(stdpath('data') . '/plugged')
 
     " Syntax support for swift
     Plug 'lilyball/vim-swift'
+
+    " Nicer scrolling
+    Plug 'psliwka/vim-smoothie'
 call plug#end()
 
 set shell=bash
