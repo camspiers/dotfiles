@@ -30,18 +30,18 @@ PATHS+=("$HOME/.dotfiles/scripts")
 # Global composer scripts
 PATHS+=("$HOME/.composer/vendor/bin")
 
-PATH="$PATH:$(join_paths ":" "${PATHS[@]}")"
+PATHS+=($(ruby -r rubygems -e 'puts Gem.user_dir')/bin)
 
-export PATH="/usr/local/opt/python/libexec/bin:$PATH"
+PATH="$PATH:$(join_paths ":" "${PATHS[@]}")"
 
 # Normalize the path and export it
 eval $(/usr/libexec/path_helper -s)
 
+# TODO, figure this out
+export PATH="/usr/local/opt/ruby/bin:/usr/local/opt/python/libexec/bin:$PATH"
+
 # Homebrew completions
 source $(brew --prefix)/etc/bash_completion
-
-# Harvest completions
-source $(ruby -e "print File.dirname(Gem.bin_path('hcl', 'hcl'))")/_hcl_completions
 
 # Fzf completions
 source "/usr/local/opt/fzf/shell/completion.bash"

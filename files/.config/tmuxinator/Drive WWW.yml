@@ -13,5 +13,6 @@ windows:
       - yarn storybook
   - Docker:
       - dockerwait
+      - docker-sync-daemon start
       - docker-compose up -d
       - lazydocker
