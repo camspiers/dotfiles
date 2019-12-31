@@ -29,16 +29,13 @@ yabai -m config mouse_action2                   resize
 
 # general space settings
 yabai -m config layout                          bsp
-yabai -m config top_padding                     44
+yabai -m config top_padding                     10
 yabai -m config bottom_padding                  10
 yabai -m config left_padding                    10
 yabai -m config right_padding                   10
 yabai -m config window_gap                      5
 
-# yabai -m config mouse_modifier                  fn
-# yabai -m config focus_follows_mouse             autoraise
-# yabai -m config mouse_follows_focus             on
-
+yabai -m config focus_follows_mouse             autoraise
 yabai -m config window_topmost                  on
 yabai -m config window_shadow                   float
 
