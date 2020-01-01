@@ -68,11 +68,12 @@ if lock_exists ; then
     echo ""
 fi
 
+# Register traps
+trap exit_script SIGINT SIGTERM
+trap remove_lock EXIT
+
 # Adds lock to work with concurrent readydocker commands
 add_lock
-
-# Register clean up if we are SIGINT/TERM'd
-trap exit_script SIGINT SIGTERM
 
 echo "Checking if Docker.app is ready"
 if ! is_docker_ready ; then
@@ -89,6 +90,3 @@ if ! is_docker_ready ; then
 fi
 
 echo "Docker.app is ready"
-
-# Remove the lock
-remove_lock
