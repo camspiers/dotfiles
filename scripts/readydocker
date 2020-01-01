@@ -5,6 +5,7 @@
 ###############################################################
 #
 # Ensure Docker.app is running and ready to bring containers up
+#
 # Designed to be used in environments where you want to bring
 # up a container without human interaction.
 #
@@ -18,14 +19,30 @@
 # - /tmp/ should be writable
 # - docker command should be on $PATH
 
+##############################################################
+# Checks if another readydocker is running
+##############################################################
+lock_exists() { [[ -e /tmp/readydocker.lock ]]; }
+
+##############################################################
+# Adds lock
+##############################################################
+add_lock() { touch /tmp/readydocker.lock; }
+
+##############################################################
+# Removes a lock if it exists
+##############################################################
+remove_lock() {
+    if lock_exists ; then
+        rm /tmp/readydocker.lock
+    fi
+}
+
 ###############################################################
 # Runs when the script exits but only if lock has been obtained
 ###############################################################
 exit_script() {
-    if [[ -e /tmp/readydocker.lock ]]; then
-        echo "Removing /tmp/readydocker.lock"
-        rm /tmp/readydocker.lock
-    fi
+    remove_lock
     # Clear trap
     trap - SIGINT SIGTERM
     kill -- -$$
@@ -35,37 +52,43 @@ exit_script() {
 # Returns the status code of docker stats which will be 0
 # if successful
 ##############################################################
-is_docker_ready() {
-    docker stats --no-stream >/dev/null 2>&1
-}
+is_docker_ready() { docker stats --no-stream >/dev/null 2>&1; }
 
-# Wait until another process has released the lock
-while [[ -e /tmp/readydocker.lock ]]; do
-    echo "Waiting for readydocker to release lock"
-    sleep 1
-done
+# Check for another readydocker
+if lock_exists ; then
+    echo "Waiting for another readydocker process to release lock"
+
+    # Wait until another process has released the lock
+    while lock_exists ; do
+        echo -n "."
+        sleep 1
+    done
+
+    # Final newline
+    echo ""
+fi
 
 # Adds lock to be work with concurrent readydocker commands
-echo "Obtaining /tmp/docker.lock"
 touch /tmp/readydocker.lock
 
 # Register clean up if we are SIGINT/TERM'd
 trap exit_script SIGINT SIGTERM
 
-echo "Checking if docker is running"
+echo "Checking if Docker.app is ready"
 if ! is_docker_ready ; then
     echo "Starting Docker.app"
     open /Applications/Docker.app
 
-    echo "Waiting for Docker.app"
     while ! is_docker_ready ; do
         echo -n "."
         sleep 1
     done
-else
-    echo "Docker.app is already running and ready"
+
+    # Final newline
+    echo ""
 fi
 
+echo "Docker.app is ready"
+
 # Remove the lock
-echo "Removing /tmp/readydocker.lock"
-rm /tmp/readydocker.lock
+remove_lock
