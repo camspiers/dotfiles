@@ -7,6 +7,6 @@ windows:
   - Harvest: hstarti
   - Build: yarn start
   - Docker:
-      - dockerwait
+      - readydocker
       - docker-compose up -d
       - lazydocker

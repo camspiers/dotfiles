@@ -11,4 +11,7 @@ windows:
   - Storybook:
       - cd app
       - yarn storybook
-  - Docker: docker-compose up
+  - Docker:
+      - readydocker
+      - docker-compose up -d
+      - lazydocker

@@ -5,7 +5,7 @@ windows:
   - Editor: nvim
   - Git: lazygit
   - Docker:
-      - dockerwait
+      - readydocker
       - docker-sync-daemon start
       - docker-compose up -d
       - lazydocker

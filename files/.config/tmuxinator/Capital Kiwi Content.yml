@@ -5,6 +5,6 @@ windows:
   - Editor: nvim
   - Git: lazygit
   - Docker:
-      - dockerwait
+      - readydocker
       - docker-compose up -d
       - lazydocker
