@@ -68,8 +68,8 @@ if lock_exists ; then
     echo ""
 fi
 
-# Adds lock to be work with concurrent readydocker commands
-touch /tmp/readydocker.lock
+# Adds lock to work with concurrent readydocker commands
+add_lock
 
 # Register clean up if we are SIGINT/TERM'd
 trap exit_script SIGINT SIGTERM
