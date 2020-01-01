@@ -9,8 +9,6 @@ exit_script() {
     kill -- -$$
 }
 
-trap exit_script SIGINT SIGTERM
-
 # Wait until another process has released the lock
 while [[ -e /tmp/dockerwait.lock ]]; do
     echo "Waiting for dockerwait to release lock"
@@ -20,6 +18,9 @@ done
 # Add a lock to be respectful with concurrent dockerwait commands
 echo "Obtaining lock"
 touch /tmp/dockerwait.lock
+
+# Now that we have obtained a lock we need to clean up if we are SIGINT/TERM'd
+trap exit_script SIGINT SIGTERM
 
 echo "Checking if docker is running"
 if (! docker stats --no-stream 2> /dev/null ); then
