@@ -1,5 +1,16 @@
 #!/bin/bash
 
+exit_script() {
+    if [[ -e /tmp/dockerwait.lock ]]; then
+        echo "Removing lock via trap"
+        rm /tmp/dockerwait.lock
+    fi
+    trap - SIGINT SIGTERM # clear the trap
+    kill -- -$$
+}
+
+trap exit_script SIGINT SIGTERM
+
 # Wait until another process has released the lock
 while [[ -e /tmp/dockerwait.lock ]]; do
     echo "Waiting for dockerwait to release lock"
@@ -16,7 +27,7 @@ if (! docker stats --no-stream 2> /dev/null ); then
     open /Applications/Docker.app
 
     while (! docker stats --no-stream 2> /dev/null ); do
-        echo "Docker starting..."
+        echo -n "."
         sleep 1
     done
 fi
