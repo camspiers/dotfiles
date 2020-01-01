@@ -1,12 +1,29 @@
 #!/bin/bash
+# Ensure Docker.app is running and ready to bring containers up
+# Designed to be used in environments where you want to bring up
+# a container without human interaction.
+#
+# Example Usage:
+# dockerwait && docker-compose up -d
 
+###############################################################
+# Runs when the script exits but only if lock has been obtained
+###############################################################
 exit_script() {
     if [[ -e /tmp/dockerwait.lock ]]; then
-        echo "Removing lock via trap"
+        echo "Removing /tmp/dockerwait.lock"
         rm /tmp/dockerwait.lock
     fi
     trap - SIGINT SIGTERM # clear the trap
     kill -- -$$
+}
+
+##############################################################
+# Returns the status code of docker stats which will be 0
+# if successful
+##############################################################
+is_docker_ready() {
+    docker stats --no-stream >/dev/null 2>&1
 }
 
 # Wait until another process has released the lock
@@ -16,23 +33,26 @@ while [[ -e /tmp/dockerwait.lock ]]; do
 done
 
 # Add a lock to be respectful with concurrent dockerwait commands
-echo "Obtaining lock"
+echo "Obtaining /tmp/docker.lock"
 touch /tmp/dockerwait.lock
 
-# Now that we have obtained a lock we need to clean up if we are SIGINT/TERM'd
+# We need to register clean up if we are SIGINT/TERM'd
 trap exit_script SIGINT SIGTERM
 
 echo "Checking if docker is running"
-if (! docker stats --no-stream 2> /dev/null ); then
+if ! is_docker_ready ; then
     echo "Starting Docker.app"
     open /Applications/Docker.app
 
-    while (! docker stats --no-stream 2> /dev/null ); do
+    echo "Waiting for Docker.app"
+    while ! is_docker_ready ; do
         echo -n "."
         sleep 1
     done
+else
+    echo "Docker.app is already running and ready"
 fi
 
 # Remove the lock
-echo "Removing lock"
+echo "Removing /tmp/dockerwait.lock"
 rm /tmp/dockerwait.lock
