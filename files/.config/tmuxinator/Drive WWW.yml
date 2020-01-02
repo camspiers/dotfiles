@@ -12,7 +12,7 @@ windows:
       - cd app/client
       - yarn storybook
   - Docker:
-      - readydocker
+      - readydocker.sh
       - docker-sync-daemon start
       - docker-compose up -d
       - lazydocker

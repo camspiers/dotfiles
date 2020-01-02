@@ -9,8 +9,10 @@ tap "homebrew/services"
 # Custom taps
 tap "Schniz/tap"
 tap "koekeishiya/formulae"
+tap "camspiers/taps"
 
 # Homebrew essentials
+brew "bash"
 brew "bash-completion"
 brew "composer"
 brew "coreutils"
@@ -34,6 +36,7 @@ brew "php"
 brew "python"
 brew "ranger"
 brew "readline"
+brew "readydocker"
 brew "ripgrep"
 brew "ruby"
 brew "skhd"

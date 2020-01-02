@@ -12,6 +12,6 @@ windows:
       - cd app
       - yarn storybook
   - Docker:
-      - readydocker
+      - readydocker.sh
       - docker-compose up -d
       - lazydocker
