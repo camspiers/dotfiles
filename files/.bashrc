@@ -4,6 +4,7 @@ shopt -s histappend                      # append to history, don't overwrite it
 
 alias lg='lazygit'
 alias ld='lazydocker'
+alias ms='tmuxinator-start.sh'
 
 # Configure starship
 eval "$(starship init bash)"
