@@ -473,3 +473,7 @@ endif
 " Sets up within word motions to use ,
 let g:camelcasemotion_key = ','
 
+let g:startify_lists = [
+      \ { 'type': 'dir',       'header': ['   MRU '. getcwd()] },
+      \ ]
+
