@@ -4,7 +4,10 @@ shopt -s histappend                      # append to history, don't overwrite it
 
 alias lg='lazygit'
 alias ld='lazydocker'
-alias ms='tmuxinator-start.sh'
+alias ms='tmuxinator-fzf-start.sh'
+
+# Enable fzf for bash completion
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
 # Configure starship
 eval "$(starship init bash)"
