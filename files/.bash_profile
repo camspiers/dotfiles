@@ -1,44 +1,31 @@
 # Source bashrc
 source "$HOME/.bashrc"
 
-# Joins paths together with whatever char is provided
-function join_paths {
-    local IFS="$1"; shift; echo "$*";
-}
+# Joins paths together
+join() { a=("${!1}"); local IFS=":"; echo "${a[*]}"; }
 
-# Array for paths
-PATHS=()
+# Dedup paths
+dedup() { echo -n $1 | awk -v RS=: -v ORS=: '!arr[$0]++'; }
 
-# Brew scripts
-PATHS+=("/usr/local/bin:/usr/local/sbin")
+# System paths
+SYS=(
+    "/usr/local/opt/coreutils/libexec/gnubin" # Prefer coreutils
+    "/usr/local/opt/gnu-sed/libexec/gnubin" # Custom sed
+    "/usr/local/opt/python/libexec/bin" # Python
+    "/usr/local/opt/ruby/bin" # Ruby
+    "/usr/local/sbin" # Brew scripts
+)
 
-# Python 3
-PATHS+=("/usr/local/opt/python/libexec/bin")
+# User paths
+USER=(
+    "/usr/local/opt/fzf/bin" # Fzf
+    "$HOME/.dotfiles/scripts" # Personal scripts
+    "$HOME/.composer/vendor/bin" # Global composer scripts
+    "$(/usr/local/opt/ruby/bin/ruby -r rubygems -e 'puts Gem.user_dir')/bin" # Ruby
+)
 
-# Fzf
-PATHS+=("/usr/local/opt/fzf/bin")
-
-# Global yarn scripts
-PATHS+=($(yarn global bin))
-
-# Coreutils
-PATHS+=("/usr/local/opt/coreutils/libexec/gnubin")
-
-# Personal scripts
-PATHS+=("$HOME/.dotfiles/scripts")
-
-# Global composer scripts
-PATHS+=("$HOME/.composer/vendor/bin")
-
-PATHS+=($(ruby -r rubygems -e 'puts Gem.user_dir')/bin)
-
-PATH="$PATH:$(join_paths ":" "${PATHS[@]}")"
-
-# Normalize the path and export it
-eval $(/usr/libexec/path_helper -s)
-
-# TODO, figure this out
-export PATH="/usr/local/opt/ruby/bin:/usr/local/opt/python/libexec/bin:$PATH"
+# SYS:PATH:USER
+export PATH=$(dedup "$(join SYS[@]):$PATH:$(join USER[@])")
 
 # Homebrew completions
 source $(brew --prefix)/etc/bash_completion
@@ -54,6 +41,12 @@ export BASH_SILENCE_DEPRECATION_WARNING=1
 
 # Set editor
 export EDITOR='nvim'
+
+# Nord Theme for fzf
+export FZF_DEFAULT_OPTS='
+--color fg:#D8DEE9,bg:#2E3440,hl:#A3BE8C,fg+:#D8DEE9,bg+:#434C5E,hl+:#A3BE8C
+--color pointer:#BF616A,info:#4C566A,spinner:#4C566A,header:#4C566A,prompt:#81A1C1,marker:#EBCB8B
+'
 
 # Fast Node Manager
 eval "$(fnm env --multi)"
