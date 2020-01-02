@@ -11,11 +11,23 @@
 #
 # tmuxinator-start.sh
 # tmuxinator-start.sh "Initial Query"
-#
 
-tmuxinator list -n |
-    tail -n +2 |
-    fzf -m -1 -q "$1" --reverse --height 50% |
-    while read project; do
-        tmuxinator start "$project"
-    done
+projects=$(
+    tmuxinator list -n |
+        tail -n +2 |
+        fzf --prompt="Project: " -m -1 -q "$1" --reverse --height 50%
+)
+
+IFS=$'\n'
+
+for project in $projects; do
+    tmuxinator start "$project" -a false # disable attaching
+done
+
+if [ -n "$TMUX" ]; then
+    session=$(tmux list-sessions -F "#S" | fzf --prompt="Session: " --reverse --height 50%)
+    tmux switch-client -t "$session"
+else
+    tmux a
+fi
+
