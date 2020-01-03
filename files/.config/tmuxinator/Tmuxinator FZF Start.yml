@@ -1,5 +1,5 @@
 name: Tmuxinator FZF Start
 root: ~/dev/tmuxinator-fzf-start
 windows:
-  - Editor: nvim .
+  - Editor: nvim
   - Git: lazygit
