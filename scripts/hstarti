@@ -3,4 +3,4 @@
 # Ask the user for what they are working on and pass it to hstart
 read -p "Describe what you are working on: " DESC
 
-hstart $DESC
+hstart $DESC "$@"
