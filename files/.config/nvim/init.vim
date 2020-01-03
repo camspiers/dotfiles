@@ -156,6 +156,12 @@ call plug#begin(stdpath('data') . '/plugged')
 
     " Nicer scrolling
     Plug 'psliwka/vim-smoothie'
+
+    " Common pane navigation for vim and tmux together
+    Plug 'christoomey/vim-tmux-navigator'
+
+    " Syntax highlighting for tmux conf
+    Plug 'tmux-plugins/vim-tmux'
 call plug#end()
 
 set shell=bash
@@ -286,6 +292,10 @@ function! CycleNumbering() abort
   endif
 endfunction
 
+" Switch : and ;
+nnoremap ; :
+nnoremap : ;
+
 " Better buffer navigation
 nnoremap  <silent>   <tab>  :if &modifiable && !&readonly && &modified <CR> :write<CR> :endif<CR>:bnext<CR>
 nnoremap  <silent> <s-tab>  :if &modifiable && !&readonly && &modified <CR> :write<CR> :endif<CR>:bprevious<CR>
@@ -329,12 +339,6 @@ nnoremap <silent> <Leader>r :call CycleNumbering()<CR>
 " Better split creation, configured to match with tmux
 nnoremap <silent> <Leader>\| :vsp<CR>
 nnoremap <silent> <Leader>- :sp<CR>
-
-" More intuitive split navigation
-nnoremap <C-J> <C-W><C-J>
-nnoremap <C-K> <C-W><C-K>
-nnoremap <C-L> <C-W><C-L>
-nnoremap <C-H> <C-W><C-H>
 
 " COC configuration
 
