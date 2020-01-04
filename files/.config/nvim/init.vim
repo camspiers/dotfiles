@@ -292,13 +292,12 @@ function! CycleNumbering() abort
   endif
 endfunction
 
-" Switch : and ;
-nnoremap ; :
-nnoremap : ;
+" Buffer navigation
+nnoremap <silent>   <tab> :bnext<CR>
+nnoremap <silent> <s-tab> :bprevious<CR>
 
-" Better buffer navigation
-nnoremap  <silent>   <tab>  :if &modifiable && !&readonly && &modified <CR> :write<CR> :endif<CR>:bnext<CR>
-nnoremap  <silent> <s-tab>  :if &modifiable && !&readonly && &modified <CR> :write<CR> :endif<CR>:bprevious<CR>
+" Save file
+nnoremap <silent> <Leader>w :w<CR>
 
 " Open startify with leader l
 nnoremap <silent> <Leader>l :Startify<CR>
@@ -316,7 +315,7 @@ nnoremap <silent> <Leader>b :Buffers<CR>
 nnoremap <silent> <Leader>g :FzfRg<CR>
 
 " Open grep for cursor word
-nnoremap <silent> <Leader>w :FzfRg <C-R><C-W><CR>
+nnoremap <silent> <Leader>c :FzfRg <C-R><C-W><CR>
 
 " Close the current buffer
 nnoremap <silent> <Leader>x :bd<CR>
@@ -325,7 +324,7 @@ nnoremap <silent> <Leader>x :bd<CR>
 nnoremap <silent> <Leader>z :%bd<CR>
 
 " Remove search highlighting with leader n
-nnoremap <leader>n :noh<CR>
+nnoremap <Leader>n :noh<CR>
 
 " Alternate file navigation
 nnoremap <silent> <Leader>a :A<CR>
@@ -335,6 +334,9 @@ nnoremap <silent> <Leader>v :AV<CR>
 
 " Cycle line number modes
 nnoremap <silent> <Leader>r :call CycleNumbering()<CR>
+
+" Open project
+nnoremap <silent> <Leader>m :te ms<CR>
 
 " Better split creation, configured to match with tmux
 nnoremap <silent> <Leader>\| :vsp<CR>
@@ -384,17 +386,17 @@ nmap <silent> gr <Plug>(coc-references)
 " gh - get hint on whatever's under the cursor
 nnoremap <silent> gh :call CocActionAsync('doHover')<CR>
 
-nnoremap <silent> <leader>co  :<C-u>CocList outline<cr>
-nnoremap <silent> <leader>cs  :<C-u>CocList -I symbols<cr>
+nnoremap <silent> <Leader>co  :<C-u>CocList outline<cr>
+nnoremap <silent> <Leader>cs  :<C-u>CocList -I symbols<cr>
 
 " List errors
-nnoremap <silent> <leader>cl  :<C-u>CocList locationlist<cr>
+nnoremap <silent> <Leader>cl  :<C-u>CocList locationlist<cr>
 
 " list commands available in tsserver (and others)
-nnoremap <silent> <leader>cc  :<C-u>CocList commands<cr>
+nnoremap <silent> <Leader>cc  :<C-u>CocList commands<cr>
 
 " restart when tsserver gets wonky
-nnoremap <silent> <leader>cR  :<C-u>CocRestart<CR>
+nnoremap <silent> <Leader>cR  :<C-u>CocRestart<CR>
 
 " end COC
 
@@ -416,6 +418,15 @@ let g:rooter_patterns = ['docker-compose.yml', '.git']
 
 " Vedebug needs to be able to load files and understand how the file in the docker container maps to the local system
 autocmd VimEnter * :call Vdebug_load_options( { 'path_maps' : { '/var/www/html/' : getcwd() } } )
+
+" Set login shell for :terminal command so aliases work
+let &shell='/usr/local/bin/bash --login'
+
+" When term starts, auto go into insert mode
+autocmd TermOpen * startinsert
+
+" Turn off line numbers etc
+autocmd TermOpen * setlocal listchars= nonumber norelativenumber
 
 " Special focus improvements inspired by wincent
 " Better focus highlighting for blurred windows
@@ -481,3 +492,41 @@ let g:startify_lists = [
       \ { 'type': 'dir',       'header': ['   MRU '. getcwd()] },
       \ ]
 
+" Get the exit status from a terminal buffer by looking for a line near the end
+" of the buffer with the format, '[Process exited ?]'.
+func! s:getExitStatus() abort
+  let ln = line('$')
+  " The terminal buffer includes several empty lines after the 'Process exited'
+  " line that need to be skipped over.
+  while ln >= 1
+    let l = getline(ln)
+    let ln -= 1
+    let exitCode = substitute(l, '^\[Process exited \([0-9]\+\)\]$', '\1', '')
+    if l != '' && l == exitCode
+      " The pattern did not match, and the line was not empty. It looks like
+      " there is no process exit message in this buffer.
+      break
+    elseif exitCode != ''
+      return str2nr(exitCode)
+    endif
+  endwhile
+  throw 'Could not determine exit status for buffer, ' . expand('%')
+endfunc
+
+func! s:afterTermClose() abort
+  if s:getExitStatus() == 0
+    bdelete!
+  endif
+endfunc
+
+" Automatically closes the terminal when command has finished
+" Currently only registering it for the ms command, as it doesn't
+" play nicely with fzf search
+augroup MyNeoterm
+  autocmd!
+  " The line '[Process exited ?]' is appended to the terminal buffer after the
+  " `TermClose` event. So we use a timer to wait a few milliseconds to read the
+  " exit status. Setting the timer to 0 or 1 ms is not sufficient; 20 ms seems
+  " to work for me.
+  autocmd TermClose *:ms call timer_start(20, { -> s:afterTermClose() })
+augroup END
