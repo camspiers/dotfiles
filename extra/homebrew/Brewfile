@@ -14,6 +14,7 @@ tap "camspiers/taps"
 # Homebrew essentials
 brew "bash"
 brew "bash-completion"
+brew "bat"
 brew "composer"
 brew "coreutils"
 brew "editorconfig"
@@ -52,6 +53,7 @@ brew "yabai"
 brew "yarn"
 
 # App essentials
+cask "anki"
 cask "1password"
 cask "1password-cli"
 cask "docker"
