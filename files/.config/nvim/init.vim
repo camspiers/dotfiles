@@ -336,7 +336,7 @@ nnoremap <silent> <Leader>v :AV<CR>
 nnoremap <silent> <Leader>r :call CycleNumbering()<CR>
 
 " Open project
-nnoremap <silent> <Leader>m :te tmuxinator-fzf-start.sh<CR>
+nnoremap <silent> <Leader>m :call OpenProject()<CR>
 
 " Better split creation, configured to match with tmux
 nnoremap <silent> <Leader>\| :vsp<CR>
@@ -491,6 +491,12 @@ let g:camelcasemotion_key = ','
 let g:startify_lists = [
       \ { 'type': 'dir',       'header': ['   MRU '. getcwd()] },
       \ ]
+
+" Open Project Configuration
+function! OpenProject()
+    call CreateCenteredFloatingWindow()
+    term tmuxinator-fzf-start.sh
+endfunction
 
 " Get the exit status from a terminal buffer by looking for a line near the end
 " of the buffer with the format, '[Process exited ?]'.
