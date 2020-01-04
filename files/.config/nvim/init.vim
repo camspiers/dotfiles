@@ -336,7 +336,7 @@ nnoremap <silent> <Leader>v :AV<CR>
 nnoremap <silent> <Leader>r :call CycleNumbering()<CR>
 
 " Open project
-nnoremap <silent> <Leader>m :te ms<CR>
+nnoremap <silent> <Leader>m :te tmuxinator-fzf-start.sh<CR>
 
 " Better split creation, configured to match with tmux
 nnoremap <silent> <Leader>\| :vsp<CR>
@@ -420,7 +420,7 @@ let g:rooter_patterns = ['docker-compose.yml', '.git']
 autocmd VimEnter * :call Vdebug_load_options( { 'path_maps' : { '/var/www/html/' : getcwd() } } )
 
 " Set login shell for :terminal command so aliases work
-let &shell='/usr/local/bin/bash --login'
+set shell=/usr/local/bin/bash
 
 " When term starts, auto go into insert mode
 autocmd TermOpen * startinsert
@@ -528,5 +528,5 @@ augroup MyNeoterm
   " `TermClose` event. So we use a timer to wait a few milliseconds to read the
   " exit status. Setting the timer to 0 or 1 ms is not sufficient; 20 ms seems
   " to work for me.
-  autocmd TermClose *:ms call timer_start(20, { -> s:afterTermClose() })
+  autocmd TermClose *:tmuxinator-fzf-start.sh call timer_start(20, { -> s:afterTermClose() })
 augroup END
