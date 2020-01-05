@@ -243,7 +243,7 @@ let g:fzf_colors =
             \ 'spinner': ['fg', 'Label'],
             \ 'header':  ['fg', 'Comment'] }
 
-" Using floating windows of Neovim to start fzf
+" Creates a floating window with a most recent buffer to be used
 function! CreateCenteredFloatingWindow()
     let width = float2nr(&columns * 0.6)
     let height = float2nr(&lines * 0.6)
@@ -495,7 +495,7 @@ let g:startify_lists = [
 " Open Project Configuration
 function! OpenProject()
     call CreateCenteredFloatingWindow()
-    term tmuxinator-fzf-start.sh
+    call termopen('tmuxinator-fzf-start.sh')
 endfunction
 
 " Get the exit status from a terminal buffer by looking for a line near the end
