@@ -338,6 +338,9 @@ nnoremap <silent> <Leader>r :call CycleNumbering()<CR>
 " Open project
 nnoremap <silent> <Leader>m :call OpenProject()<CR>
 
+" Open scratch term
+nnoremap <silent> <Leader>s :call OpenScratchTerm()<CR>
+
 " Better split creation, configured to match with tmux
 nnoremap <silent> <Leader>\| :vsp<CR>
 nnoremap <silent> <Leader>- :sp<CR>
@@ -492,10 +495,18 @@ let g:startify_lists = [
       \ { 'type': 'dir',       'header': ['   MRU '. getcwd()] },
       \ ]
 
-" Open Project Configuration
+" Open Project
 function! OpenProject()
     call CreateCenteredFloatingWindow()
     call termopen('tmuxinator-fzf-start.sh')
+endfunction
+
+" Quit term buffer with ESC
+tnoremap <Esc> <C-\><C-n><cr>:q!<cr>
+
+function! OpenScratchTerm()
+    call CreateCenteredFloatingWindow()
+    call termopen('bash')
 endfunction
 
 " Get the exit status from a terminal buffer by looking for a line near the end
