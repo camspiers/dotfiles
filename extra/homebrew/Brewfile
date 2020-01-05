@@ -53,10 +53,12 @@ brew "yabai"
 brew "yarn"
 
 # App essentials
-cask "anki"
 cask "1password"
 cask "1password-cli"
+cask "anki"
 cask "docker"
+cask "font-hasklig-nerd-font"
+cask "font-hasklig-nerd-font-mono"
 cask "fontforge"
 cask "keycastr"
 cask "kitty"
