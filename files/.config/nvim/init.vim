@@ -532,7 +532,7 @@ endfunc
 
 func! s:afterTermClose() abort
   if s:getExitStatus() == 0
-    bdelete!
+    q!
   endif
 endfunc
 
