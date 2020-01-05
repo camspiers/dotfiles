@@ -401,6 +401,9 @@ nnoremap <silent> <Leader>cc  :<C-u>CocList commands<cr>
 " restart when tsserver gets wonky
 nnoremap <silent> <Leader>cR  :<C-u>CocRestart<CR>
 
+" Quit term buffer with ESC
+tnoremap <Esc> <C-\><C-n><cr>:q!<cr>
+
 " end COC
 
 " Don't start markdown preview automatically, use :MarkdownPreview
@@ -500,9 +503,6 @@ function! OpenProject()
     call CreateCenteredFloatingWindow()
     call termopen('tmuxinator-fzf-start.sh')
 endfunction
-
-" Quit term buffer with ESC
-tnoremap <Esc> <C-\><C-n><cr>:q!<cr>
 
 function! OpenScratchTerm()
     call CreateCenteredFloatingWindow()
