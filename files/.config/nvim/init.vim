@@ -345,6 +345,9 @@ nnoremap <silent> <Leader>s :call OpenScratchTerm()<CR>
 nnoremap <silent> <Leader>\| :vsp<CR>
 nnoremap <silent> <Leader>- :sp<CR>
 
+" Quit term buffer with ESC
+tnoremap <Esc> <C-\><C-n><cr>:q!<cr>
+
 " COC configuration
 
 " if hidden is not set, TextEdit might fail.
@@ -400,9 +403,6 @@ nnoremap <silent> <Leader>cc  :<C-u>CocList commands<cr>
 
 " restart when tsserver gets wonky
 nnoremap <silent> <Leader>cR  :<C-u>CocRestart<CR>
-
-" Quit term buffer with ESC
-tnoremap <Esc> <C-\><C-n><cr>:q!<cr>
 
 " end COC
 
