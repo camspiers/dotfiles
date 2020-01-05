@@ -341,6 +341,9 @@ nnoremap <silent> <Leader>m :call OpenProject()<CR>
 " Open scratch term
 nnoremap <silent> <Leader>s :call OpenScratchTerm()<CR>
 
+" Open lazygit
+nnoremap <silent> <Leader>' :call OpenLazyGit()<CR>
+
 " Better split creation, configured to match with tmux
 nnoremap <silent> <Leader>\| :vsp<CR>
 nnoremap <silent> <Leader>- :sp<CR>
@@ -417,9 +420,9 @@ let g:tmuxline_preset = {
 let g:indentLine_setConceal = 0
 
 " Use docker files and git
-let g:rooter_patterns = ['docker-compose.yml', '.git']
+let g:rooter_patterns = ['docker-compose.yml', '.git/']
 
-" Vedebug needs to be able to load files and understand how the file in the docker container maps to the local system
+" Vdebug needs to be able to load files and understand how the file in the docker container maps to the local system
 autocmd VimEnter * :call Vdebug_load_options( { 'path_maps' : { '/var/www/html/' : getcwd() } } )
 
 " Set login shell for :terminal command so aliases work
@@ -433,7 +436,7 @@ autocmd TermOpen * setlocal listchars= nonumber norelativenumber
 
 " Special focus improvements inspired by wincent
 " Better focus highlighting for blurred windows
-let g:ColorColumnBlacklist = ['diff', 'undotree', 'nerdtree', 'qf', 'startify']
+let g:ColorColumnBlacklist = ['diff', 'undotree', 'nerdtree', 'qf', 'startify', 'terminal']
 
 function! ShouldColorColumn() abort
   return index(g:ColorColumnBlacklist, &filetype) == -1
@@ -491,59 +494,33 @@ endif
 " Sets up within word motions to use ,
 let g:camelcasemotion_key = ','
 
-let g:startify_lists = [
-      \ { 'type': 'dir',       'header': ['   MRU '. getcwd()] },
-      \ ]
+let g:startify_lists = [ { 'type': 'dir', 'header': ['   Recent Files'] } ]
+
+function! OpenTerm(cmd)
+    call CreateCenteredFloatingWindow()
+    call termopen(a:cmd, { 'on_exit': function('OnTermExit') })
+endfunction
 
 " Open Project
 function! OpenProject()
-    call CreateCenteredFloatingWindow()
-    call termopen('tmuxinator-fzf-start.sh')
+    call OpenTerm('tmuxinator-fzf-start.sh')
+endfunction
+
+function! OpenScratchTerm()
+    call OpenTerm('bash')
+endfunction
+
+function! OpenLazyGit()
+    call OpenTerm('lazygit')
+endfunction
+
+function! OnTermExit(job_id, code, event) dict
+    if a:code == 0
+        bd!
+        call FocusWindow()
+    endif
 endfunction
 
 " Quit term buffer with ESC
-tnoremap <Esc> <C-\><C-n><cr>:q!<cr>
+tnoremap <Esc> <C-\><C-n><cr>
 
-function! OpenScratchTerm()
-    call CreateCenteredFloatingWindow()
-    call termopen('bash')
-endfunction
-
-" Get the exit status from a terminal buffer by looking for a line near the end
-" of the buffer with the format, '[Process exited ?]'.
-func! s:getExitStatus() abort
-  let ln = line('$')
-  " The terminal buffer includes several empty lines after the 'Process exited'
-  " line that need to be skipped over.
-  while ln >= 1
-    let l = getline(ln)
-    let ln -= 1
-    let exitCode = substitute(l, '^\[Process exited \([0-9]\+\)\]$', '\1', '')
-    if l != '' && l == exitCode
-      " The pattern did not match, and the line was not empty. It looks like
-      " there is no process exit message in this buffer.
-      break
-    elseif exitCode != ''
-      return str2nr(exitCode)
-    endif
-  endwhile
-  throw 'Could not determine exit status for buffer, ' . expand('%')
-endfunc
-
-func! s:afterTermClose() abort
-  if s:getExitStatus() == 0
-    q!
-  endif
-endfunc
-
-" Automatically closes the terminal when command has finished
-" Currently only registering it for the ms command, as it doesn't
-" play nicely with fzf search
-augroup MyNeoterm
-  autocmd!
-  " The line '[Process exited ?]' is appended to the terminal buffer after the
-  " `TermClose` event. So we use a timer to wait a few milliseconds to read the
-  " exit status. Setting the timer to 0 or 1 ms is not sufficient; 20 ms seems
-  " to work for me.
-  autocmd TermClose *:tmuxinator-fzf-start.sh call timer_start(20, { -> s:afterTermClose() })
-augroup END
