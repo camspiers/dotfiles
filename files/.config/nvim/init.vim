@@ -336,13 +336,13 @@ nnoremap <silent> <Leader>v :AV<CR>
 nnoremap <silent> <Leader>r :call CycleNumbering()<CR>
 
 " Open project
-nnoremap <silent> <Leader>m :call OpenProject()<CR>
+nnoremap <silent> <Leader>m :call ToggleProject()<CR>
 
 " Open scratch term
-nnoremap <silent> <Leader>s :call OpenScratchTerm()<CR>
+nnoremap <silent> <Leader>s :call ToggleScratchTerm()<CR>
 
 " Open lazygit
-nnoremap <silent> <Leader>' :call OpenLazyGit()<CR>
+nnoremap <silent> <Leader>' :call ToggleLazyGit()<CR>
 
 " Better split creation, configured to match with tmux
 nnoremap <silent> <Leader>\| :vsp<CR>
@@ -411,6 +411,8 @@ nnoremap <silent> <Leader>cR  :<C-u>CocRestart<CR>
 
 " Start Plugin Configs
 
+let g:vifm_replace_netrw = 1
+
 " Don't start markdown preview automatically, use :MarkdownPreview
 let g:mkdp_auto_start = 0
 
@@ -452,16 +454,37 @@ function! OpenTerm(cmd)
 endfunction
 
 " Open Project
-function! OpenProject()
-    call OpenTerm('tmuxinator-fzf-start.sh')
+let s:project_open = 0
+function! ToggleProject()
+    if s:project_open
+        bd!
+        let s:project_open = 0
+    else
+        call OpenTerm('tmuxinator-fzf-start.sh')
+        let s:project_open = 1
+    endif
 endfunction
 
-function! OpenScratchTerm()
-    call OpenTerm('bash')
+let s:scratch_open = 0
+function! ToggleScratchTerm()
+    if s:scratch_open
+        bd!
+        let s:scratch_open = 0
+    else
+        call OpenTerm('bash')
+        let s:scratch_open = 1
+    endif
 endfunction
 
-function! OpenLazyGit()
-    call OpenTerm('lazygit')
+let s:lazygit_open = 0
+function! ToggleLazyGit()
+    if s:lazygit_open
+        bd!
+        let s:lazygit_open = 0
+    else
+        call OpenTerm('lazygit')
+        let s:lazygit_open = 1
+    endif
 endfunction
 
 function! OnTermExit(job_id, code, event) dict
