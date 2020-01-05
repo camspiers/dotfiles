@@ -74,6 +74,7 @@ yabai -m rule --add app="Sequel Pro"            space=^3
 yabai -m rule --add app="Postman"               space=^3
 yabai -m rule --add app="Sourcetree"            space=^3
 yabai -m rule --add app="Activity Monitor"      space=^3
+yabai -m rule --add app="App Store"             space=^3
 
 # Media
 yabai -m rule --add app="Music"                 space=^4
