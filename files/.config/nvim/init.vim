@@ -192,6 +192,8 @@ set splitbelow splitright
 
 " Don't change dirs automatically, using rooter for that
 set noautochdir
+
+" System clipboard
 set clipboard=unnamed
 
 " Ignore patterns
@@ -496,36 +498,27 @@ function! OpenTerm(cmd)
 endfunction
 
 " Open Project
-let s:project_open = 0
 function! ToggleProject()
-    if s:project_open
-        bd!
-        let s:project_open = 0
-    else
+    if empty(bufname('tmuxinator-fzf-start.sh'))
         call OpenTerm('tmuxinator-fzf-start.sh')
-        let s:project_open = 1
+    else
+        bd!
     endif
 endfunction
 
-let s:scratch_open = 0
 function! ToggleScratchTerm()
-    if s:scratch_open
-        bd!
-        let s:scratch_open = 0
-    else
+    if empty(bufname('bash'))
         call OpenTerm('bash')
-        let s:scratch_open = 1
+    else
+        bd!
     endif
 endfunction
 
-let s:lazygit_open = 0
 function! ToggleLazyGit()
-    if s:lazygit_open
-        bd!
-        let s:lazygit_open = 0
-    else
+    if empty(bufname('lazygit'))
         call OpenTerm('lazygit')
-        let s:lazygit_open = 1
+    else
+        bd!
     endif
 endfunction
 
