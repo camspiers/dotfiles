@@ -3,6 +3,7 @@ root: ~/dev/drive-website
 attach: false
 windows:
   - Editor: nvim
+  - Vifm: vifm
   - Git: lazygit
   - Harvest: hstarti
   - Build:
