@@ -8,6 +8,10 @@
 " - yarn
 " - ripgrep
 
+"##############################################################################
+" Plugins
+"##############################################################################
+
 call plug#begin(stdpath('data') . '/plugged')
     " Fuzzy file finding
     Plug '/usr/local/opt/fzf'
@@ -164,56 +168,158 @@ call plug#begin(stdpath('data') . '/plugged')
     Plug 'tmux-plugins/vim-tmux'
 call plug#end()
 
-set shell=bash
+"##############################################################################
+" General Settings
+"##############################################################################
 
-" Default options
-set encoding=UTF-8 " Default file encoding
-set undofile " Enable undo persistence across sessions
-set history=10000 " The lines of history to remember
-set autoread " Automatically read the file when it's changed outside VIM
-set number " Show line numbers
-set ruler " Always show current position
-set lazyredraw " Don't redraw while performing a macro
-set showmatch " Show matching braces
-set cursorline " Enable current line indicator
+" Default file encoding
+set encoding=UTF-8
+
+" Enable undo persistence across sessions
+set undofile
+
+" The lines of history to remember
+set history=10000
+
+" Automatically read the file when it's changed outside VIM
+set autoread
+
+" Split defaults
 set splitbelow splitright
-set ttimeoutlen=50
+
+" Don't change dirs automatically, using rooter for that
 set noautochdir
 set clipboard=unnamed
 
+" Ignore patterns
+set wildignore+=.git,.DS_Store
+
+" No sound
+set noerrorbells
+set timeoutlen=500
+
+"##############################################################################
 " Searching
+"##############################################################################
+
 set ignorecase
 set smartcase
-set hlsearch
 set incsearch
 
-" Indent
+augroup IncSearchHighlight
+  autocmd!
+  autocmd CmdlineEnter /,\? :set hlsearch
+  autocmd CmdlineLeave /,\? :set nohlsearch
+augroup END
+
+"##############################################################################
+" Editing
+"##############################################################################
+
 set tabstop=4
 set shiftwidth=4
 set expandtab
 
-" No sound
-set noerrorbells
-set novisualbell
-set t_vb=
-set tm=500
+"##############################################################################
+" Visual Settings
+"##############################################################################
 
-" Syntax
+" Don't redraw while performing a macro
+set lazyredraw
+
+" Don't display visual bell
+set novisualbell
+
+" Show matching braces
+set showmatch
+
+" Enable current line indicator
+set cursorline
+
+" Show line numbers
+set number
+
+" Always show current position
+set ruler
+
 if !exists('g:syntax_on')
 	syntax enable
 endif
-filetype plugin indent on
 
-" Visual configuration
+filetype plugin indent on
 colorscheme nord
 set termguicolors
 
-" Better indents
-let g:indent_guides_guide_size = 1
-let g:indent_guides_color_change_percent = 3
-let g:indent_guides_enable_on_vim_startup = 1
+"##############################################################################
+" Mappings
+"##############################################################################
 
-set wildignore+=.git,.DS_Store
+" Next buffer
+nnoremap <silent>   <tab> :bnext<CR>
+" Previous buffer
+nnoremap <silent> <s-tab> :bprevious<CR>
+" Create vsplit
+nnoremap <silent> <Leader>\| :vsp<CR>
+" Creat hsplit
+nnoremap <silent> <Leader>- :sp<CR>
+" Save file
+nnoremap <silent> <Leader>w :w<CR>
+" Open startify with leader l
+nnoremap <silent> <Leader>l :Startify<CR>
+" Open fuzzy files with leader \
+nnoremap <silent> <Leader>\ :Files<CR>
+" Open fuzzy lines with leader o
+nnoremap <silent> <Leader>o :Lines<CR>
+" Open fuzzy buffers with leader b
+nnoremap <silent> <Leader>b :Buffers<CR>
+" Open grep
+nnoremap <silent> <Leader>g :FzfRg<CR>
+" Open grep for cursor word
+nnoremap <silent> <Leader>c :FzfRg <C-R><C-W><CR>
+" Close the current buffer
+nnoremap <silent> <Leader>x :bd<CR>
+" Close all buffers
+nnoremap <silent> <Leader>z :%bd<CR>
+" Alternate file navigation
+nnoremap <silent> <Leader>a :A<CR>
+" Alternate file navigation vertical split
+nnoremap <silent> <Leader>v :AV<CR>
+" Cycle line number modes
+nnoremap <silent> <Leader>r :call CycleNumbering()<CR>
+" Open project
+nnoremap <silent> <Leader>m :call ToggleProject()<CR>
+" Open scratch term
+nnoremap <silent> <Leader>s :call ToggleScratchTerm()<CR>
+" Open lazygit
+nnoremap <silent> <Leader>' :call ToggleLazyGit()<CR>
+" Open lazygit
+nnoremap <silent> <Leader>/ :Vifm<CR>
+" Get outline
+nnoremap <silent> <Leader>co :<C-u>CocList outline<CR>
+" Get symbols
+nnoremap <silent> <Leader>cs :<C-u>CocList -I symbols<CR>
+" Get errors
+nnoremap <silent> <Leader>cl :<C-u>CocList locationlist<CR>
+" Get available commands
+nnoremap <silent> <Leader>cc :<C-u>CocList commands<CR>
+" Restart server
+nnoremap <silent> <Leader>cR :<C-u>CocRestart<CR>
+" Quit term buffer with ESC
+tnoremap <silent> <Esc> <C-\><C-n><CR>
+" Go to definition
+nnoremap <silent> gd <Plug>
+" Go to type definition
+nnoremap <silent> gy <Plug>
+" Go to implementation
+nnoremap <silent> gi <Plug>
+" Find references
+nnoremap <silent> gr <Plug>
+" Get hint
+nnoremap <silent> gh :call CocActionAsync('doHover')<CR>
+
+"##############################################################################
+" Commands
+"##############################################################################
 
 " Configures ripgrep with fzf
 command! -bang -nargs=* FzfRg call fzf#vim#grep("rg --column --line-number --no-heading --color=always --smart-case ".shellescape(<q-args>), 1, {'options': '--delimiter : --nth 4..'}, <bang>0)
@@ -223,140 +329,15 @@ command! -bang -nargs=* Rgg call fzf#vim#grep("rg --no-ignore --column --line-nu
 command! -nargs=* -complete=file Ripgrep :call s:Rg(<q-args>)
 command! -nargs=* -complete=file Rg :call s:Rg(<q-args>)
 
-" Use ripgrep for fzf
-let $FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --iglob "!.DS_Store" --iglob "!.git"'
 
-" Configure FZF to use a floating window configuration
-let $FZF_DEFAULT_OPTS = '--layout=reverse'
-let g:fzf_colors =
-            \ { 'fg':      ['fg', 'Normal'],
-            \ 'bg':      ['bg', 'Normal'],
-            \ 'hl':      ['fg', 'Comment'],
-            \ 'fg+':     ['fg', 'CursorLine'],
-            \ 'bg+':     ['bg', 'Normal'],
-            \ 'hl+':     ['fg', 'Statement'],
-            \ 'info':    ['fg', 'PreProc'],
-            \ 'border':  ['fg', 'CursorLine'],
-            \ 'prompt':  ['fg', 'Conditional'],
-            \ 'pointer': ['fg', 'Exception'],
-            \ 'marker':  ['fg', 'Keyword'],
-            \ 'spinner': ['fg', 'Label'],
-            \ 'header':  ['fg', 'Comment'] }
-
-" Creates a floating window with a most recent buffer to be used
-function! CreateCenteredFloatingWindow()
-    let width = float2nr(&columns * 0.6)
-    let height = float2nr(&lines * 0.6)
-    let top = ((&lines - height) / 2) - 1
-    let left = (&columns - width) / 2
-    let opts = {'relative': 'editor', 'row': top, 'col': left, 'width': width, 'height': height, 'style': 'minimal'}
-
-    let top = "╭" . repeat("─", width - 2) . "╮"
-    let mid = "│" . repeat(" ", width - 2) . "│"
-    let bot = "╰" . repeat("─", width - 2) . "╯"
-    let lines = [top] + repeat([mid], height - 2) + [bot]
-    let s:buf = nvim_create_buf(v:false, v:true)
-    call nvim_buf_set_lines(s:buf, 0, -1, v:true, lines)
-    call nvim_open_win(s:buf, v:true, opts)
-    set winhl=Normal:Floating
-    let opts.row += 1
-    let opts.height -= 2
-    let opts.col += 2
-    let opts.width -= 4
-    call nvim_open_win(nvim_create_buf(v:false, v:true), v:true, opts)
-    au BufWipeout <buffer> exe 'bw '.s:buf
-endfunction
-
-let g:fzf_layout = { 'window': 'call CreateCenteredFloatingWindow()' }
-
-" Configure Airline Theme
-let g:airline#extensions#tabline#enabled = 1
-let g:airline_theme = 'nord'
-let g:airline_powerline_fonts = 1
-let g:airline#extensions#tabline#formatter = 'unique_tail'
-
-" Fix netrw buffer issue
-let g:netrw_fastbrowse = 0
-
-" Cycle through relativenumber + number, number (only), and no numbering.
-function! CycleNumbering() abort
-  if exists('+relativenumber')
-    execute {
-          \ '00': 'set relativenumber   | set number',
-          \ '01': 'set norelativenumber | set number',
-          \ '10': 'set norelativenumber | set nonumber',
-          \ '11': 'set norelativenumber | set number' }[&number . &relativenumber]
-  else
-    " No relative numbering, just toggle numbers on and off.
-    set number!<CR>
-  endif
-endfunction
-
-" Buffer navigation
-nnoremap <silent>   <tab> :bnext<CR>
-nnoremap <silent> <s-tab> :bprevious<CR>
-
-" Save file
-nnoremap <silent> <Leader>w :w<CR>
-
-" Open startify with leader l
-nnoremap <silent> <Leader>l :Startify<CR>
-
-" Open fuzzy files with leader \
-nnoremap <silent> <Leader>\ :Files<CR>
-
-" Open fuzzy lines with leader o
-nnoremap <silent> <Leader>o :Lines<CR>
-
-" Open fuzzy buffers with leader b
-nnoremap <silent> <Leader>b :Buffers<CR>
-
-" Open grep
-nnoremap <silent> <Leader>g :FzfRg<CR>
-
-" Open grep for cursor word
-nnoremap <silent> <Leader>c :FzfRg <C-R><C-W><CR>
-
-" Close the current buffer
-nnoremap <silent> <Leader>x :bd<CR>
-
-" Close all buffers
-nnoremap <silent> <Leader>z :%bd<CR>
-
-" Remove search highlighting with leader n
-nnoremap <Leader>n :noh<CR>
-
-" Alternate file navigation
-nnoremap <silent> <Leader>a :A<CR>
-
-" Alternate file navigation vertical split
-nnoremap <silent> <Leader>v :AV<CR>
-
-" Cycle line number modes
-nnoremap <silent> <Leader>r :call CycleNumbering()<CR>
-
-" Open project
-nnoremap <silent> <Leader>m :call ToggleProject()<CR>
-
-" Open scratch term
-nnoremap <silent> <Leader>s :call ToggleScratchTerm()<CR>
-
-" Open lazygit
-nnoremap <silent> <Leader>' :call ToggleLazyGit()<CR>
-
-" Better split creation, configured to match with tmux
-nnoremap <silent> <Leader>\| :vsp<CR>
-nnoremap <silent> <Leader>- :sp<CR>
-
-" Quit term buffer with ESC
-tnoremap <Esc> <C-\><C-n><cr>:q!<cr>
-
-" COC configuration
+"##############################################################################
+" Plugin Configurations
+"##############################################################################
 
 " if hidden is not set, TextEdit might fail.
 set hidden
 
-" Some servers have issues with backup files, see #649
+" Some servers have issues with backup files
 set nobackup
 set nowritebackup
 
@@ -382,34 +363,9 @@ function! s:check_back_space() abort
     return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 
-" gd - go to definition of word under cursor
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
-
-" gi - go to implementation
-nmap <silent> gi <Plug>(coc-implementation)
-
-" gr - find references
-nmap <silent> gr <Plug>(coc-references)
-
-" gh - get hint on whatever's under the cursor
-nnoremap <silent> gh :call CocActionAsync('doHover')<CR>
-
-nnoremap <silent> <Leader>co  :<C-u>CocList outline<cr>
-nnoremap <silent> <Leader>cs  :<C-u>CocList -I symbols<cr>
-
-" List errors
-nnoremap <silent> <Leader>cl  :<C-u>CocList locationlist<cr>
-
-" list commands available in tsserver (and others)
-nnoremap <silent> <Leader>cc  :<C-u>CocList commands<cr>
-
-" restart when tsserver gets wonky
-nnoremap <silent> <Leader>cR  :<C-u>CocRestart<CR>
-
-" end COC
-
-" Start Plugin Configs
+"##############################################################################
+" Plugin Configurations
+"##############################################################################
 
 let g:vifm_replace_netrw = 1
 
@@ -429,6 +385,9 @@ let g:indentLine_setConceal = 0
 " Use docker files and git
 let g:rooter_patterns = ['docker-compose.yml', '.git/']
 
+" Change silently
+let g:rooter_silent_chdir = 1
+
 " Vdebug needs to be able to load files and understand how the file in the docker container maps to the local system
 autocmd VimEnter * :call Vdebug_load_options( { 'path_maps' : { '/var/www/html/' : getcwd() } } )
 
@@ -437,7 +396,87 @@ let g:camelcasemotion_key = ','
 
 let g:startify_lists = [ { 'type': 'dir', 'header': ['   Recent Files'] } ]
 
-" Term handling
+" Better indents
+let g:indent_guides_guide_size = 1
+let g:indent_guides_color_change_percent = 3
+let g:indent_guides_enable_on_vim_startup = 1
+
+" Use ripgrep for fzf
+let $FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --iglob "!.DS_Store" --iglob "!.git"'
+
+" Configure FZF to use a floating window configuration
+let $FZF_DEFAULT_OPTS = '--layout=reverse'
+let g:fzf_colors =
+            \ { 'fg':      ['fg', 'Normal'],
+            \ 'bg':      ['bg', 'Normal'],
+            \ 'hl':      ['fg', 'Comment'],
+            \ 'fg+':     ['fg', 'CursorLine'],
+            \ 'bg+':     ['bg', 'Normal'],
+            \ 'hl+':     ['fg', 'Statement'],
+            \ 'info':    ['fg', 'PreProc'],
+            \ 'border':  ['fg', 'CursorLine'],
+            \ 'prompt':  ['fg', 'Conditional'],
+            \ 'pointer': ['fg', 'Exception'],
+            \ 'marker':  ['fg', 'Keyword'],
+            \ 'spinner': ['fg', 'Label'],
+            \ 'header':  ['fg', 'Comment'] }
+
+let g:fzf_layout = { 'window': 'call CreateCenteredFloatingWindow()' }
+
+" Configure Airline Theme
+let g:airline#extensions#tabline#enabled = 1
+let g:airline_theme = 'nord'
+let g:airline_powerline_fonts = 1
+let g:airline#extensions#tabline#formatter = 'unique_tail'
+
+" Fix netrw buffer issue
+let g:netrw_fastbrowse = 0
+
+"##############################################################################
+" Custom Functions
+"##############################################################################
+
+" Creates a floating window with a most recent buffer to be used
+function! CreateCenteredFloatingWindow()
+    let width = float2nr(&columns * 0.6)
+    let height = float2nr(&lines * 0.6)
+    let top = ((&lines - height) / 2) - 1
+    let left = (&columns - width) / 2
+    let opts = {'relative': 'editor', 'row': top, 'col': left, 'width': width, 'height': height, 'style': 'minimal'}
+
+    let top = "╭" . repeat("─", width - 2) . "╮"
+    let mid = "│" . repeat(" ", width - 2) . "│"
+    let bot = "╰" . repeat("─", width - 2) . "╯"
+    let lines = [top] + repeat([mid], height - 2) + [bot]
+    let s:buf = nvim_create_buf(v:false, v:true)
+    call nvim_buf_set_lines(s:buf, 0, -1, v:true, lines)
+    call nvim_open_win(s:buf, v:true, opts)
+    set winhl=Normal:Floating
+    let opts.row += 1
+    let opts.height -= 2
+    let opts.col += 2
+    let opts.width -= 4
+    call nvim_open_win(nvim_create_buf(v:false, v:true), v:true, opts)
+    au BufWipeout <buffer> exe 'bw '.s:buf
+endfunction
+
+" Cycle through relativenumber + number, number (only), and no numbering.
+function! CycleNumbering() abort
+  if exists('+relativenumber')
+    execute {
+          \ '00': 'set relativenumber   | set number',
+          \ '01': 'set norelativenumber | set number',
+          \ '10': 'set norelativenumber | set nonumber',
+          \ '11': 'set norelativenumber | set number' }[&number . &relativenumber]
+  else
+    " No relative numbering, just toggle numbers on and off.
+    set number!<CR>
+  endif
+endfunction
+
+"##############################################################################
+" Terminal Handling
+"##############################################################################
 
 " Set login shell for :terminal command so aliases work
 set shell=/usr/local/bin/bash
@@ -493,6 +532,4 @@ function! OnTermExit(job_id, code, event) dict
     endif
 endfunction
 
-" Escape out of terminal mode
-tnoremap <Esc> <C-\><C-n><cr>
 
