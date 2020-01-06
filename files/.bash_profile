@@ -2,9 +2,23 @@
 source "$HOME/.bashrc"
 
 # Joins paths together
+
+################################################################################
+# Joins paths together by ":"
+# Arguments:
+#     $1: Array of paths, e.g. join ARR[@]
+# Returns:
+#     string
+################################################################################
 join() { a=("${!1}"); local IFS=":"; echo "${a[*]}"; }
 
-# Dedup paths
+################################################################################
+# Deduplicates paths separated by ":"
+# Arguments:
+#     $1: string of paths separated by ":"
+# Returns:
+#     string
+################################################################################
 dedup() { echo -n $1 | awk -v RS=: -v ORS=: '!arr[$0]++'; }
 
 # System paths

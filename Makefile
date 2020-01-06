@@ -1,12 +1,12 @@
 DOTFILES=${HOME}/.dotfiles
 
-all: homebrew neovim tmux skhd
+all: brew neovim tmux skhd
 
 install:
 	stow --restow --ignore ".DS_Store" --target="$(HOME)" --dir="$(DOTFILES)" files
 
-homebrew:
-	brew bundle --file="$(DOTFILES)/extra/homebrew/Brewfile"
+brew:
+	brew bundle --file="$(DOTFILES)/extra/brew/Brewfile"
 
 neovim:
 	python3 -m pip install --upgrade pynvim
@@ -18,4 +18,4 @@ tmux:
 skhd:
 	ln -s "$DOTFILES/files/.config/skhd/skhdrc" "$HOME/.skhdrc"
 
-.PHONY: all install homebrew neovim skhd tmux
+.PHONY: all install brew neovim skhd tmux

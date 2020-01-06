@@ -166,6 +166,9 @@ call plug#begin(stdpath('data') . '/plugged')
 
     " Syntax highlighting for tmux conf
     Plug 'tmux-plugins/vim-tmux'
+
+	" Nice docblock generator
+	Plug 'kkoomen/vim-doge'
 call plug#end()
 
 "##############################################################################
