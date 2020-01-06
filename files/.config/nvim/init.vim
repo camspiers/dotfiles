@@ -292,7 +292,7 @@ nnoremap <silent> <Leader>m :call ToggleProject()<CR>
 nnoremap <silent> <Leader>s :call ToggleScratchTerm()<CR>
 " Open lazygit
 nnoremap <silent> <Leader>' :call ToggleLazyGit()<CR>
-" Open lazygit
+" Open vifm
 nnoremap <silent> <Leader>/ :Vifm<CR>
 " Get outline
 nnoremap <silent> <Leader>co :<C-u>CocList outline<CR>
@@ -307,13 +307,13 @@ nnoremap <silent> <Leader>cR :<C-u>CocRestart<CR>
 " Quit term buffer with ESC
 tnoremap <silent> <Esc> <C-\><C-n><CR>
 " Go to definition
-nnoremap <silent> gd <Plug>
+nnoremap <silent> gd <Plug>(coc-definition)
 " Go to type definition
-nnoremap <silent> gy <Plug>
+nnoremap <silent> gy <Plug>(coc-type-definition)
 " Go to implementation
-nnoremap <silent> gi <Plug>
+nnoremap <silent> gi <Plug>(coc-implementation)
 " Find references
-nnoremap <silent> gr <Plug>
+nnoremap <silent> gr <Plug>(coc-references)
 " Get hint
 nnoremap <silent> gh :call CocActionAsync('doHover')<CR>
 
