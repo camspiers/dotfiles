@@ -6,7 +6,7 @@ install:
 	stow --restow --ignore ".DS_Store" --target="$(HOME)" --dir="$(DOTFILES)" files
 
 brew:
-	brew bundle --file="$(DOTFILES)/extra/brew/Brewfile"
+	brew bundle --file="$(DOTFILES)/extra/homebrew/Brewfile"
 
 neovim:
 	python3 -m pip install --upgrade pynvim
