@@ -462,7 +462,7 @@ function! CreateCenteredFloatingWindow()
     let opts.col += 2
     let opts.width -= 4
     call nvim_open_win(nvim_create_buf(v:false, v:true), v:true, opts)
-    au BufWipeout <buffer> exe 'bw '.s:buf
+    autocmd BufWipeout <buffer> exe 'bwipeout '.s:buf
 endfunction
 
 " Cycle through relativenumber + number, number (only), and no numbering.
@@ -492,39 +492,31 @@ autocmd TermOpen * startinsert
 " Turn off line numbers etc
 autocmd TermOpen * setlocal listchars= nonumber norelativenumber
 
-function! OpenTerm(cmd)
-    call CreateCenteredFloatingWindow()
-    call termopen(a:cmd, { 'on_exit': function('OnTermExit') })
+function! ToggleTerm(cmd)
+    if empty(bufname(a:cmd))
+        call CreateCenteredFloatingWindow()
+        call termopen(a:cmd, { 'on_exit': function('OnTermExit') })
+    else
+        bwipeout!
+    endif
 endfunction
 
 " Open Project
 function! ToggleProject()
-    if empty(bufname('tmuxinator-fzf-start.sh'))
-        call OpenTerm('tmuxinator-fzf-start.sh')
-    else
-        bd!
-    endif
+    call ToggleTerm('tmuxinator-fzf-start.sh')
 endfunction
 
 function! ToggleScratchTerm()
-    if empty(bufname('bash'))
-        call OpenTerm('bash')
-    else
-        bd!
-    endif
+    call ToggleTerm('bash')
 endfunction
 
 function! ToggleLazyGit()
-    if empty(bufname('lazygit'))
-        call OpenTerm('lazygit')
-    else
-        bd!
-    endif
+    call ToggleTerm('lazygit')
 endfunction
 
 function! OnTermExit(job_id, code, event) dict
     if a:code == 0
-        bd!
+        bwipeout!
     endif
 endfunction
 
