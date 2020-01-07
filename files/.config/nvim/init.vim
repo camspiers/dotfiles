@@ -61,7 +61,20 @@ call plug#begin(stdpath('data') . '/plugged')
     Plug 'phalkunz/vim-ss'
 
     " Vim prettier suport
-    Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
+    Plug 'prettier/vim-prettier', {
+    \ 'do': 'yarn install',
+    \ 'branch': 'release/1.x',
+    \ 'for': [
+     \ 'javascript',
+     \ 'typescript',
+     \ 'css',
+     \ 'less',
+     \ 'json',
+     \ 'graphql',
+     \ 'markdown',
+     \ 'vue',
+     \ 'php',
+     \ 'html' ] }
 
     " Better commenting
     Plug 'tomtom/tcomment_vim'
@@ -441,6 +454,20 @@ let g:netrw_fastbrowse = 0
 " Custom Functions
 "##############################################################################
 
+" Cycle through relativenumber + number, number (only), and no numbering.
+function! CycleNumbering() abort
+  if exists('+relativenumber')
+    execute {
+          \ '00': 'set relativenumber   | set number',
+          \ '01': 'set norelativenumber | set number',
+          \ '10': 'set norelativenumber | set nonumber',
+          \ '11': 'set norelativenumber | set number' }[&number . &relativenumber]
+  else
+    " No relative numbering, just toggle numbers on and off.
+    set number!<CR>
+  endif
+endfunction
+
 " Creates a floating window with a most recent buffer to be used
 function! CreateCenteredFloatingWindow()
     let width = float2nr(&columns * 0.6)
@@ -462,23 +489,11 @@ function! CreateCenteredFloatingWindow()
     let opts.col += 2
     let opts.width -= 4
     call nvim_open_win(nvim_create_buf(v:false, v:true), v:true, opts)
-    autocmd BufWipeout <buffer> exe 'bwipeout '.s:buf
-    tnoremap <buffer> <silent> <Esc> <C-\><C-n><CR>:bw!<CR>
+    autocmd BufWipeout <buffer> call CleanupBuffer(s:buf)
+    tnoremap <buffer> <silent> <Esc> <C-\><C-n><CR>:call DeleteUnlistedBuffers()<CR>
 endfunction
 
-" Cycle through relativenumber + number, number (only), and no numbering.
-function! CycleNumbering() abort
-  if exists('+relativenumber')
-    execute {
-          \ '00': 'set relativenumber   | set number',
-          \ '01': 'set norelativenumber | set number',
-          \ '10': 'set norelativenumber | set nonumber',
-          \ '11': 'set norelativenumber | set number' }[&number . &relativenumber]
-  else
-    " No relative numbering, just toggle numbers on and off.
-    set number!<CR>
-  endif
-endfunction
+
 
 "##############################################################################
 " Terminal Handling
@@ -498,7 +513,7 @@ function! ToggleTerm(cmd)
         call CreateCenteredFloatingWindow()
         call termopen(a:cmd, { 'on_exit': function('OnTermExit') })
     else
-        bwipeout!
+        call DeleteUnlistedBuffers()
     endif
 endfunction
 
@@ -517,8 +532,27 @@ endfunction
 
 function! OnTermExit(job_id, code, event) dict
     if a:code == 0
-        bwipeout!
+        call DeleteUnlistedBuffers()
     endif
 endfunction
 
+function! DeleteUnlistedBuffers()
+    for n in nvim_list_bufs()
+        if ! buflisted(n)
+            let name = bufname(n)
+            if name == '[Scratch]' ||
+              \ matchend(name, ":bash") ||
+              \ matchend(name, ":lazygit") ||
+              \ matchend(name, ":tmuxinator-fzf-start.sh")
+                call CleanupBuffer(n)
+            endif
+        endif
+    endfor
+endfunction
+
+function! CleanupBuffer(buf)
+    if bufexists(a:buf)
+        silent execute 'bwipeout! '.a:buf
+    endif
+endfunction
 
