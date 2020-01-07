@@ -463,7 +463,7 @@ function! CreateCenteredFloatingWindow()
     let opts.width -= 4
     call nvim_open_win(nvim_create_buf(v:false, v:true), v:true, opts)
     autocmd BufWipeout <buffer> exe 'bwipeout '.s:buf
-    tnoremap <buffer> <silent> <Esc> <C-\><C-n><CR>:bd!<CR>
+    tnoremap <buffer> <silent> <Esc> <C-\><C-n><CR>:bw!<CR>
 endfunction
 
 " Cycle through relativenumber + number, number (only), and no numbering.
