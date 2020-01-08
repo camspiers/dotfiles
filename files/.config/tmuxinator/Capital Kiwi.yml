@@ -4,7 +4,6 @@ attach: false
 windows:
   - Editor: nvim
   - Git: lazygit
-  - Harvest: hstarti
   - Build: yarn start
   - Docker:
       - readydocker.sh

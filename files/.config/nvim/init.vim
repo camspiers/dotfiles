@@ -182,6 +182,9 @@ call plug#begin(stdpath('data') . '/plugged')
 
 	" Nice docblock generator
 	Plug 'kkoomen/vim-doge'
+
+    " Personal wiki
+    Plug 'vimwiki/vimwiki'
 call plug#end()
 
 "##############################################################################
@@ -240,7 +243,19 @@ set expandtab
 
 "##############################################################################
 " Visual Settings
-"##############################################################################
+"####################################################################################################################
+
+" Add bulk color past 120
+let &colorcolumn=join(range(121,999),",")
+
+" Spell checking
+set spelllang=en
+
+" Turn spelling on for markdown files
+autocmd FileType markdown setlocal spell
+
+" Turn Goyo on for markdown
+autocmd BufRead,BufNewFile *.md :Goyo 80
 
 " Don't redraw while performing a macro
 set lazyredraw
@@ -310,6 +325,8 @@ nnoremap <silent> <Leader>m :call ToggleProject()<CR>
 nnoremap <silent> <Leader>s :call ToggleScratchTerm()<CR>
 " Open lazygit
 nnoremap <silent> <Leader>' :call ToggleLazyGit()<CR>
+" Open harvest
+nnoremap <silent> <Leader>h :call ToggleHarvest()<CR>
 " Open vifm
 nnoremap <silent> <Leader>/ :Vifm<CR>
 " Get outline
@@ -325,13 +342,13 @@ nnoremap <silent> <Leader>cR :<C-u>CocRestart<CR>
 " Quit term buffer with ESC
 tnoremap <silent> <Esc> <C-\><C-n><CR>
 " Go to definition
-nnoremap <silent> gd <Plug>(coc-definition)
+nmap gd <Plug>(coc-definition)
 " Go to type definition
-nnoremap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
 " Go to implementation
-nnoremap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gi <Plug>(coc-implementation)
 " Find references
-nnoremap <silent> gr <Plug>(coc-references)
+nmap <silent> gr <Plug>(coc-references)
 " Get hint
 nnoremap <silent> gh :call CocActionAsync('doHover')<CR>
 
@@ -384,6 +401,9 @@ endfunction
 "##############################################################################
 " Plugin Configurations
 "##############################################################################
+
+let g:vimwiki_list = [{'path': '~/vimwiki/',
+                      \ 'syntax': 'markdown', 'ext': '.md'}]
 
 let g:vifm_replace_netrw = 1
 
@@ -530,6 +550,10 @@ function! ToggleLazyGit()
     call ToggleTerm('lazygit')
 endfunction
 
+function! ToggleHarvest()
+    call ToggleTerm('hstarti')
+endfunction
+
 function! OnTermExit(job_id, code, event) dict
     if a:code == 0
         call DeleteUnlistedBuffers()
@@ -543,7 +567,8 @@ function! DeleteUnlistedBuffers()
             if name == '[Scratch]' ||
               \ matchend(name, ":bash") ||
               \ matchend(name, ":lazygit") ||
-              \ matchend(name, ":tmuxinator-fzf-start.sh")
+              \ matchend(name, ":tmuxinator-fzf-start.sh") ||
+              \ matchend(name, ":hstarti")
                 call CleanupBuffer(n)
             endif
         endif

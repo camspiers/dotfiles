@@ -22,7 +22,7 @@ join() { a=("${!1}"); local IFS=":"; echo "${a[*]}"; }
 dedup() { echo -n $1 | awk -v RS=: -v ORS=: '!arr[$0]++'; }
 
 # System paths
-SYS=(
+SYS_PATHS=(
     "/usr/local/opt/coreutils/libexec/gnubin" # Prefer coreutils
     "/usr/local/opt/gnu-sed/libexec/gnubin" # Custom sed
     "/usr/local/opt/python/libexec/bin" # Python
@@ -31,7 +31,7 @@ SYS=(
 )
 
 # User paths
-USER=(
+USER_PATHS=(
     "/usr/local/opt/fzf/bin" # Fzf
     "$HOME/.dotfiles/scripts" # Personal scripts
     "$HOME/.composer/vendor/bin" # Global composer scripts
@@ -39,7 +39,7 @@ USER=(
 )
 
 # Set PATH with ordering: SYS:PATH:USER
-export PATH=$(dedup "$(join SYS[@]):$PATH:$(join USER[@])")
+export PATH=$(dedup "$(join SYS_PATHS[@]):$PATH:$(join USER_PATHS[@])")
 
 # Ensures that SHELL is set to my $PATH bash, especially for tmux
 export SHELL=$(which bash)
@@ -59,6 +59,11 @@ export BASH_SILENCE_DEPRECATION_WARNING=1
 # Set editor
 export EDITOR='nvim'
 
+# Ruby
+export LDFLAGS="-L/usr/local/opt/ruby/lib"
+export CPPFLAGS="-I/usr/local/opt/ruby/include"
+export PKG_CONFIG_PATH="/usr/local/opt/ruby/lib/pkgconfig"
+
 # Nord Theme for fzf
 export FZF_DEFAULT_OPTS='
 --color fg:#D8DEE9,bg:#2E3440,hl:#A3BE8C,fg+:#D8DEE9,bg+:#434C5E,hl+:#A3BE8C
@@ -72,6 +77,9 @@ export TMUX_1PASSWORD_OP_ITEMS_JQ_FILTER="
   | join(\",\"))
   | .[]
 "
+
+# rbenv
+eval "$(rbenv init -)"
 
 # Fast Node Manager
 eval "$(fnm env --multi)"
