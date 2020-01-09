@@ -405,7 +405,7 @@ endfunction
 let g:vimwiki_list = [{'path': '~/vimwiki/',
                       \ 'syntax': 'markdown', 'ext': '.md'}]
 
-let g:vifm_replace_netrw = 1
+"let g:vifm_replace_netrw = 1
 
 " Don't start markdown preview automatically, use :MarkdownPreview
 let g:mkdp_auto_start = 0

@@ -1,4 +1,4 @@
 #!/bin/bash
 
+# Kills all containers
 docker ps -q 2> /dev/null | xargs docker kill
-pgrep Docker | xargs kill

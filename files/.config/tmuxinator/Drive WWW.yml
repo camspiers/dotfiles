@@ -15,4 +15,5 @@ windows:
       - readydocker.sh
       - docker-sync-daemon start
       - docker-compose up -d
+      - sleep 5 && open "https://ndep.local/"
       - lazydocker

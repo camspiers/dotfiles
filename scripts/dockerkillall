@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# Kills all containers
+dockerkill
+
+# Kills docker app
+pgrep Docker | xargs kill
