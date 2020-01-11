@@ -292,6 +292,10 @@ silent! colorscheme nord
 " Enables 24bit colors
 set termguicolors
 
+" Give floating windows transparency
+set winblend=30
+
+" Make comments italic
 highlight Comment cterm=italic gui=italic
 
 "################################################################################
