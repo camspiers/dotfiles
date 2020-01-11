@@ -10,5 +10,8 @@ alias ms='tmuxinator-fzf-start.sh'
 # Enable fzf for bash completion
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
+# Enable marks plugin
+source $HOME/fzf-marks/fzf-marks.plugin.bash
+
 # Configure starship
 eval "$(starship init bash)"

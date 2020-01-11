@@ -1,6 +1,6 @@
 DOTFILES=${HOME}/.dotfiles
 
-all: brew neovim tmux skhd
+all: brew neovim tmux skhd fzf-marks
 
 install:
 	stow --restow --ignore ".DS_Store" --target="$(HOME)" --dir="$(DOTFILES)" files
@@ -17,5 +17,8 @@ tmux:
 
 skhd:
 	ln -s "$DOTFILES/files/.config/skhd/skhdrc" "$HOME/.skhdrc"
+
+fzf-marks:
+	git clone https://github.com/urbainvaes/fzf-marks.git ~/fzf-marks
 
 .PHONY: all install brew neovim skhd tmux
