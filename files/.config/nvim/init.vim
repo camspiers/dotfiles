@@ -262,9 +262,6 @@ set spelllang=en
 " Turn spelling on for markdown files
 autocmd FileType markdown setlocal spell
 
-" Turn Goyo on for markdown
-autocmd BufRead,BufNewFile *.md :Goyo 80
-
 " Don't redraw while performing a macro
 set lazyredraw
 
@@ -427,8 +424,7 @@ endfunction
 "################################################################################
 
 " Config vim wiki
-let g:vimwiki_list = [{'path': '~/vimwiki/',
-                      \ 'syntax': 'markdown', 'ext': '.md'}]
+let g:vimwiki_list = [{'path': '~/vimwiki/', 'syntax': 'markdown', 'ext': '.md'}]
 
 "let g:vifm_replace_netrw = 1
 
