@@ -1,207 +1,216 @@
-" Environment requirements:
-" - tmux
+"################################################################################
+"# Neovim Configuration
+"################################################################################
+"
+" This Neovim config is tailored towards PHP and JavaScript/TypeScript work
+" it uses the vim-plug plugin manager and requires the following tools:
+"
+" - vim-plug
+" - Font with devicons
+" - fzf
+" - git
 " - nvim
 " - python3 support
-" - fzf
-" - vim plug
-" - Font with devicons
-" - yarn
 " - ripgrep
+" - tmux
+" - yarn
 
-"##############################################################################
-" Plugins
-"##############################################################################
+"################################################################################
+"# Plugins
+"################################################################################
 
 call plug#begin(stdpath('data') . '/plugged')
-    " Fuzzy file finding
-    Plug '/usr/local/opt/fzf'
-    Plug 'junegunn/fzf'
-    Plug 'junegunn/fzf.vim'
 
-    " Syntax
-    Plug 'StanAngeloff/php.vim'
+"################################################################################
+"# Vim Defaults Plugins
+"################################################################################
 
-    " Status line
-    Plug 'vim-airline/vim-airline'
+" Sensible defaults
+Plug 'tpope/vim-sensible'
 
-    " Themes for airline
-    Plug 'vim-airline/vim-airline-themes'
+" Standard terminal integration improvements
+Plug 'wincent/terminus'
 
-    " Import tabs etc from editorconfig
-    Plug 'editorconfig/editorconfig-vim'
+" Improves netrw
+Plug 'tpope/vim-vinegar'
 
-    " Common COC plugins
-    Plug 'neoclide/coc.nvim', {'do': { -> coc#util#install()}}
-    Plug 'neoclide/coc-snippets', {'do': 'yarn install --frozen-lockfile'}
-    Plug 'neoclide/coc-tsserver', {'do': 'yarn install --frozen-lockfile'}
-    Plug 'neoclide/coc-eslint', {'do': 'yarn install --frozen-lockfile'}
-    Plug 'neoclide/coc-tslint', {'do': 'yarn install --frozen-lockfile'}
-    Plug 'neoclide/coc-css', {'do': 'yarn install --frozen-lockfile'}
-    Plug 'neoclide/coc-lists', {'do': 'yarn install --frozen-lockfile'} " mru and stuff
-    Plug 'neoclide/coc-highlight', {'do': 'yarn install --frozen-lockfile'} " color highlighting
-    Plug 'neoclide/coc-json', {'do': 'yarn install --frozen-lockfile'}
-    Plug 'neoclide/coc-html', {'do': 'yarn install --frozen-lockfile'}
-    Plug 'neoclide/coc-html', {'do': 'yarn install --frozen-lockfile'}
-    " Need to manually run :CocInstall coc-phpls
-    " Plug 'marlonfan/coc-phpls', {'do': 'yarn install --frozen-lockfile'}
+"################################################################################
+"# Visual Plugins
+"################################################################################
 
-    " Startup screen
-    Plug 'mhinz/vim-startify'
+" Status line
+Plug 'vim-airline/vim-airline' | Plug 'vim-airline/vim-airline-themes'
 
-    " Helps root switching
-    Plug 'airblade/vim-rooter'
+" Startup screen
+Plug 'mhinz/vim-startify'
 
-    " Syntax support
-    Plug 'leafgarland/typescript-vim'
+" Nice theme, use this theme with terminal too
+Plug 'arcticicestudio/nord-vim'
 
-    " Typescript jsx support
-    Plug 'peitalin/vim-jsx-typescript'
+" Theme packs
+Plug 'rafi/awesome-vim-colorschemes' | Plug 'xolox/vim-misc'
 
-    " SilverStripe template support
-    Plug 'phalkunz/vim-ss'
+" No distraction mode
+Plug 'junegunn/goyo.vim'
 
-    " Vim prettier suport
-    Plug 'prettier/vim-prettier', {
-    \ 'do': 'yarn install',
-    \ 'branch': 'release/1.x',
-    \ 'for': [
-     \ 'javascript',
-     \ 'typescript',
-     \ 'css',
-     \ 'less',
-     \ 'json',
-     \ 'graphql',
-     \ 'markdown',
-     \ 'vue',
-     \ 'php',
-     \ 'html' ] }
+" Makes tmux use airline colors
+Plug 'edkolev/tmuxline.vim'
 
-    " Better commenting
-    Plug 'tomtom/tcomment_vim'
+" Show git info in sidebar
+Plug 'mhinz/vim-signify'
 
-    " Show indentation
-    Plug 'Yggdroot/indentLine'
+" Dev icons
+Plug 'ryanoasis/vim-devicons'
 
-    " No distraction omde
-    Plug 'junegunn/goyo.vim'
+" Nicer scrolling
+Plug 'psliwka/vim-smoothie'
 
-    " Blade templating support
-    Plug 'jwalton512/vim-blade'
+" Show indentation
+Plug 'Yggdroot/indentLine'
 
-    " Markdown preview
-    Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  }
+" Toggle relative line numbering <Leader>r
+Plug 'jeffkreeftmeijer/vim-numbertoggle'
 
-    " Makes tmux use airline colors
-    Plug 'edkolev/tmuxline.vim'
+"################################################################################
+"# Navigation/Search Plugins
+"################################################################################
 
-    " Standard terminal integration improvements
-    Plug 'wincent/terminus'
+" Fuzzy file finding
+Plug '/usr/local/opt/fzf'
+Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'
 
-    " Cyclic navigation bindings for filetypes and file patterns
-    Plug 'tpope/vim-projectionist'
+" Helps root switching
+Plug 'airblade/vim-rooter'
 
-    " Integrates with projectionist to add 'Ftype' stype commanges
-    Plug 'c-brenn/fuzzy-projectionist.vim'
+" Cyclic navigation bindings for filetypes and file patterns
+Plug 'tpope/vim-projectionist'
 
-    " Toggle relative line numbering <Leader>r
-    Plug 'jeffkreeftmeijer/vim-numbertoggle'
+" Integrates with projectionist to add 'Ftype' type commands
+Plug 'c-brenn/fuzzy-projectionist.vim'
 
-    " Find and replace via quickfix list
-    Plug 'stefandtw/quickfix-reflector.vim'
+" File browser
+Plug 'vifm/vifm.vim'
 
-    " Allows Rg to populate the quickfix list
-    Plug 'jremmen/vim-ripgrep'
+" Common pane navigation for vim and tmux together
+Plug 'christoomey/vim-tmux-navigator'
 
-    " Surround motions
-    Plug 'tpope/vim-surround'
+"################################################################################
+"# Code Formatting Plugins
+"################################################################################
 
-    " PHP Debugging
-    Plug 'vim-vdebug/vdebug'
+" Import tabs etc from editorconfig
+Plug 'editorconfig/editorconfig-vim'
 
-    " Show git info in sidebar
-    Plug 'mhinz/vim-signify'
+" Vim prettier suport
+Plug 'prettier/vim-prettier', {
+\ 'do': 'yarn install',
+\ 'branch': 'release/1.x',
+\ 'for': [
+ \ 'javascript',
+ \ 'typescript',
+ \ 'css',
+ \ 'less',
+ \ 'json',
+ \ 'graphql',
+ \ 'markdown',
+ \ 'vue',
+ \ 'php',
+ \ 'html' ] }
 
-    " Adds ability to adjust alignment in visual mode
-    Plug 'godlygeek/tabular'
+"################################################################################
+"# Editor/Motion Plugins
+"################################################################################
 
-    " Motions for inside camel case
-    Plug 'bkad/CamelCaseMotion'
+" Coc
+Plug 'neoclide/coc.nvim', {'do': { -> coc#util#install()}}
+Plug 'neoclide/coc-snippets', {'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc-tsserver', {'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc-eslint', {'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc-tslint', {'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc-css', {'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc-lists', {'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc-highlight', {'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc-json', {'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc-html', {'do': 'yarn install --frozen-lockfile'}
 
-    " Dev icons
-    Plug 'ryanoasis/vim-devicons'
+" Better commenting
+Plug 'tomtom/tcomment_vim'
 
-    " Docker compose tools
-    Plug 'skanehira/docker-compose.vim'
-    Plug 'ekalinin/dockerfile.vim'
+" Find and replace via quickfix list
+Plug 'stefandtw/quickfix-reflector.vim'
 
-    " Adds composer command support
-    Plug 'noahfrederick/vim-composer'
+" Allows Rg to populate the quickfix list
+Plug 'jremmen/vim-ripgrep'
 
-    " Nice theme, use this theme with terminal too
-    Plug 'arcticicestudio/nord-vim'
+" Surround motions
+Plug 'tpope/vim-surround'
 
-    " Improves netrw
-    Plug 'tpope/vim-vinegar'
+" Adds ability to adjust alignment in visual mode
+Plug 'godlygeek/tabular'
 
-    " Allows for opening multiple files
-    Plug 'PhilRunninger/nerdtree-visual-selection'
+" Motions for inside camel case
+Plug 'bkad/CamelCaseMotion'
 
-    " Adds a bunch of themes
-    Plug 'rafi/awesome-vim-colorschemes'
+" Allows repeating of various custom commands
+Plug 'tpope/vim-repeat'
 
-    " Allows cycling through themes
-    Plug 'xolox/vim-misc'
-    Plug 'xolox/vim-colorscheme-switcher'
+" Allows for easy repeat of last used macro
+Plug 'wincent/replay'
 
-    " Allows repeating of various custom commands
-    Plug 'tpope/vim-repeat'
+" Split and join programming lines
+Plug 'AndrewRadev/splitjoin.vim'
 
-    " Allows for easy repeat of last used macro
-    Plug 'wincent/replay'
+" Nice docblock generator
+Plug 'kkoomen/vim-doge'
 
-    " Jump to interesting places with a Git or Mercurial repo
-    Plug 'wincent/vcs-jump'
+"################################################################################
+"# Tool Plugins
+"################################################################################
 
-    " Split and join programming lines
-    Plug 'AndrewRadev/splitjoin.vim'
+" Adds composer command support
+Plug 'noahfrederick/vim-composer'
 
-    " File browser
-    Plug 'vifm/vifm.vim'
+" Docker compose tools
+Plug 'skanehira/docker-compose.vim'
 
-    " Syntax support for swift
-    Plug 'lilyball/vim-swift'
+" Personal wiki
+Plug 'vimwiki/vimwiki'
 
-    " Nicer scrolling
-    Plug 'psliwka/vim-smoothie'
+" PHP Debugging
+Plug 'vim-vdebug/vdebug'
 
-    " Common pane navigation for vim and tmux together
-    Plug 'christoomey/vim-tmux-navigator'
+" Markdown preview
+Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  }
 
-    " Syntax highlighting for tmux conf
-    Plug 'tmux-plugins/vim-tmux'
+" Jump to interesting places with a Git or Mercurial repo
+Plug 'wincent/vcs-jump'
 
-	" Nice docblock generator
-	Plug 'kkoomen/vim-doge'
+"################################################################################
+"# Syntax Plugins
+"################################################################################
 
-    " Personal wiki
-    Plug 'vimwiki/vimwiki'
+Plug 'bfontaine/Brewfile.vim'
+Plug 'leafgarland/typescript-vim'
+Plug 'lilyball/vim-swift'
+Plug 'peitalin/vim-jsx-typescript'
+Plug 'StanAngeloff/php.vim'
+Plug 'phalkunz/vim-ss'
+Plug 'tmux-plugins/vim-tmux'
+Plug 'jwalton512/vim-blade'
+Plug 'ekalinin/dockerfile.vim'
+
 call plug#end()
 
-"##############################################################################
-" General Settings
-"##############################################################################
+"################################################################################
+"# General Settings
+"################################################################################
 
 " Default file encoding
 set encoding=UTF-8
 
 " Enable undo persistence across sessions
 set undofile
-
-" The lines of history to remember
-set history=10000
-
-" Automatically read the file when it's changed outside VIM
-set autoread
 
 " Split defaults
 set splitbelow splitright
@@ -219,13 +228,12 @@ set wildignore+=.git,.DS_Store
 set noerrorbells
 set timeoutlen=500
 
-"##############################################################################
-" Searching
-"##############################################################################
+"################################################################################
+"# Searching
+"################################################################################
 
 set ignorecase
 set smartcase
-set incsearch
 
 augroup IncSearchHighlight
   autocmd!
@@ -233,17 +241,17 @@ augroup IncSearchHighlight
   autocmd CmdlineLeave /,\? :set nohlsearch
 augroup END
 
-"##############################################################################
-" Editing
-"##############################################################################
+"################################################################################
+"# Editing
+"################################################################################
 
 set tabstop=4
 set shiftwidth=4
 set expandtab
 
-"##############################################################################
-" Visual Settings
-"####################################################################################################################
+"################################################################################
+"# Visual Settings
+"################################################################################
 
 " Add bulk color past 120
 let &colorcolumn=join(range(121,999),",")
@@ -253,9 +261,6 @@ set spelllang=en
 
 " Turn spelling on for markdown files
 autocmd FileType markdown setlocal spell
-
-" Turn Goyo on for markdown
-autocmd BufRead,BufNewFile *.md :Goyo 80
 
 " Don't redraw while performing a macro
 set lazyredraw
@@ -272,20 +277,27 @@ set cursorline
 " Show line numbers
 set number
 
-" Always show current position
-set ruler
+" Set the colorscheme but don't error if nord doesn't exist
+silent! colorscheme nord
+" Other themes I like:
+" - carbonized-light
+" - deep-space
+" - github
+" - hybrid-material
+" - materialbox
 
-if !exists('g:syntax_on')
-	syntax enable
-endif
-
-filetype plugin indent on
-colorscheme nord
+" Enables 24bit colors
 set termguicolors
 
-"##############################################################################
-" Mappings
-"##############################################################################
+" Give floating windows transparency
+set winblend=30
+
+" Make comments italic
+highlight Comment cterm=italic gui=italic
+
+"################################################################################
+"# Mappings
+"################################################################################
 
 " Next buffer
 nnoremap <silent>   <tab> :bnext<CR>
@@ -351,10 +363,19 @@ nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 " Get hint
 nnoremap <silent> gh :call CocActionAsync('doHover')<CR>
+" Give a color scheme chooser
+nnoremap <silent> <Leader>C :call fzf#run({
+\   'source':
+\     map(split(globpath(&rtp, "colors/*.vim"), "\n"),
+\         "substitute(fnamemodify(v:val, ':t'), '\\..\\{-}$', '', '')"),
+\   'sink':    'colo',
+\   'options': '+m',
+\   'left':    30
+\ })<CR>
 
-"##############################################################################
-" Commands
-"##############################################################################
+"################################################################################
+"# Commands
+"################################################################################
 
 " Configures ripgrep with fzf
 command! -bang -nargs=* FzfRg call fzf#vim#grep("rg --column --line-number --no-heading --color=always --smart-case ".shellescape(<q-args>), 1, {'options': '--delimiter : --nth 4..'}, <bang>0)
@@ -365,9 +386,9 @@ command! -nargs=* -complete=file Ripgrep :call s:Rg(<q-args>)
 command! -nargs=* -complete=file Rg :call s:Rg(<q-args>)
 
 
-"##############################################################################
-" Plugin Configurations
-"##############################################################################
+"################################################################################
+"# Coc Configurations
+"################################################################################
 
 " if hidden is not set, TextEdit might fail.
 set hidden
@@ -398,12 +419,12 @@ function! s:check_back_space() abort
     return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 
-"##############################################################################
-" Plugin Configurations
-"##############################################################################
+"################################################################################
+"# Plugin Configurations
+"################################################################################
 
-let g:vimwiki_list = [{'path': '~/vimwiki/',
-                      \ 'syntax': 'markdown', 'ext': '.md'}]
+" Config vim wiki
+let g:vimwiki_list = [{'path': '~/vimwiki/', 'syntax': 'markdown', 'ext': '.md'}]
 
 "let g:vifm_replace_netrw = 1
 
@@ -427,7 +448,9 @@ let g:rooter_patterns = ['docker-compose.yml', '.git/']
 let g:rooter_silent_chdir = 1
 
 " Vdebug needs to be able to load files and understand how the file in the docker container maps to the local system
-autocmd VimEnter * :call Vdebug_load_options( { 'path_maps' : { '/var/www/html/' : getcwd() } } )
+if exists("Vdebug_load_options")
+	autocmd VimEnter * :call Vdebug_load_options( { 'path_maps' : { '/var/www/html/' : getcwd() } } )
+endif
 
 " Sets up within word motions to use ,
 let g:camelcasemotion_key = ','
@@ -470,9 +493,9 @@ let g:airline#extensions#tabline#formatter = 'unique_tail'
 " Fix netrw buffer issue
 let g:netrw_fastbrowse = 0
 
-"##############################################################################
-" Custom Functions
-"##############################################################################
+"################################################################################
+"# Custom Functions
+"################################################################################
 
 " Cycle through relativenumber + number, number (only), and no numbering.
 function! CycleNumbering() abort
@@ -513,14 +536,9 @@ function! CreateCenteredFloatingWindow()
     tnoremap <buffer> <silent> <Esc> <C-\><C-n><CR>:call DeleteUnlistedBuffers()<CR>
 endfunction
 
-
-
-"##############################################################################
-" Terminal Handling
-"##############################################################################
-
-" Set login shell for :terminal command so aliases work
-set shell=/usr/local/bin/bash
+"################################################################################
+"# Terminal Handling
+"################################################################################
 
 " When term starts, auto go into insert mode
 autocmd TermOpen * startinsert
