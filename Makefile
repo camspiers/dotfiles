@@ -23,7 +23,7 @@ tmux:
 	tmux kill-server
 
 skhd:
-	ln -s "$DOTFILES/files/.config/skhd/skhdrc" "$HOME/.skhdrc"
+	ln -s "$(DOTFILES)/files/.config/skhd/skhdrc" "$(HOME)/.skhdrc"
 
 fzf-marks:
 	git clone https://github.com/urbainvaes/fzf-marks.git ~/fzf-marks
