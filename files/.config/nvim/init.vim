@@ -186,6 +186,9 @@ Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  }
 " Jump to interesting places with a Git or Mercurial repo
 Plug 'wincent/vcs-jump'
 
+" Merge tool for git
+Plug 'samoshkin/vim-mergetool'
+
 "################################################################################
 "# Syntax Plugins
 "################################################################################
@@ -363,6 +366,8 @@ nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 " Get hint
 nnoremap <silent> gh :call CocActionAsync('doHover')<CR>
+" Merge tool
+nmap <leader>mt <plug>(MergetoolToggle)
 " Give a color scheme chooser
 nnoremap <silent> <Leader>C :call fzf#run({
 \   'source':
@@ -422,6 +427,9 @@ endfunction
 "################################################################################
 "# Plugin Configurations
 "################################################################################
+
+let g:mergetool_layout = 'bmr'
+let g:mergetool_prefer_revision = 'local'
 
 " Config vim wiki
 let g:vimwiki_list = [{'path': '~/vimwiki/', 'syntax': 'markdown', 'ext': '.md'}]
