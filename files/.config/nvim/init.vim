@@ -1,12 +1,19 @@
-" Environment requirements:
-" - tmux
+"##############################################################################
+" Neovim config
+"##############################################################################
+"
+" This Neovim config is tailored towards PHP and JavaScript/TypeScript work
+" it uses the vim-plug plugin manager and requires the following tools:
+"
+" - vim-plug
+" - Font with devicons
+" - fzf
+" - git
 " - nvim
 " - python3 support
-" - fzf
-" - vim plug
-" - Font with devicons
-" - yarn
 " - ripgrep
+" - tmux
+" - yarn
 
 "##############################################################################
 " Plugins
@@ -14,50 +21,86 @@
 
 call plug#begin(stdpath('data') . '/plugged')
 
+"##############################################################################
+" Vim Defaults Plugins
+"##############################################################################
+
+" Sensible defaults
+Plug 'tpope/vim-sensible'
+
+" Standard terminal integration improvements
+Plug 'wincent/terminus'
+
+" Improves netrw
+Plug 'tpope/vim-vinegar'
+
+"##############################################################################
+" Visual Plugins
+"##############################################################################
+
+" Status line
+Plug 'vim-airline/vim-airline' | Plug 'vim-airline/vim-airline-themes'
+
+" Startup screen
+Plug 'mhinz/vim-startify'
+
+" Nice theme, use this theme with terminal too
+Plug 'arcticicestudio/nord-vim'
+
+" Theme packs
+Plug 'rafi/awesome-vim-colorschemes' | Plug 'xolox/vim-misc'
+
+" No distraction mode
+Plug 'junegunn/goyo.vim'
+
+" Makes tmux use airline colors
+Plug 'edkolev/tmuxline.vim'
+
+" Show git info in sidebar
+Plug 'mhinz/vim-signify'
+
+" Dev icons
+Plug 'ryanoasis/vim-devicons'
+
+" Nicer scrolling
+Plug 'psliwka/vim-smoothie'
+
+" Show indentation
+Plug 'Yggdroot/indentLine'
+
+" Toggle relative line numbering <Leader>r
+Plug 'jeffkreeftmeijer/vim-numbertoggle'
+
+"##############################################################################
+" Navigation/Search Plugins
+"##############################################################################
+
 " Fuzzy file finding
 Plug '/usr/local/opt/fzf'
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 
-" Syntax
-Plug 'StanAngeloff/php.vim'
-
-" Status line
-Plug 'vim-airline/vim-airline'
-
-" Themes for airline
-Plug 'vim-airline/vim-airline-themes'
-
-" Import tabs etc from editorconfig
-Plug 'editorconfig/editorconfig-vim'
-
-" Common COC plugins
-Plug 'neoclide/coc.nvim', {'do': { -> coc#util#install()}}
-Plug 'neoclide/coc-snippets', {'do': 'yarn install --frozen-lockfile'}
-Plug 'neoclide/coc-tsserver', {'do': 'yarn install --frozen-lockfile'}
-Plug 'neoclide/coc-eslint', {'do': 'yarn install --frozen-lockfile'}
-Plug 'neoclide/coc-tslint', {'do': 'yarn install --frozen-lockfile'}
-Plug 'neoclide/coc-css', {'do': 'yarn install --frozen-lockfile'}
-Plug 'neoclide/coc-lists', {'do': 'yarn install --frozen-lockfile'} " mru and stuff
-Plug 'neoclide/coc-highlight', {'do': 'yarn install --frozen-lockfile'} " color highlighting
-Plug 'neoclide/coc-json', {'do': 'yarn install --frozen-lockfile'}
-Plug 'neoclide/coc-html', {'do': 'yarn install --frozen-lockfile'}
-Plug 'neoclide/coc-html', {'do': 'yarn install --frozen-lockfile'}
-
-" Startup screen
-Plug 'mhinz/vim-startify'
-
 " Helps root switching
 Plug 'airblade/vim-rooter'
 
-" Syntax support
-Plug 'leafgarland/typescript-vim'
+" Cyclic navigation bindings for filetypes and file patterns
+Plug 'tpope/vim-projectionist'
 
-" Typescript jsx support
-Plug 'peitalin/vim-jsx-typescript'
+" Integrates with projectionist to add 'Ftype' type commands
+Plug 'c-brenn/fuzzy-projectionist.vim'
 
-" SilverStripe template support
-Plug 'phalkunz/vim-ss'
+" File browser
+Plug 'vifm/vifm.vim'
+
+" Common pane navigation for vim and tmux together
+Plug 'christoomey/vim-tmux-navigator'
+
+"##############################################################################
+" Code Formatting Plugins
+"##############################################################################
+
+" Import tabs etc from editorconfig
+Plug 'editorconfig/editorconfig-vim'
 
 " Vim prettier suport
 Plug 'prettier/vim-prettier', {
@@ -75,35 +118,25 @@ Plug 'prettier/vim-prettier', {
  \ 'php',
  \ 'html' ] }
 
+"##############################################################################
+" Editor/Motion Plugins
+"##############################################################################
+
+" Coc
+Plug 'neoclide/coc.nvim', {'do': { -> coc#util#install()}}
+Plug 'neoclide/coc-snippets', {'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc-tsserver', {'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc-eslint', {'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc-tslint', {'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc-css', {'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc-lists', {'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc-highlight', {'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc-json', {'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc-html', {'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc-html', {'do': 'yarn install --frozen-lockfile'}
+
 " Better commenting
 Plug 'tomtom/tcomment_vim'
-
-" Show indentation
-Plug 'Yggdroot/indentLine'
-
-" No distraction omde
-Plug 'junegunn/goyo.vim'
-
-" Blade templating support
-Plug 'jwalton512/vim-blade'
-
-" Markdown preview
-Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  }
-
-" Makes tmux use airline colors
-Plug 'edkolev/tmuxline.vim'
-
-" Standard terminal integration improvements
-Plug 'wincent/terminus'
-
-" Cyclic navigation bindings for filetypes and file patterns
-Plug 'tpope/vim-projectionist'
-
-" Integrates with projectionist to add 'Ftype' stype commanges
-Plug 'c-brenn/fuzzy-projectionist.vim'
-
-" Toggle relative line numbering <Leader>r
-Plug 'jeffkreeftmeijer/vim-numbertoggle'
 
 " Find and replace via quickfix list
 Plug 'stefandtw/quickfix-reflector.vim'
@@ -114,43 +147,11 @@ Plug 'jremmen/vim-ripgrep'
 " Surround motions
 Plug 'tpope/vim-surround'
 
-" PHP Debugging
-Plug 'vim-vdebug/vdebug'
-
-" Show git info in sidebar
-Plug 'mhinz/vim-signify'
-
 " Adds ability to adjust alignment in visual mode
 Plug 'godlygeek/tabular'
 
 " Motions for inside camel case
 Plug 'bkad/CamelCaseMotion'
-
-" Dev icons
-Plug 'ryanoasis/vim-devicons'
-
-" Docker compose tools
-Plug 'skanehira/docker-compose.vim'
-Plug 'ekalinin/dockerfile.vim'
-
-" Adds composer command support
-Plug 'noahfrederick/vim-composer'
-
-" Nice theme, use this theme with terminal too
-Plug 'arcticicestudio/nord-vim'
-
-" Improves netrw
-Plug 'tpope/vim-vinegar'
-
-" Allows for opening multiple files
-Plug 'PhilRunninger/nerdtree-visual-selection'
-
-" Adds a bunch of themes
-Plug 'rafi/awesome-vim-colorschemes'
-
-" Allows cycling through themes
-Plug 'xolox/vim-misc'
-Plug 'xolox/vim-colorscheme-switcher'
 
 " Allows repeating of various custom commands
 Plug 'tpope/vim-repeat'
@@ -158,32 +159,47 @@ Plug 'tpope/vim-repeat'
 " Allows for easy repeat of last used macro
 Plug 'wincent/replay'
 
-" Jump to interesting places with a Git or Mercurial repo
-Plug 'wincent/vcs-jump'
-
 " Split and join programming lines
 Plug 'AndrewRadev/splitjoin.vim'
-
-" File browser
-Plug 'vifm/vifm.vim'
-
-" Syntax support for swift
-Plug 'lilyball/vim-swift'
-
-" Nicer scrolling
-Plug 'psliwka/vim-smoothie'
-
-" Common pane navigation for vim and tmux together
-Plug 'christoomey/vim-tmux-navigator'
-
-" Syntax highlighting for tmux conf
-Plug 'tmux-plugins/vim-tmux'
 
 " Nice docblock generator
 Plug 'kkoomen/vim-doge'
 
+"##############################################################################
+" Tool Plugins
+"##############################################################################
+
+" Adds composer command support
+Plug 'noahfrederick/vim-composer'
+
+" Docker compose tools
+Plug 'skanehira/docker-compose.vim'
+
 " Personal wiki
 Plug 'vimwiki/vimwiki'
+
+" PHP Debugging
+Plug 'vim-vdebug/vdebug'
+
+" Markdown preview
+Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  }
+
+" Jump to interesting places with a Git or Mercurial repo
+Plug 'wincent/vcs-jump'
+
+"##############################################################################
+" Syntax Plugins
+"##############################################################################
+
+Plug 'bfontaine/Brewfile.vim'
+Plug 'leafgarland/typescript-vim'
+Plug 'lilyball/vim-swift'
+Plug 'peitalin/vim-jsx-typescript'
+Plug 'StanAngeloff/php.vim'
+Plug 'phalkunz/vim-ss'
+Plug 'tmux-plugins/vim-tmux'
+Plug 'jwalton512/vim-blade'
+Plug 'ekalinin/dockerfile.vim'
 
 call plug#end()
 
@@ -196,12 +212,6 @@ set encoding=UTF-8
 
 " Enable undo persistence across sessions
 set undofile
-
-" The lines of history to remember
-set history=10000
-
-" Automatically read the file when it's changed outside VIM
-set autoread
 
 " Split defaults
 set splitbelow splitright
@@ -225,7 +235,6 @@ set timeoutlen=500
 
 set ignorecase
 set smartcase
-set incsearch
 
 augroup IncSearchHighlight
   autocmd!
@@ -272,15 +281,17 @@ set cursorline
 " Show line numbers
 set number
 
-" Always show current position
-set ruler
-
-if !exists('g:syntax_on')
-	syntax enable
-endif
-
-filetype plugin indent on
+" Set the colorscheme but don't error if nord doesn't exist
 silent! colorscheme nord
+" Other themes I like:
+" - carbonized-light
+" - deep-space
+" - github
+" - hybrid-material
+" - materialbox
+
+
+" Enables 24bit colors
 set termguicolors
 
 "##############################################################################
@@ -351,6 +362,15 @@ nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 " Get hint
 nnoremap <silent> gh :call CocActionAsync('doHover')<CR>
+" Give a color scheme chooser
+nnoremap <silent> <Leader>C :call fzf#run({
+\   'source':
+\     map(split(globpath(&rtp, "colors/*.vim"), "\n"),
+\         "substitute(fnamemodify(v:val, ':t'), '\\..\\{-}$', '', '')"),
+\   'sink':    'colo',
+\   'options': '+m',
+\   'left':    30
+\ })<CR>
 
 "##############################################################################
 " Commands
@@ -366,7 +386,7 @@ command! -nargs=* -complete=file Rg :call s:Rg(<q-args>)
 
 
 "##############################################################################
-" Plugin Configurations
+" Coc Configurations
 "##############################################################################
 
 " if hidden is not set, TextEdit might fail.
@@ -402,6 +422,7 @@ endfunction
 " Plugin Configurations
 "##############################################################################
 
+" Config vim wiki
 let g:vimwiki_list = [{'path': '~/vimwiki/',
                       \ 'syntax': 'markdown', 'ext': '.md'}]
 
@@ -515,14 +536,9 @@ function! CreateCenteredFloatingWindow()
     tnoremap <buffer> <silent> <Esc> <C-\><C-n><CR>:call DeleteUnlistedBuffers()<CR>
 endfunction
 
-
-
 "##############################################################################
 " Terminal Handling
 "##############################################################################
-
-" Set login shell for :terminal command so aliases work
-set shell=/usr/local/bin/bash
 
 " When term starts, auto go into insert mode
 autocmd TermOpen * startinsert
