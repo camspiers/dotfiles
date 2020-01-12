@@ -454,7 +454,8 @@ let g:rooter_patterns = ['docker-compose.yml', '.git/']
 " Change silently
 let g:rooter_silent_chdir = 1
 
-" Vdebug needs to be able to load files and understand how the file in the docker container maps to the local system
+" Vdebug needs to be able to load files and understand how the file in the docker
+" container maps to the local system
 if exists("Vdebug_load_options")
 	autocmd VimEnter * :call Vdebug_load_options( { 'path_maps' : { '/var/www/html/' : getcwd() } } )
 endif
