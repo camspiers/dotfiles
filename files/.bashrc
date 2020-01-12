@@ -4,6 +4,7 @@ shopt -s histappend                      # append to history, don't overwrite it
 shopt -s expand_aliases
 
 alias c='clear'
+alias cat='bat'
 alias dco='docker-compose'
 alias dk='dockerkill'
 alias ld='lazydocker'

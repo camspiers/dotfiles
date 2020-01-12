@@ -6,7 +6,7 @@
 " it uses the vim-plug plugin manager and requires the following tools:
 "
 " - vim-plug
-" - Font with devicons
+" - font with devicons
 " - fzf
 " - git
 " - nvim
@@ -14,7 +14,7 @@
 " - ripgrep
 " - tmux
 " - yarn
-
+"
 "################################################################################
 "# Plugins
 "################################################################################
@@ -189,25 +189,30 @@ Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  }
 " Merge tool for git
 Plug 'samoshkin/vim-mergetool'
 
+" Slack integration
+Plug 'prashantjois/vim-slack'
+
 "################################################################################
 "# Syntax Plugins
 "################################################################################
 
 Plug 'bfontaine/Brewfile.vim'
+Plug 'ekalinin/dockerfile.vim'
+Plug 'jwalton512/vim-blade'
 Plug 'leafgarland/typescript-vim'
 Plug 'lilyball/vim-swift'
 Plug 'peitalin/vim-jsx-typescript'
-Plug 'StanAngeloff/php.vim'
 Plug 'phalkunz/vim-ss'
+Plug 'StanAngeloff/php.vim'
 Plug 'tmux-plugins/vim-tmux'
-Plug 'jwalton512/vim-blade'
-Plug 'ekalinin/dockerfile.vim'
 
 call plug#end()
 
 "################################################################################
 "# General Settings
 "################################################################################
+
+silent! source ~/.config/nvim/local.vim
 
 " Default file encoding
 set encoding=UTF-8
@@ -434,6 +439,7 @@ let g:mergetool_prefer_revision = 'local'
 
 " Config vim wiki
 let g:vimwiki_list = [{'path': '~/vimwiki/', 'syntax': 'markdown', 'ext': '.md'}]
+let g:vimwiki_global_ext = 0
 
 " Don't start markdown preview automatically, use :MarkdownPreview
 let g:mkdp_auto_start = 0
