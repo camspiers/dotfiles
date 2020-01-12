@@ -95,6 +95,12 @@ Plug 'vifm/vifm.vim'
 " Common pane navigation for vim and tmux together
 Plug 'christoomey/vim-tmux-navigator'
 
+" Allows Rg to populate the quickfix list
+Plug 'jremmen/vim-ripgrep'
+
+" Jump to interesting places with a Git or Mercurial repo
+Plug 'wincent/vcs-jump'
+
 "################################################################################
 "# Code Formatting Plugins
 "################################################################################
@@ -140,9 +146,6 @@ Plug 'tomtom/tcomment_vim'
 " Find and replace via quickfix list
 Plug 'stefandtw/quickfix-reflector.vim'
 
-" Allows Rg to populate the quickfix list
-Plug 'jremmen/vim-ripgrep'
-
 " Surround motions
 Plug 'tpope/vim-surround'
 
@@ -182,9 +185,6 @@ Plug 'vim-vdebug/vdebug'
 
 " Markdown preview
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  }
-
-" Jump to interesting places with a Git or Mercurial repo
-Plug 'wincent/vcs-jump'
 
 " Merge tool for git
 Plug 'samoshkin/vim-mergetool'
@@ -428,13 +428,12 @@ endfunction
 "# Plugin Configurations
 "################################################################################
 
+" 3-way merge
 let g:mergetool_layout = 'bmr'
 let g:mergetool_prefer_revision = 'local'
 
 " Config vim wiki
 let g:vimwiki_list = [{'path': '~/vimwiki/', 'syntax': 'markdown', 'ext': '.md'}]
-
-"let g:vifm_replace_netrw = 1
 
 " Don't start markdown preview automatically, use :MarkdownPreview
 let g:mkdp_auto_start = 0
