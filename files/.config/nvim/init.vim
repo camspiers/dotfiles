@@ -568,14 +568,17 @@ function! ToggleProject()
     call ToggleTerm('tmuxinator-fzf-start.sh')
 endfunction
 
+" Opens a throwaway/scratch terminal
 function! ToggleScratchTerm()
     call ToggleTerm('bash')
 endfunction
 
+" Opens lazygit
 function! ToggleLazyGit()
     call ToggleTerm('lazygit')
 endfunction
 
+" Opens harvest starti
 function! ToggleHarvest()
     call ToggleTerm('hstarti')
 endfunction
