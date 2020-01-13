@@ -68,9 +68,6 @@ Plug 'psliwka/vim-smoothie'
 " Show indentation
 Plug 'Yggdroot/indentLine'
 
-" Toggle relative line numbering <Leader>r
-Plug 'jeffkreeftmeijer/vim-numbertoggle'
-
 "###############################################################################
 "# Navigation/Search Plugins ###################################################
 "###############################################################################
