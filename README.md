@@ -6,7 +6,7 @@ macOS environment managed by git and GNU Stow.
 
 ## Overview
 
-- Homebrew Defaults
+- [Homebrew Defaults](extra/homebrew/Brewfile)
 - NeoVim Config
 - Tmux Config
 - macOS Defaults
