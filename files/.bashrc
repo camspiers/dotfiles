@@ -15,6 +15,9 @@ alias ms='tmuxinator-fzf-start.sh'
 alias rd='readydocker.sh'
 alias v='nvim'
 
+# Provide a shortcut for foregrounding the last job
+bind -x '"\C-a":"fg"'
+
 # Enable fzf for bash completion
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
