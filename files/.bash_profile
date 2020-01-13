@@ -1,7 +1,13 @@
+################################################################################
+# Bash Profile Configuration (Cam Spiers) ######################################
+################################################################################
+
 # Source bashrc
 source "$HOME/.bashrc"
 
-# Joins paths together
+################################################################################
+# Path Management ##############################################################
+################################################################################
 
 ################################################################################
 # Joins paths together by ":"
@@ -41,19 +47,14 @@ USER_PATHS=(
 # Set PATH with ordering: SYS:PATH:USER
 export PATH=$(dedup "$(join SYS_PATHS[@]):$PATH:$(join USER_PATHS[@])")
 
+################################################################################
+# Exports ######################################################################
+################################################################################
+
 # Ensures that SHELL is set to my $PATH bash, especially for tmux
 export SHELL=$(which bash)
 
-# Homebrew completions
-source $(brew --prefix)/etc/bash_completion
-
-# Fzf completions
-source "/usr/local/opt/fzf/shell/completion.bash"
-
-# Fzf key bindings
-source "/usr/local/opt/fzf/shell/key-bindings.bash"
-
-# macos now shows a deprecation warning about bash, remove it
+# macOS now shows a deprecation warning about bash, remove it
 export BASH_SILENCE_DEPRECATION_WARNING=1
 
 # Set editor
@@ -77,6 +78,23 @@ export TMUX_1PASSWORD_OP_ITEMS_JQ_FILTER="
   | join(\",\"))
   | .[]
 "
+
+################################################################################
+# Completions ##################################################################
+################################################################################
+
+# Homebrew completions
+source $(brew --prefix)/etc/bash_completion
+
+# Fzf completions
+source "/usr/local/opt/fzf/shell/completion.bash"
+
+# Fzf key bindings
+source "/usr/local/opt/fzf/shell/key-bindings.bash"
+
+################################################################################
+# Environment Managers #########################################################
+################################################################################
 
 # rbenv
 eval "$(rbenv init -)"

@@ -1,5 +1,5 @@
 "###############################################################################
-"# Neovim Configuration ########################################################
+"# Neovim Configuration (Cam Spiers) ###########################################
 "###############################################################################
 "
 " This Neovim config is tailored towards PHP and JavaScript/TypeScript work
@@ -48,7 +48,7 @@ Plug 'mhinz/vim-startify'
 Plug 'arcticicestudio/nord-vim'
 
 " Theme packs
-Plug 'rafi/awesome-vim-colorschemes' | Plug 'xolox/vim-misc'
+Plug 'rafi/awesome-vim-colorschemes' | Plug 'xolox/vim-misc' | Plug 'flazz/vim-colorschemes'
 
 " No distraction mode
 Plug 'junegunn/goyo.vim'
@@ -281,14 +281,13 @@ set cursorline
 " Show line numbers
 set number
 
-" Set the colorscheme but don't error if nord doesn't exist
-silent! colorscheme nord
+" Set the colorscheme but don't error if dracula doesn't exist
+silent! colorscheme dracula
 " Other themes I like:
 " - carbonized-light
 " - deep-space
 " - github
 " - hybrid-material
-" - materialbox
 
 " Enables 24bit colors
 set termguicolors
@@ -495,7 +494,7 @@ let g:fzf_layout = { 'window': 'call CreateCenteredFloatingWindow()' }
 
 " Configure Airline Theme
 let g:airline#extensions#tabline#enabled = 1
-let g:airline_theme = 'nord'
+let g:airline_theme = 'dracula'
 let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#formatter = 'unique_tail'
 
