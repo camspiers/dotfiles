@@ -1,12 +1,13 @@
-export HISTSIZE=100000                   # big big history
-export HISTFILESIZE=100000               # big big history
-shopt -s histappend                      # append to history, don't overwrite it
+export HISTSIZE=100000        # big big history
+export HISTFILESIZE=100000    # big big history
+shopt -s histappend           # append to history, don't overwrite it
 shopt -s expand_aliases
 
 alias c='clear'
 alias cat='bat'
 alias dco='docker-compose'
 alias dk='dockerkill'
+alias f='fg'
 alias ld='lazydocker'
 alias lg='lazygit'
 alias ls='ls -lah --color=auto'
