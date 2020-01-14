@@ -16,16 +16,16 @@ neovim:
 	nvim +PlugInstall +qall
 
 tmux:
-	git clone https://github.com/tmux-plugins/tpm "$(TMUX_SHARE)/plugins/tpm"
+	if [ ! -d "$(TMUX_SHARE)/plugins/tpm" ]; then git clone https://github.com/tmux-plugins/tpm "$(TMUX_SHARE)/plugins/tpm"; fi
 	tmux start-server
 	tmux new-session -d
 	${TMUX_SHARE}/plugins/tpm/scripts/install_plugins.sh
 	tmux kill-server
 
 skhd:
-	ln -s "$(DOTFILES)/files/.config/skhd/skhdrc" "$(HOME)/.skhdrc"
+	ln -sfn "$(DOTFILES)/files/.config/skhd/skhdrc" "$(HOME)/.skhdrc"
 
 fzf-marks:
-	git clone https://github.com/urbainvaes/fzf-marks.git ~/fzf-marks
+	if [ ! -d ~/fzf-marks ]; then git clone https://github.com/urbainvaes/fzf-marks.git ~/fzf-marks; fi
 
 .PHONY: all install brew neovim skhd tmux
