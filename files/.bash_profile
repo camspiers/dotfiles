@@ -29,19 +29,19 @@ dedup() { echo -n $1 | awk -v RS=: -v ORS=: '!arr[$0]++'; }
 
 # System paths
 SYS_PATHS=(
-    "/usr/local/opt/coreutils/libexec/gnubin" # Prefer coreutils
-    "/usr/local/opt/gnu-sed/libexec/gnubin" # Custom sed
-    "/usr/local/opt/python/libexec/bin" # Python
-    "/usr/local/opt/ruby/bin" # Ruby
-    "/usr/local/sbin" # Brew scripts
+  "/usr/local/opt/coreutils/libexec/gnubin" # Prefer coreutils
+  "/usr/local/opt/gnu-sed/libexec/gnubin" # Custom sed
+  "/usr/local/opt/python/libexec/bin" # Python
+  "/usr/local/opt/ruby/bin" # Ruby
+  "/usr/local/sbin" # Brew scripts
 )
 
 # User paths
 USER_PATHS=(
-    "/usr/local/opt/fzf/bin" # Fzf
-    "$HOME/.dotfiles/scripts" # Personal scripts
-    "$HOME/.composer/vendor/bin" # Global composer scripts
-    "$(/usr/local/opt/ruby/bin/ruby -r rubygems -e 'puts Gem.user_dir')/bin" # Ruby
+  "/usr/local/opt/fzf/bin" # Fzf
+  "$HOME/.dotfiles/scripts" # Personal scripts
+  "$HOME/.composer/vendor/bin" # Global composer scripts
+  "$(/usr/local/opt/ruby/bin/ruby -r rubygems -e 'puts Gem.user_dir')/bin" # Ruby
 )
 
 # Set PATH with ordering: SYS:PATH:USER
@@ -72,11 +72,11 @@ export FZF_DEFAULT_OPTS='
 '
 
 export TMUX_1PASSWORD_OP_ITEMS_JQ_FILTER="
-  .[]
-  | [select(.overview.URLs | map(select(.u)) | length == 1)?]
-  | map([ .overview.title, .uuid ]
-  | join(\",\"))
-  | .[]
+.[]
+| [select(.overview.URLs | map(select(.u)) | length == 1)?]
+| map([ .overview.title, .uuid ]
+| join(\",\"))
+| .[]
 "
 
 ################################################################################
