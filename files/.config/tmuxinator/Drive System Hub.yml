@@ -6,6 +6,5 @@ windows:
   - Git: lazygit
   - Docker:
       - readydocker.sh
-      - docker-sync-daemon start
       - docker-compose up -d
       - lazydocker

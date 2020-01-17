@@ -187,6 +187,12 @@ Plug 'samoshkin/vim-mergetool'
 " Slack integration
 Plug 'prashantjois/vim-slack'
 
+" Live Latex
+Plug 'xuhdev/vim-latex-live-preview', { 'for': 'tex' }
+
+" Allow the use of Nvim from Brave/Chrome
+Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
+
 "###############################################################################
 "# Syntax Plugins ##############################################################
 "###############################################################################
@@ -456,9 +462,7 @@ let g:rooter_silent_chdir = 1
 
 " Vdebug needs to be able to load files and understand how the file in the docker
 " container maps to the local system
-if exists("Vdebug_load_options")
-	autocmd VimEnter * :call Vdebug_load_options( { 'path_maps' : { '/var/www/html/' : getcwd() } } )
-endif
+autocmd VimEnter * :call Vdebug_load_options( { 'path_maps' : { '/var/www/html/' : getcwd() } } )
 
 " Sets up within word motions to use ,
 let g:camelcasemotion_key = ','
