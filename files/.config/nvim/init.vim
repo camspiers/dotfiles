@@ -105,19 +105,19 @@ Plug 'editorconfig/editorconfig-vim'
 
 " Vim prettier suport
 Plug 'prettier/vim-prettier', {
-\ 'do': 'yarn install',
-\ 'branch': 'release/1.x',
-\ 'for': [
- \ 'javascript',
- \ 'typescript',
- \ 'css',
- \ 'less',
- \ 'json',
- \ 'graphql',
- \ 'markdown',
- \ 'vue',
- \ 'php',
- \ 'html' ] }
+      \ 'do': 'yarn install',
+      \ 'branch': 'release/1.x',
+      \ 'for': [
+      \ 'javascript',
+      \ 'typescript',
+      \ 'css',
+      \ 'less',
+      \ 'json',
+      \ 'graphql',
+      \ 'markdown',
+      \ 'vue',
+      \ 'php',
+      \ 'html' ] }
 
 "###############################################################################
 "# Editor/Motion Plugins #######################################################
@@ -232,7 +232,7 @@ set noautochdir
 set clipboard=unnamed
 
 " Ignore patterns
-set wildignore+=.git,.DS_Store
+set wildignore+=.git/,.DS_Store
 
 " No sound
 set noerrorbells
@@ -285,7 +285,7 @@ set showmatch
 set cursorline
 
 " Show line numbers
-set number
+set number relativenumber
 
 " Set the colorscheme but don't error if dracula doesn't exist
 silent! colorscheme dracula
@@ -376,13 +376,13 @@ nnoremap <silent> gh :call CocActionAsync('doHover')<CR>
 nmap <leader>mt <plug>(MergetoolToggle)
 " Give a color scheme chooser
 nnoremap <silent> <Leader>C :call fzf#run({
-\   'source':
-\     map(split(globpath(&rtp, "colors/*.vim"), "\n"),
-\         "substitute(fnamemodify(v:val, ':t'), '\\..\\{-}$', '', '')"),
-\   'sink':    'colo',
-\   'options': '+m',
-\   'left':    30
-\ })<CR>
+      \   'source':
+      \     map(split(globpath(&rtp, "colors/*.vim"), "\n"),
+      \         "substitute(fnamemodify(v:val, ':t'), '\\..\\{-}$', '', '')"),
+      \   'sink':    'colo',
+      \   'options': '+m',
+      \   'left':    30
+      \ })<CR>
 
 "###############################################################################
 "# Commands ####################################################################
@@ -419,14 +419,14 @@ set updatetime=300
 " Use tab for trigger completion with characters ahead and navigate.
 " Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
 inoremap <silent><expr> <TAB>
-            \ pumvisible() ? "\<C-n>" :
-            \ <SID>check_back_space() ? "\<TAB>" :
-            \ coc#refresh()
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
 function! s:check_back_space() abort
-    let col = col('.') - 1
-    return !col || getline('.')[col - 1]  =~# '\s'
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 
 "###############################################################################
@@ -480,19 +480,19 @@ let $FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --iglob "!.DS_Store" -
 " Configure FZF to use a floating window configuration
 let $FZF_DEFAULT_OPTS = '--layout=reverse'
 let g:fzf_colors =
-            \ { 'fg':      ['fg', 'Normal'],
-            \ 'bg':      ['bg', 'Normal'],
-            \ 'hl':      ['fg', 'Comment'],
-            \ 'fg+':     ['fg', 'CursorLine'],
-            \ 'bg+':     ['bg', 'Normal'],
-            \ 'hl+':     ['fg', 'Statement'],
-            \ 'info':    ['fg', 'PreProc'],
-            \ 'border':  ['fg', 'CursorLine'],
-            \ 'prompt':  ['fg', 'Conditional'],
-            \ 'pointer': ['fg', 'Exception'],
-            \ 'marker':  ['fg', 'Keyword'],
-            \ 'spinner': ['fg', 'Label'],
-            \ 'header':  ['fg', 'Comment'] }
+      \ { 'fg':      ['fg', 'Normal'],
+      \ 'bg':      ['bg', 'Normal'],
+      \ 'hl':      ['fg', 'Comment'],
+      \ 'fg+':     ['fg', 'CursorLine'],
+      \ 'bg+':     ['bg', 'Normal'],
+      \ 'hl+':     ['fg', 'Statement'],
+      \ 'info':    ['fg', 'PreProc'],
+      \ 'border':  ['fg', 'CursorLine'],
+      \ 'prompt':  ['fg', 'Conditional'],
+      \ 'pointer': ['fg', 'Exception'],
+      \ 'marker':  ['fg', 'Keyword'],
+      \ 'spinner': ['fg', 'Label'],
+      \ 'header':  ['fg', 'Comment'] }
 
 let g:fzf_layout = { 'window': 'call CreateCenteredFloatingWindow()' }
 
@@ -525,27 +525,27 @@ endfunction
 
 " Creates a floating window with a most recent buffer to be used
 function! CreateCenteredFloatingWindow()
-    let width = float2nr(&columns * 0.6)
-    let height = float2nr(&lines * 0.6)
-    let top = ((&lines - height) / 2) - 1
-    let left = (&columns - width) / 2
-    let opts = {'relative': 'editor', 'row': top, 'col': left, 'width': width, 'height': height, 'style': 'minimal'}
+  let width = float2nr(&columns * 0.6)
+  let height = float2nr(&lines * 0.6)
+  let top = ((&lines - height) / 2) - 1
+  let left = (&columns - width) / 2
+  let opts = {'relative': 'editor', 'row': top, 'col': left, 'width': width, 'height': height, 'style': 'minimal'}
 
-    let top = "╭" . repeat("─", width - 2) . "╮"
-    let mid = "│" . repeat(" ", width - 2) . "│"
-    let bot = "╰" . repeat("─", width - 2) . "╯"
-    let lines = [top] + repeat([mid], height - 2) + [bot]
-    let s:buf = nvim_create_buf(v:false, v:true)
-    call nvim_buf_set_lines(s:buf, 0, -1, v:true, lines)
-    call nvim_open_win(s:buf, v:true, opts)
-    set winhl=Normal:Floating
-    let opts.row += 1
-    let opts.height -= 2
-    let opts.col += 2
-    let opts.width -= 4
-    call nvim_open_win(nvim_create_buf(v:false, v:true), v:true, opts)
-    autocmd BufWipeout <buffer> call CleanupBuffer(s:buf)
-    tnoremap <buffer> <silent> <Esc> <C-\><C-n><CR>:call DeleteUnlistedBuffers()<CR>
+  let top = "╭" . repeat("─", width - 2) . "╮"
+  let mid = "│" . repeat(" ", width - 2) . "│"
+  let bot = "╰" . repeat("─", width - 2) . "╯"
+  let lines = [top] + repeat([mid], height - 2) + [bot]
+  let s:buf = nvim_create_buf(v:false, v:true)
+  call nvim_buf_set_lines(s:buf, 0, -1, v:true, lines)
+  call nvim_open_win(s:buf, v:true, opts)
+  set winhl=Normal:Floating
+  let opts.row += 1
+  let opts.height -= 2
+  let opts.col += 2
+  let opts.width -= 4
+  call nvim_open_win(nvim_create_buf(v:false, v:true), v:true, opts)
+  autocmd BufWipeout <buffer> call CleanupBuffer(s:buf)
+  tnoremap <buffer> <silent> <Esc> <C-\><C-n><CR>:call DeleteUnlistedBuffers()<CR>
 endfunction
 
 "###############################################################################
@@ -559,58 +559,58 @@ autocmd TermOpen * startinsert
 autocmd TermOpen * setlocal listchars= nonumber norelativenumber
 
 function! ToggleTerm(cmd)
-    if empty(bufname(a:cmd))
-        call CreateCenteredFloatingWindow()
-        call termopen(a:cmd, { 'on_exit': function('OnTermExit') })
-    else
-        call DeleteUnlistedBuffers()
-    endif
+  if empty(bufname(a:cmd))
+    call CreateCenteredFloatingWindow()
+    call termopen(a:cmd, { 'on_exit': function('OnTermExit') })
+  else
+    call DeleteUnlistedBuffers()
+  endif
 endfunction
 
 " Open Project
 function! ToggleProject()
-    call ToggleTerm('tmuxinator-fzf-start.sh')
+  call ToggleTerm('tmuxinator-fzf-start.sh')
 endfunction
 
 " Opens a throwaway/scratch terminal
 function! ToggleScratchTerm()
-    call ToggleTerm('bash')
+  call ToggleTerm('bash')
 endfunction
 
 " Opens lazygit
 function! ToggleLazyGit()
-    call ToggleTerm('lazygit')
+  call ToggleTerm('lazygit')
 endfunction
 
 " Opens harvest starti
 function! ToggleHarvest()
-    call ToggleTerm('hstarti')
+  call ToggleTerm('hstarti')
 endfunction
 
 function! OnTermExit(job_id, code, event) dict
-    if a:code == 0
-        call DeleteUnlistedBuffers()
-    endif
+  if a:code == 0
+    call DeleteUnlistedBuffers()
+  endif
 endfunction
 
 function! DeleteUnlistedBuffers()
-    for n in nvim_list_bufs()
-        if ! buflisted(n)
-            let name = bufname(n)
-            if name == '[Scratch]' ||
-              \ matchend(name, ":bash") ||
-              \ matchend(name, ":lazygit") ||
-              \ matchend(name, ":tmuxinator-fzf-start.sh") ||
-              \ matchend(name, ":hstarti")
-                call CleanupBuffer(n)
-            endif
-        endif
-    endfor
+  for n in nvim_list_bufs()
+    if ! buflisted(n)
+      let name = bufname(n)
+      if name == '[Scratch]' ||
+            \ matchend(name, ":bash") ||
+            \ matchend(name, ":lazygit") ||
+            \ matchend(name, ":tmuxinator-fzf-start.sh") ||
+            \ matchend(name, ":hstarti")
+        call CleanupBuffer(n)
+      endif
+    endif
+  endfor
 endfunction
 
 function! CleanupBuffer(buf)
-    if bufexists(a:buf)
-        silent execute 'bwipeout! '.a:buf
-    endif
+  if bufexists(a:buf)
+    silent execute 'bwipeout! '.a:buf
+  endif
 endfunction
 
