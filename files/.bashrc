@@ -26,7 +26,9 @@ alias lg='lazygit'
 alias ls='ls -lah --color=auto'
 alias ms='tmuxinator-fzf-start.sh'
 alias rd='readydocker.sh'
+alias t='tmux'
 alias v='nvim'
+alias ssh='TERM=xterm-256color ssh'
 
 ################################################################################
 # Bindings #####################################################################
