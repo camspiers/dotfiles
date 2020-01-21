@@ -193,6 +193,12 @@ Plug 'xuhdev/vim-latex-live-preview', { 'for': 'tex' }
 " Allow the use of Nvim from Brave/Chrome
 Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
 
+" Send text to REPL
+Plug 'jpalardy/vim-slime'
+
+" UNIX tools
+Plug 'tpope/vim-eunuch'
+
 "###############################################################################
 "# Syntax Plugins ##############################################################
 "###############################################################################
@@ -308,6 +314,8 @@ highlight Comment cterm=italic gui=italic
 "# Mappings ####################################################################
 "###############################################################################
 
+" Only window
+nnoremap <silent> <Leader>o :only<CR>
 " Next buffer
 nnoremap <silent>   <tab> :bnext<CR>
 " Previous buffer
@@ -318,12 +326,12 @@ nnoremap <silent> <Leader>\| :vsp<CR>
 nnoremap <silent> <Leader>- :sp<CR>
 " Save file
 nnoremap <silent> <Leader>w :w<CR>
-" Open startify with leader l
-nnoremap <silent> <Leader>l :Startify<CR>
+" Open startify with leader s
+nnoremap <silent> <Leader>s :Startify<CR>
 " Open fuzzy files with leader \
 nnoremap <silent> <Leader>\ :Files<CR>
 " Open fuzzy lines with leader o
-nnoremap <silent> <Leader>o :Lines<CR>
+nnoremap <silent> <Leader>l :Lines<CR>
 " Open fuzzy buffers with leader b
 nnoremap <silent> <Leader>b :Buffers<CR>
 " Open grep
@@ -343,7 +351,7 @@ nnoremap <silent> <Leader>r :call CycleNumbering()<CR>
 " Open project
 nnoremap <silent> <Leader>m :call ToggleProject()<CR>
 " Open scratch term
-nnoremap <silent> <Leader>s :call ToggleScratchTerm()<CR>
+nnoremap <silent> <Leader>t :call ToggleScratchTerm()<CR>
 " Open lazygit
 nnoremap <silent> <Leader>' :call ToggleLazyGit()<CR>
 " Open harvest
@@ -432,6 +440,9 @@ endfunction
 "###############################################################################
 "# Plugin Configurations #######################################################
 "###############################################################################
+
+let g:slime_target = "tmux"
+let g:slime_default_config = {"socket_name": "default", "target_pane": "{right-of}"}
 
 " 3-way merge
 let g:mergetool_layout = 'bmr'
