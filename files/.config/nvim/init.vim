@@ -84,9 +84,6 @@ Plug 'tpope/vim-projectionist'
 " Integrates with projectionist to add 'Ftype' type commands
 Plug 'c-brenn/fuzzy-projectionist.vim'
 
-" File browser
-Plug 'vifm/vifm.vim'
-
 " Common pane navigation for vim and tmux together
 Plug 'christoomey/vim-tmux-navigator'
 
@@ -162,6 +159,9 @@ Plug 'AndrewRadev/splitjoin.vim'
 " Nice docblock generator
 Plug 'kkoomen/vim-doge'
 
+" Better search motions (s and S)
+Plug 'justinmk/vim-sneak'
+
 "###############################################################################
 "# Tool Plugins ################################################################
 "###############################################################################
@@ -193,11 +193,14 @@ Plug 'xuhdev/vim-latex-live-preview', { 'for': 'tex' }
 " Allow the use of Nvim from Brave/Chrome
 Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
 
-" Send text to REPL
-Plug 'jpalardy/vim-slime'
-
 " UNIX tools
 Plug 'tpope/vim-eunuch'
+
+" Term abstractions
+Plug 'kassio/neoterm'
+
+" Git tools
+Plug 'tpope/vim-fugitive'
 
 "###############################################################################
 "# Syntax Plugins ##############################################################
@@ -243,6 +246,9 @@ set wildignore+=.git/,.DS_Store
 " No sound
 set noerrorbells
 set timeoutlen=500
+
+" Set up a dictionary
+set dictionary=/usr/share/dict/words
 
 "###############################################################################
 "# Searching ###################################################################
@@ -304,9 +310,6 @@ silent! colorscheme dracula
 " Enables 24bit colors
 set termguicolors
 
-" Give floating windows transparency
-set winblend=30
-
 " Make comments italic
 highlight Comment cterm=italic gui=italic
 
@@ -317,29 +320,31 @@ highlight Comment cterm=italic gui=italic
 " Only window
 nnoremap <silent> <Leader>o :only<CR>
 " Next buffer
-nnoremap <silent>   <tab> :bnext<CR>
+nnoremap <silent> <Tab> :bnext<CR>
 " Previous buffer
-nnoremap <silent> <s-tab> :bprevious<CR>
+nnoremap <silent> <S-Tab> :bprevious<CR>
 " Create vsplit
-nnoremap <silent> <Leader>\| :vsp<CR>
+nnoremap <silent> <Leader>\| :vsplit<CR>
 " Creat hsplit
-nnoremap <silent> <Leader>- :sp<CR>
+nnoremap <silent> <Leader>- :split<CR>
 " Save file
 nnoremap <silent> <Leader>w :w<CR>
 " Open startify with leader s
 nnoremap <silent> <Leader>s :Startify<CR>
 " Open fuzzy files with leader \
 nnoremap <silent> <Leader>\ :Files<CR>
-" Open fuzzy lines with leader o
+" Open fuzzy lines with leader l
 nnoremap <silent> <Leader>l :Lines<CR>
 " Open fuzzy buffers with leader b
 nnoremap <silent> <Leader>b :Buffers<CR>
-" Open grep
+" Open ripgrep
 nnoremap <silent> <Leader>g :FzfRg<CR>
-" Open grep for cursor word
+" Open global grep
+nnoremap <silent> <Leader>? :Rgg<CR>
+" Open ripgrep for cursor word
 nnoremap <silent> <Leader>c :FzfRg <C-R><C-W><CR>
 " Close the current buffer
-nnoremap <silent> <Leader>x :bd<CR>
+nnoremap <silent> <Leader>x :bdelete<CR>
 " Close all buffers
 nnoremap <silent> <Leader>z :%bd<CR>
 " Alternate file navigation
@@ -347,17 +352,15 @@ nnoremap <silent> <Leader>a :A<CR>
 " Alternate file navigation vertical split
 nnoremap <silent> <Leader>v :AV<CR>
 " Cycle line number modes
-nnoremap <silent> <Leader>r :call CycleNumbering()<CR>
+nnoremap <silent> <Leader>r :call CycleLineNumbering()<CR>
 " Open project
-nnoremap <silent> <Leader>m :call ToggleProject()<CR>
+nnoremap <silent> <Leader>m :call OpenProject()<CR>
 " Open scratch term
-nnoremap <silent> <Leader>t :call ToggleScratchTerm()<CR>
+nnoremap <silent> <Leader>t :call OpenScratchTerm()<CR>
 " Open lazygit
-nnoremap <silent> <Leader>' :call ToggleLazyGit()<CR>
+nnoremap <silent> <Leader>' :call OpenLazyGit()<CR>
 " Open harvest
-nnoremap <silent> <Leader>h :call ToggleHarvest()<CR>
-" Open vifm
-nnoremap <silent> <Leader>/ :Vifm<CR>
+nnoremap <silent> <Leader>h :call OpenHarvest()<CR>
 " Get outline
 nnoremap <silent> <Leader>co :<C-u>CocList outline<CR>
 " Get symbols
@@ -368,8 +371,6 @@ nnoremap <silent> <Leader>cl :<C-u>CocList locationlist<CR>
 nnoremap <silent> <Leader>cc :<C-u>CocList commands<CR>
 " Restart server
 nnoremap <silent> <Leader>cR :<C-u>CocRestart<CR>
-" Quit term buffer with ESC
-tnoremap <silent> <Esc> <C-\><C-n><CR>
 " Go to definition
 nmap gd <Plug>(coc-definition)
 " Go to type definition
@@ -380,8 +381,10 @@ nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 " Get hint
 nnoremap <silent> gh :call CocActionAsync('doHover')<CR>
-" Merge tool
-nmap <leader>mt <plug>(MergetoolToggle)
+" Use gx{text-object} in normal mode
+nmap gx <Plug>(neoterm-repl-send)
+" Send selected contents in visual mode.
+xmap gx <Plug>(neoterm-repl-send)
 " Give a color scheme chooser
 nnoremap <silent> <Leader>C :call fzf#run({
       \   'source':
@@ -392,13 +395,34 @@ nnoremap <silent> <Leader>C :call fzf#run({
       \   'left':    30
       \ })<CR>
 
+" Mapping selecting mappings
+nmap <leader><tab> <plug>(fzf-maps-n)
+xmap <leader><tab> <plug>(fzf-maps-x)
+omap <leader><tab> <plug>(fzf-maps-o)
+
+" Insert mode completion
+imap <c-x><c-k> <plug>(fzf-complete-word)
+imap <c-x><c-f> <plug>(fzf-complete-path)
+imap <c-x><c-j> <plug>(fzf-complete-file-ag)
+imap <c-x><c-l> <plug>(fzf-complete-line)
+
 "###############################################################################
 "# Commands ####################################################################
 "###############################################################################
 
 " Configures ripgrep with fzf
-command! -bang -nargs=* FzfRg call fzf#vim#grep("rg --column --line-number --no-heading --color=always --smart-case ".shellescape(<q-args>), 1, {'options': '--delimiter : --nth 4..'}, <bang>0)
-command! -bang -nargs=* Rgg call fzf#vim#grep("rg --no-ignore --column --line-number --no-heading --color=always --smart-case ".shellescape(<q-args>), 1, {'options': '--delimiter : --nth 4..'}, <bang>0)
+command! -bang -nargs=* FzfRg
+  \ call fzf#vim#grep(
+  \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
+  \   fzf#vim#with_preview(), <bang>0)
+
+command! -bang -nargs=* Rgg
+  \ call fzf#vim#grep(
+  \   'rg --no-ignore --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
+  \   fzf#vim#with_preview(), <bang>0)
+
+command! -bang -nargs=? -complete=dir Files
+    \ call fzf#vim#files(<q-args>, fzf#vim#with_preview({'options': ['--layout=reverse', '--info=inline']}), <bang>0)
 
 " Allow Ripgrep to work with quick list
 command! -nargs=* -complete=file Ripgrep :call s:Rg(<q-args>)
@@ -461,7 +485,7 @@ let g:tmuxline_preset = {
       \'b'    : '#(whoami)',
       \'win'  : ['#I', '#W'],
       \'cwin' : ['#I', '#W'],
-      \'z'    : ['%R', '%a', '%Y']}
+      \'z'    : ['%R', '%d', '%a', '%Y']}
 
 let g:indentLine_setConceal = 0
 
@@ -480,16 +504,28 @@ let g:camelcasemotion_key = ','
 
 let g:startify_lists = [ { 'type': 'dir', 'header': ['   Recent Files'] } ]
 
+" Don't change directories
+let g:startify_change_to_dir = 0
+
 " Better indents
 let g:indent_guides_guide_size = 1
 let g:indent_guides_color_change_percent = 3
 let g:indent_guides_enable_on_vim_startup = 1
 
+" Don't use status line in fzf
+augroup FzfConfig
+  autocmd!
+  autocmd! FileType fzf set laststatus=0 noshowmode noruler
+    \| autocmd BufLeave <buffer> set laststatus=2 showmode ruler
+augroup END
+
 " Use ripgrep for fzf
 let $FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --iglob "!.DS_Store" --iglob "!.git"'
 
-" Configure FZF to use a floating window configuration
 let $FZF_DEFAULT_OPTS = '--layout=reverse'
+
+let g:fzf_layout = { 'down': '~40%' }
+
 let g:fzf_colors =
       \ { 'fg':      ['fg', 'Normal'],
       \ 'bg':      ['bg', 'Normal'],
@@ -505,10 +541,8 @@ let g:fzf_colors =
       \ 'spinner': ['fg', 'Label'],
       \ 'header':  ['fg', 'Comment'] }
 
-let g:fzf_layout = { 'window': 'call CreateCenteredFloatingWindow()' }
-
 " Configure Airline Theme
-let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#enabled = 0
 let g:airline_theme = 'dracula'
 let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#formatter = 'unique_tail'
@@ -521,7 +555,7 @@ let g:netrw_fastbrowse = 0
 "###############################################################################
 
 " Cycle through relativenumber + number, number (only), and no numbering.
-function! CycleNumbering() abort
+function! CycleLineNumbering() abort
   if exists('+relativenumber')
     execute {
           \ '00': 'set relativenumber   | set number',
@@ -534,94 +568,34 @@ function! CycleNumbering() abort
   endif
 endfunction
 
-" Creates a floating window with a most recent buffer to be used
-function! CreateCenteredFloatingWindow()
-  let width = float2nr(&columns * 0.6)
-  let height = float2nr(&lines * 0.6)
-  let top = ((&lines - height) / 2) - 1
-  let left = (&columns - width) / 2
-  let opts = {'relative': 'editor', 'row': top, 'col': left, 'width': width, 'height': height, 'style': 'minimal'}
-
-  let top = "╭" . repeat("─", width - 2) . "╮"
-  let mid = "│" . repeat(" ", width - 2) . "│"
-  let bot = "╰" . repeat("─", width - 2) . "╯"
-  let lines = [top] + repeat([mid], height - 2) + [bot]
-  let s:buf = nvim_create_buf(v:false, v:true)
-  call nvim_buf_set_lines(s:buf, 0, -1, v:true, lines)
-  call nvim_open_win(s:buf, v:true, opts)
-  set winhl=Normal:Floating
-  let opts.row += 1
-  let opts.height -= 2
-  let opts.col += 2
-  let opts.width -= 4
-  call nvim_open_win(nvim_create_buf(v:false, v:true), v:true, opts)
-  autocmd BufWipeout <buffer> call CleanupBuffer(s:buf)
-  tnoremap <buffer> <silent> <Esc> <C-\><C-n><CR>:call DeleteUnlistedBuffers()<CR>
-endfunction
-
 "###############################################################################
 "# Terminal Handling ###########################################################
 "###############################################################################
 
-" When term starts, auto go into insert mode
-autocmd TermOpen * startinsert
+let g:neoterm_default_mod = 'botright'
+let g:neoterm_autoinsert = 1
 
-" Turn off line numbers etc
-autocmd TermOpen * setlocal listchars= nonumber norelativenumber
-
-function! ToggleTerm(cmd)
-  if empty(bufname(a:cmd))
-    call CreateCenteredFloatingWindow()
-    call termopen(a:cmd, { 'on_exit': function('OnTermExit') })
-  else
-    call DeleteUnlistedBuffers()
-  endif
-endfunction
+" Quit term buffer with ESC
+augroup TermHandling
+  autocmd!
+  " " Turn off line numbers etc
+  autocmd TermOpen * setlocal listchars= nonumber norelativenumber
+  autocmd TermOpen * tnoremap <Esc> <c-\><c-n>
+  autocmd! FileType fzf tnoremap <buffer> <Esc> <c-c>
+augroup END
 
 " Open Project
-function! ToggleProject()
-  call ToggleTerm('tmuxinator-fzf-start.sh')
-endfunction
-
-" Opens a throwaway/scratch terminal
-function! ToggleScratchTerm()
-  call ToggleTerm('bash')
+function! OpenProject()
+  :T clear && tmuxinator-fzf-start.sh && exit
 endfunction
 
 " Opens lazygit
-function! ToggleLazyGit()
-  call ToggleTerm('lazygit')
+function! OpenLazyGit()
+  :T lazygit && exit
 endfunction
 
 " Opens harvest starti
-function! ToggleHarvest()
-  call ToggleTerm('hstarti')
-endfunction
-
-function! OnTermExit(job_id, code, event) dict
-  if a:code == 0
-    call DeleteUnlistedBuffers()
-  endif
-endfunction
-
-function! DeleteUnlistedBuffers()
-  for n in nvim_list_bufs()
-    if ! buflisted(n)
-      let name = bufname(n)
-      if name == '[Scratch]' ||
-            \ matchend(name, ":bash") ||
-            \ matchend(name, ":lazygit") ||
-            \ matchend(name, ":tmuxinator-fzf-start.sh") ||
-            \ matchend(name, ":hstarti")
-        call CleanupBuffer(n)
-      endif
-    endif
-  endfor
-endfunction
-
-function! CleanupBuffer(buf)
-  if bufexists(a:buf)
-    silent execute 'bwipeout! '.a:buf
-  endif
+function! OpenHarvest()
+  :T clear && hstarti && exit
 endfunction
 
