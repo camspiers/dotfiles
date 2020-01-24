@@ -42,6 +42,7 @@ USER_PATHS=(
   "$HOME/.dotfiles/scripts" # Personal scripts
   "$HOME/.composer/vendor/bin" # Global composer scripts
   "$(/usr/local/opt/ruby/bin/ruby -r rubygems -e 'puts Gem.user_dir')/bin" # Ruby
+  "$HOME/Library/Python/3.7/bin" # Python
 )
 
 # Set PATH with ordering: SYS:PATH:USER
