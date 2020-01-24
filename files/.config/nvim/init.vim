@@ -340,7 +340,7 @@ nnoremap <silent> <Leader>b :Buffers<CR>
 " Open ripgrep
 nnoremap <silent> <Leader>g :FzfRg<CR>
 " Open global grep
-nnoremap <silent> <Leader>? :Rgg<CR>
+nnoremap <silent> <Leader>/ :Rgg<CR>
 " Open ripgrep for cursor word
 nnoremap <silent> <Leader>c :FzfRg <C-R><C-W><CR>
 " Close the current buffer
@@ -413,15 +413,15 @@ imap <c-x><c-l> <plug>(fzf-complete-line)
 " Configures ripgrep with fzf
 command! -bang -nargs=* FzfRg
   \ call fzf#vim#grep(
-  \   'rg --color=always --column --line-number --no-heading --smart-case '.shellescape(<q-args>),
+  \   'rg --color always --column --line-number --no-heading --smart-case '.shellescape(<q-args>),
   \   1,
-  \   fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}), <bang>0)
+  \   fzf#vim#with_preview({'options': '--color=hl+:#bd93f9,hl:#d6acff --delimiter : --nth 4..'}), <bang>0)
 
 command! -bang -nargs=* Rgg
   \ call fzf#vim#grep(
-  \   'rg --hidden --no-ignore --color=always --column --line-number --no-heading --smart-case '.shellescape(<q-args>),
+  \   'rg --color always --hidden --no-ignore --column --line-number --no-heading --smart-case '.shellescape(<q-args>),
   \   1,
-  \   fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}), <bang>0)
+  \   fzf#vim#with_preview({'options': '--color=hl+:#bd93f9,hl:#d6acff --delimiter : --nth 4..'}), <bang>0)
 
 command! -bang -nargs=? -complete=dir Files
     \ call fzf#vim#files(<q-args>, fzf#vim#with_preview({'options': ['--layout=reverse', '--info=inline']}), <bang>0)
