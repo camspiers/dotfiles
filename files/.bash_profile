@@ -6,49 +6,6 @@
 source "$HOME/.bashrc"
 
 ################################################################################
-# Path Management ##############################################################
-################################################################################
-
-################################################################################
-# Joins paths together by ":"
-# Arguments:
-#     $1: Array of paths, e.g. join ARR[@]
-# Returns:
-#     string
-################################################################################
-join() { a=("${!1}"); local IFS=":"; echo "${a[*]}"; }
-
-################################################################################
-# Deduplicates paths separated by ":"
-# Arguments:
-#     $1: string of paths separated by ":"
-# Returns:
-#     string
-################################################################################
-dedup() { echo -n $1 | awk -v RS=: -v ORS=: '!arr[$0]++'; }
-
-# System paths
-SYS_PATHS=(
-  "/usr/local/opt/coreutils/libexec/gnubin" # Prefer coreutils
-  "/usr/local/opt/gnu-sed/libexec/gnubin" # Custom sed
-  "/usr/local/opt/python/libexec/bin" # Python
-  "/usr/local/opt/ruby/bin" # Ruby
-  "/usr/local/sbin" # Brew scripts
-)
-
-# User paths
-USER_PATHS=(
-  "/usr/local/opt/fzf/bin" # Fzf
-  "$HOME/.dotfiles/scripts" # Personal scripts
-  "$HOME/.composer/vendor/bin" # Global composer scripts
-  "$(/usr/local/opt/ruby/bin/ruby -r rubygems -e 'puts Gem.user_dir')/bin" # Ruby
-  "$HOME/Library/Python/3.7/bin" # Python
-)
-
-# Set PATH with ordering: SYS:PATH:USER
-export PATH=$(dedup "$(join SYS_PATHS[@]):$PATH:$(join USER_PATHS[@])")
-
-################################################################################
 # Exports ######################################################################
 ################################################################################
 
