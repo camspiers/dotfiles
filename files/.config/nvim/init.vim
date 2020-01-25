@@ -483,9 +483,10 @@ let g:mkdp_auto_start = 0
 let g:tmuxline_preset = {
       \'a'    : '#S',
       \'b'    : '#(whoami)',
-      \'win'  : ['#I', '#W'],
-      \'cwin' : ['#I', '#W'],
-      \'z'    : ['%R', '%d', '%a', '%Y']}
+      \'win'  : ['#W'],
+      \'cwin' : ['#W'],
+      \'z'    : ['%R', '%d', '%a', '%Y', '#(battstat {p} | tr -d " ")']}
+
 let g:tmuxline_powerline_separators = 0
 
 let g:indentLine_setConceal = 0
@@ -544,10 +545,29 @@ let g:fzf_colors =
 
 " Configure Airline Theme
 let g:airline#extensions#tabline#enabled = 0
-let g:airline_theme = 'dracula'
 let g:airline#extensions#tabline#formatter = 'unique_tail'
 let g:airline#extensions#tabline#left_sep = ' '
 let g:airline#extensions#tabline#left_alt_sep = '|'
+let g:airline_mode_map = {
+    \ '__'     : '-',
+    \ 'c'      : 'C',
+    \ 'i'      : 'I',
+    \ 'ic'     : 'I',
+    \ 'ix'     : 'I',
+    \ 'n'      : 'N',
+    \ 'multi'  : 'M',
+    \ 'ni'     : 'N',
+    \ 'no'     : 'N',
+    \ 'R'      : 'R',
+    \ 'Rv'     : 'R',
+    \ 's'      : 'S',
+    \ 'S'      : 'S',
+    \ ''     : 'S',
+    \ 't'      : 'T',
+    \ 'v'      : 'V',
+    \ 'V'      : 'V',
+    \ ''     : 'V',
+    \ }
 
 " Fix netrw buffer issue
 let g:netrw_fastbrowse = 0
