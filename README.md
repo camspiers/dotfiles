@@ -16,7 +16,16 @@ macOS environment managed by git and GNU Stow.
 - [skhd Config](files/.config/skhd/skhdrc)
 - [macOS Defaults](scripts/macos)
 
-## Installation
+## Usage
+
+There are two general approaches you can take to using these dotfiles:
+
+1. Clone or git submodule and symlink what you want (recommended)
+2. Use the installer (not recommended)
+
+I don't recommend others to use the installer as it is preferable to curate your own environment according to your
+needs and preferences. It's unlikely you need the precise set of tools that I do, and that you want to have them
+configured in the same manner I do, however there is likely to be content in here you find useful.
 
 ```
 # Install Homebrew
