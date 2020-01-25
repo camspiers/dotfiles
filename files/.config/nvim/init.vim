@@ -202,6 +202,9 @@ Plug 'kassio/neoterm'
 " Git tools
 Plug 'tpope/vim-fugitive'
 
+" DB tools
+Plug 'tpope/vim-dadbod'
+
 "###############################################################################
 "# Syntax Plugins ##############################################################
 "###############################################################################
@@ -222,7 +225,7 @@ call plug#end()
 "# General Settings ############################################################
 "###############################################################################
 
-" Import local config for private confid, e.g. keys, tokens
+" Import local config for private config, e.g. keys, tokens
 silent! source ~/.config/nvim/local.vim
 
 " Default file encoding
@@ -301,11 +304,6 @@ set number relativenumber
 
 " Set the colorscheme but don't error if dracula doesn't exist
 silent! colorscheme dracula
-" Other themes I like:
-" - carbonized-light
-" - deep-space
-" - github
-" - hybrid-material
 
 " Enables 24bit colors
 set termguicolors
@@ -413,15 +411,15 @@ imap <c-x><c-l> <plug>(fzf-complete-line)
 " Configures ripgrep with fzf
 command! -bang -nargs=* FzfRg
   \ call fzf#vim#grep(
-  \   'rg --color always --column --line-number --no-heading --smart-case '.shellescape(<q-args>),
+  \   'rg --color ansi --column --line-number --no-heading --smart-case '.shellescape(<q-args>),
   \   1,
-  \   fzf#vim#with_preview({'options': '--color=hl+:#bd93f9,hl:#d6acff --delimiter : --nth 4..'}), <bang>0)
+  \   fzf#vim#with_preview({'options': '--color=hl+:#ff5555,hl:#ff6e6e --delimiter : --nth 4..'}), <bang>0)
 
 command! -bang -nargs=* Rgg
   \ call fzf#vim#grep(
-  \   'rg --color always --hidden --no-ignore --column --line-number --no-heading --smart-case '.shellescape(<q-args>),
+  \   'rg --color ansi --hidden --no-ignore --column --line-number --no-heading --smart-case '.shellescape(<q-args>),
   \   1,
-  \   fzf#vim#with_preview({'options': '--color=hl+:#bd93f9,hl:#d6acff --delimiter : --nth 4..'}), <bang>0)
+  \   fzf#vim#with_preview({'options': '--color=hl+:#ff5555,hl:#ff6e6e --delimiter : --nth 4..'}), <bang>0)
 
 command! -bang -nargs=? -complete=dir Files
     \ call fzf#vim#files(<q-args>, fzf#vim#with_preview({'options': ['--layout=reverse', '--info=inline']}), <bang>0)
@@ -488,6 +486,7 @@ let g:tmuxline_preset = {
       \'win'  : ['#I', '#W'],
       \'cwin' : ['#I', '#W'],
       \'z'    : ['%R', '%d', '%a', '%Y']}
+let g:tmuxline_powerline_separators = 0
 
 let g:indentLine_setConceal = 0
 
@@ -546,8 +545,9 @@ let g:fzf_colors =
 " Configure Airline Theme
 let g:airline#extensions#tabline#enabled = 0
 let g:airline_theme = 'dracula'
-let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#formatter = 'unique_tail'
+let g:airline#extensions#tabline#left_sep = ' '
+let g:airline#extensions#tabline#left_alt_sep = '|'
 
 " Fix netrw buffer issue
 let g:netrw_fastbrowse = 0
