@@ -87,9 +87,6 @@ Plug 'c-brenn/fuzzy-projectionist.vim'
 " Common pane navigation for vim and tmux together
 Plug 'christoomey/vim-tmux-navigator'
 
-" Allows Rg to populate the quickfix list
-Plug 'jremmen/vim-ripgrep'
-
 " Jump to interesting places with a Git or Mercurial repo
 Plug 'wincent/vcs-jump'
 
@@ -204,6 +201,9 @@ Plug 'tpope/vim-fugitive'
 
 " DB tools
 Plug 'tpope/vim-dadbod'
+
+" [ and ] mappings, in particular for quickfix
+Plug 'tpope/vim-unimpaired'
 
 "###############################################################################
 "# Syntax Plugins ##############################################################
@@ -336,11 +336,11 @@ nnoremap <silent> <Leader>l :Lines<CR>
 " Open fuzzy buffers with leader b
 nnoremap <silent> <Leader>b :Buffers<CR>
 " Open ripgrep
-nnoremap <silent> <Leader>g :FzfRg<CR>
+nnoremap <silent> <Leader>g :Rg<CR>
 " Open global grep
 nnoremap <silent> <Leader>/ :Rgg<CR>
 " Open ripgrep for cursor word
-nnoremap <silent> <Leader>c :FzfRg <C-R><C-W><CR>
+nnoremap <silent> <Leader>c :Rg <C-R><C-W><CR>
 " Close the current buffer
 nnoremap <silent> <Leader>x :bdelete<CR>
 " Close all buffers
@@ -409,24 +409,20 @@ imap <c-x><c-l> <plug>(fzf-complete-line)
 "###############################################################################
 
 " Configures ripgrep with fzf
-command! -bang -nargs=* FzfRg
+command! -bang -nargs=* Rg
   \ call fzf#vim#grep(
   \   'rg --color ansi --column --line-number --no-heading --smart-case '.shellescape(<q-args>),
   \   1,
-  \   fzf#vim#with_preview({'options': '--color=hl+:#ff5555,hl:#ff6e6e --delimiter : --nth 4..'}), <bang>0)
+  \   fzf#vim#with_preview({'options': '--bind ctrl-a:select-all,ctrl-d:deselect-all --color=hl+:#ff5555,hl:#ff6e6e --delimiter : --nth 4..'}), <bang>0)
 
 command! -bang -nargs=* Rgg
   \ call fzf#vim#grep(
   \   'rg --color ansi --hidden --no-ignore --column --line-number --no-heading --smart-case '.shellescape(<q-args>),
   \   1,
-  \   fzf#vim#with_preview({'options': '--color=hl+:#ff5555,hl:#ff6e6e --delimiter : --nth 4..'}), <bang>0)
+  \   fzf#vim#with_preview({'options': '--bind ctrl-a:select-all,ctrl-d:deselect-all --color=hl+:#ff5555,hl:#ff6e6e --delimiter : --nth 4..'}), <bang>0)
 
 command! -bang -nargs=? -complete=dir Files
     \ call fzf#vim#files(<q-args>, fzf#vim#with_preview({'options': ['--layout=reverse', '--info=inline']}), <bang>0)
-
-" Allow Ripgrep to work with quick list
-command! -nargs=* -complete=file Ripgrep :call s:Rg(<q-args>)
-command! -nargs=* -complete=file Rg :call s:Rg(<q-args>)
 
 "###############################################################################
 "# Coc Configurations ##########################################################
@@ -483,8 +479,8 @@ let g:mkdp_auto_start = 0
 let g:tmuxline_preset = {
       \'a'    : '#S',
       \'b'    : '#(whoami)',
-      \'win'  : ['#W'],
-      \'cwin' : ['#W'],
+      \'win'  : '#W',
+      \'cwin' : '#W',
       \'z'    : ['%R', '%d', '%a', '%Y', '#(battstat {p} | tr -d " ")']}
 
 let g:tmuxline_powerline_separators = 0
