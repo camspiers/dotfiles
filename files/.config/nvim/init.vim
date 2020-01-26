@@ -421,21 +421,47 @@ imap <c-x><c-l> <plug>(fzf-complete-line)
 "# Commands ####################################################################
 "###############################################################################
 
+function GetRipgrepCommand(ignore)
+  if a:ignore == 1
+      let ignoreFlag = '--ignore'
+  else
+      let ignoreFlag = '--no-ignore'
+  endif
+
+  return 'rg' .
+    \ ' --color ansi' .
+    \ ' --column' .
+    \ ' --line-number' .
+    \ ' --no-heading' .
+    \ ' --smart-case' .
+    \ ' ' . ignoreFlag
+endfunction
+
+function GetPreviewFlags(prompt)
+  return '--bind ctrl-a:select-all,ctrl-d:deselect-all' .
+   \ ' --color=hl+:#8c9e3d,hl:#d2813d' .
+   \ ' --prompt="' . a:prompt . '> "'
+endfunction
+
+function GetGrepPreviewFlags(prompt)
+  return GetPreviewFlags(a:prompt) . ' --delimiter : --nth 4..'
+endfunction
+
 " Configures ripgrep with fzf
 command! -bang -nargs=* Rg
   \ call fzf#vim#grep(
-  \   'rg --color ansi --column --line-number --no-heading --smart-case '.shellescape(<q-args>),
+  \   GetRipgrepCommand(1) . ' ' . shellescape(<q-args>),
   \   1,
-  \   fzf#vim#with_preview({'options': '--prompt="Grep> " --bind ctrl-a:select-all,ctrl-d:deselect-all --color=hl+:#8c9e3d,hl:#d2813d --delimiter : --nth 4..'}), <bang>0)
+  \   fzf#vim#with_preview({'options': GetGrepPreviewFlags('Grep')}), <bang>0)
 
 command! -bang -nargs=* Rgg
   \ call fzf#vim#grep(
-  \   'rg --color ansi --hidden --no-ignore --column --line-number --no-heading --smart-case '.shellescape(<q-args>),
+  \   GetRipgrepCommand(0) . ' ' . shellescape(<q-args>),
   \   1,
-  \   fzf#vim#with_preview({'options': '--prompt="Global Grep> " --bind ctrl-a:select-all,ctrl-d:deselect-all --color=hl+:#8c9e3d,hl:#d2813d --delimiter : --nth 4..'}), <bang>0)
+  \   fzf#vim#with_preview({'options': GetGrepPreviewFlags('Global Grep')}), <bang>0)
 
 command! -bang -nargs=? -complete=dir Files
-    \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
+    \ call fzf#vim#files(<q-args>, fzf#vim#with_preview({'options': GetPreviewFlags('Files')}), <bang>0)
 
 "###############################################################################
 "# Coc Configurations ##########################################################
