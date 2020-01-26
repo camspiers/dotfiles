@@ -418,13 +418,13 @@ command! -bang -nargs=* Rg
   \ call fzf#vim#grep(
   \   'rg --color ansi --column --line-number --no-heading --smart-case '.shellescape(<q-args>),
   \   1,
-  \   fzf#vim#with_preview({'options': '--bind ctrl-a:select-all,ctrl-d:deselect-all --color=hl+:#ff5555,hl:#ff6e6e --delimiter : --nth 4..'}), <bang>0)
+  \   fzf#vim#with_preview({'options': '--bind ctrl-a:select-all,ctrl-d:deselect-all --color=hl+:#8c9e3d,hl:#d2813d --delimiter : --nth 4..'}), <bang>0)
 
 command! -bang -nargs=* Rgg
   \ call fzf#vim#grep(
   \   'rg --color ansi --hidden --no-ignore --column --line-number --no-heading --smart-case '.shellescape(<q-args>),
   \   1,
-  \   fzf#vim#with_preview({'options': '--bind ctrl-a:select-all,ctrl-d:deselect-all --color=hl+:#ff5555,hl:#ff6e6e --delimiter : --nth 4..'}), <bang>0)
+  \   fzf#vim#with_preview({'options': '--bind ctrl-a:select-all,ctrl-d:deselect-all --color=hl+:#8c9e3d,hl:#d2813d --delimiter : --nth 4..'}), <bang>0)
 
 command! -bang -nargs=? -complete=dir Files
     \ call fzf#vim#files(<q-args>, fzf#vim#with_preview({'options': ['--layout=reverse', '--info=inline']}), <bang>0)

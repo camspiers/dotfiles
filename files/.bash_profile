@@ -23,10 +23,20 @@ export LDFLAGS="-L/usr/local/opt/ruby/lib"
 export CPPFLAGS="-I/usr/local/opt/ruby/include"
 export PKG_CONFIG_PATH="/usr/local/opt/ruby/lib/pkgconfig"
 
-# Nord Theme for fzf
+# Theme for fzf
 export FZF_DEFAULT_OPTS='
---color fg:#D8DEE9,bg:#2E3440,hl:#A3BE8C,fg+:#D8DEE9,bg+:#434C5E,hl+:#A3BE8C
---color pointer:#BF616A,info:#4C566A,spinner:#4C566A,header:#4C566A,prompt:#81A1C1,marker:#EBCB8B
+--color fg:#aeadaf
+--color bg:#232323
+--color fg+:#232323
+--color bg+:#aeadaf
+--color hl:#d2813d
+--color hl+:#8c9e3d
+--color pointer:#d2813d
+--color info:#b58d88
+--color spinner:#949d9f
+--color header:#949d9f
+--color prompt:#6e9cb0
+--color marker:#d2813d
 '
 
 export TMUX_1PASSWORD_OP_ITEMS_JQ_FILTER="
