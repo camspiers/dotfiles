@@ -418,9 +418,10 @@ imap <c-x><c-j> <plug>(fzf-complete-file-ag)
 imap <c-x><c-l> <plug>(fzf-complete-line)
 
 "###############################################################################
-"# Commands ####################################################################
+"# FZF/Ripgrep Configuration ###################################################
 "###############################################################################
 
+" Some ripgrep searching defaults
 function GetRipgrepCommand(ignore)
   if a:ignore == 1
       let ignoreFlag = '--ignore'
@@ -429,6 +430,7 @@ function GetRipgrepCommand(ignore)
   endif
 
   return 'rg' .
+    \ ' --hidden' .
     \ ' --color ansi' .
     \ ' --column' .
     \ ' --line-number' .
@@ -437,12 +439,14 @@ function GetRipgrepCommand(ignore)
     \ ' ' . ignoreFlag
 endfunction
 
+" Restore appropriate colors, add prompt and bind ctrl-a and ctrl-d
 function GetPreviewFlags(prompt)
   return '--bind ctrl-a:select-all,ctrl-d:deselect-all' .
-   \ ' --color=hl+:#8c9e3d,hl:#d2813d' .
-   \ ' --prompt="' . a:prompt . '> "'
+    \ ' --color=hl+:#8c9e3d,hl:#d2813d' .
+    \ ' --prompt="' . a:prompt . '> "'
 endfunction
 
+" Ensure that only the 4th column delimited by : is filtered by FZF
 function GetGrepPreviewFlags(prompt)
   return GetPreviewFlags(a:prompt) . ' --delimiter : --nth 4..'
 endfunction
@@ -463,8 +467,37 @@ command! -bang -nargs=* Rgg
 command! -bang -nargs=? -complete=dir Files
     \ call fzf#vim#files(<q-args>, fzf#vim#with_preview({'options': GetPreviewFlags('Files')}), <bang>0)
 
+" Don't use status line in fzf
+augroup FzfConfig
+  autocmd!
+  autocmd! FileType fzf set laststatus=0 noshowmode noruler
+    \| autocmd BufLeave <buffer> set laststatus=2 showmode ruler
+augroup END
+
+" Use ripgrep for fzf
+let $FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --iglob "!.DS_Store" --iglob "!.git"'
+
+" Color FZF with tempus classic
+let $FZF_DEFAULT_OPTS = '--layout=default' .
+  \  ' --info inline' .
+  \  ' --color gutter:#232323' .
+  \  ' --color fg:#aeadaf' .
+  \  ' --color bg:#232323' .
+  \  ' --color fg+:#aeadaf' .
+  \  ' --color bg+:#312e30' .
+  \  ' --color hl:#d2813d' .
+  \  ' --color hl+:#8c9e3d' .
+  \  ' --color pointer:#d2813d' .
+  \  ' --color info:#b58d88' .
+  \  ' --color spinner:#949d9f' .
+  \  ' --color header:#949d9f' .
+  \  ' --color prompt:#6e9cb0' .
+  \  ' --color marker:#d2813d'
+
+let g:fzf_layout = { 'down': '~40%' }
+
 "###############################################################################
-"# Coc Configurations ##########################################################
+"# Coc Configuration ###########################################################
 "###############################################################################
 
 " if hidden is not set, TextEdit might fail.
@@ -545,33 +578,6 @@ let g:startify_change_to_dir = 0
 let g:indent_guides_guide_size = 1
 let g:indent_guides_color_change_percent = 3
 let g:indent_guides_enable_on_vim_startup = 1
-
-" Don't use status line in fzf
-augroup FzfConfig
-  autocmd!
-  autocmd! FileType fzf set laststatus=0 noshowmode noruler
-    \| autocmd BufLeave <buffer> set laststatus=2 showmode ruler
-augroup END
-
-" Use ripgrep for fzf
-let $FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --iglob "!.DS_Store" --iglob "!.git"'
-let $FZF_DEFAULT_OPTS = '--layout=default' .
-  \  ' --info inline' .
-  \  ' --color gutter:#232323' .
-  \  ' --color fg:#aeadaf' .
-  \  ' --color bg:#232323' .
-  \  ' --color fg+:#aeadaf' .
-  \  ' --color bg+:#312e30' .
-  \  ' --color hl:#d2813d' .
-  \  ' --color hl+:#8c9e3d' .
-  \  ' --color pointer:#d2813d' .
-  \  ' --color info:#b58d88' .
-  \  ' --color spinner:#949d9f' .
-  \  ' --color header:#949d9f' .
-  \  ' --color prompt:#6e9cb0' .
-  \  ' --color marker:#d2813d'
-
-let g:fzf_layout = { 'down': '~40%' }
 
 " Configure Airline Theme
 let g:airline#extensions#tabline#enabled = 0
