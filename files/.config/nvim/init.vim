@@ -19,6 +19,7 @@
 "# Plugins #####################################################################
 "###############################################################################
 
+" Start vim plug and set the plugin directory
 call plug#begin(stdpath('data') . '/plugged')
 
 "###############################################################################
@@ -39,16 +40,10 @@ Plug 'tpope/vim-vinegar'
 "###############################################################################
 
 " Status line
-Plug 'vim-airline/vim-airline' | Plug 'vim-airline/vim-airline-themes'
+Plug 'vim-airline/vim-airline'
 
 " Startup screen
 Plug 'mhinz/vim-startify'
-
-" Nice theme, use this theme with terminal too
-Plug 'arcticicestudio/nord-vim'
-
-" Theme packs
-Plug 'rafi/awesome-vim-colorschemes' | Plug 'xolox/vim-misc' | Plug 'flazz/vim-colorschemes'
 
 " No distraction mode
 Plug 'junegunn/goyo.vim'
@@ -67,6 +62,8 @@ Plug 'psliwka/vim-smoothie'
 
 " Show indentation
 Plug 'Yggdroot/indentLine'
+
+Plug 'https://gitlab.com/protesilaos/tempus-themes-vim'
 
 "###############################################################################
 "# Navigation/Search Plugins ###################################################
@@ -97,7 +94,7 @@ Plug 'wincent/vcs-jump'
 " Import tabs etc from editorconfig
 Plug 'editorconfig/editorconfig-vim'
 
-" Vim prettier suport
+" Vim prettier support
 Plug 'prettier/vim-prettier', {
       \ 'do': 'yarn install',
       \ 'branch': 'release/1.x',
@@ -205,6 +202,12 @@ Plug 'tpope/vim-dadbod'
 " [ and ] mappings, in particular for quickfix
 Plug 'tpope/vim-unimpaired'
 
+" Tool for seeing git messages in a line, and visual context
+Plug 'rhysd/git-messenger.vim'
+
+" Spelling errors to quickfix list
+Plug 'inkarkat/vim-ingo-library' | Plug 'inkarkat/vim-spellcheck'
+
 "###############################################################################
 "# Syntax Plugins ##############################################################
 "###############################################################################
@@ -303,7 +306,7 @@ set cursorline
 set number relativenumber
 
 " Set the colorscheme but don't error if dracula doesn't exist
-silent! colorscheme dracula
+silent! colorscheme tempus_classic
 
 " Enables 24bit colors
 set termguicolors
@@ -323,7 +326,7 @@ nnoremap <silent> <Tab> :bnext<CR>
 nnoremap <silent> <S-Tab> :bprevious<CR>
 " Create vsplit
 nnoremap <silent> <Leader>\| :vsplit<CR>
-" Creat hsplit
+" Create hsplit
 nnoremap <silent> <Leader>- :split<CR>
 " Save file
 nnoremap <silent> <Leader>w :w<CR>
@@ -351,6 +354,8 @@ nnoremap <silent> <Leader>a :A<CR>
 nnoremap <silent> <Leader>v :AV<CR>
 " Cycle line number modes
 nnoremap <silent> <Leader>r :call CycleLineNumbering()<CR>
+" Toggle virtualedit
+nnoremap <silent> <Leader>v :call ToggleVirtualEdit()<CR>
 " Open project
 nnoremap <silent> <Leader>m :call OpenProject()<CR>
 " Open scratch term
@@ -524,20 +529,20 @@ let $FZF_DEFAULT_OPTS = '--layout=reverse'
 
 let g:fzf_layout = { 'down': '~40%' }
 
-let g:fzf_colors =
-      \ { 'fg':      ['fg', 'Normal'],
-      \ 'bg':      ['bg', 'Normal'],
-      \ 'hl':      ['fg', 'Comment'],
-      \ 'fg+':     ['fg', 'CursorLine'],
-      \ 'bg+':     ['bg', 'Normal'],
-      \ 'hl+':     ['fg', 'Statement'],
-      \ 'info':    ['fg', 'PreProc'],
-      \ 'border':  ['fg', 'CursorLine'],
-      \ 'prompt':  ['fg', 'Conditional'],
-      \ 'pointer': ['fg', 'Exception'],
-      \ 'marker':  ['fg', 'Keyword'],
-      \ 'spinner': ['fg', 'Label'],
-      \ 'header':  ['fg', 'Comment'] }
+let g:fzf_colors = {
+    \ 'fg':      ['fg', 'Normal'],
+    \ 'bg':      ['bg', 'Normal'],
+    \ 'hl':      ['fg', 'Comment'],
+    \ 'fg+':     ['fg', 'CursorLine'],
+    \ 'bg+':     ['bg', 'Normal'],
+    \ 'hl+':     ['fg', 'Statement'],
+    \ 'info':    ['fg', 'PreProc'],
+    \ 'border':  ['fg', 'CursorLine'],
+    \ 'prompt':  ['fg', 'Conditional'],
+    \ 'pointer': ['fg', 'Exception'],
+    \ 'marker':  ['fg', 'Keyword'],
+    \ 'spinner': ['fg', 'Label'],
+    \ 'header':  ['fg', 'Comment'] }
 
 " Configure Airline Theme
 let g:airline#extensions#tabline#enabled = 0
@@ -583,6 +588,15 @@ function! CycleLineNumbering() abort
   else
     " No relative numbering, just toggle numbers on and off.
     set number!<CR>
+  endif
+endfunction
+
+" Toggle virtualedit
+function! ToggleVirtualEdit() abort
+  if &virtualedit == "all"
+    set virtualedit=
+  else
+    set virtualedit=all
   endif
 endfunction
 
