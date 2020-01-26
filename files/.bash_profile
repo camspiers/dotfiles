@@ -27,8 +27,8 @@ export PKG_CONFIG_PATH="/usr/local/opt/ruby/lib/pkgconfig"
 export FZF_DEFAULT_OPTS='
 --color fg:#aeadaf
 --color bg:#232323
---color fg+:#232323
---color bg+:#aeadaf
+--color fg+:#aeadaf
+--color bg+:#312e30
 --color hl:#d2813d
 --color hl+:#8c9e3d
 --color pointer:#d2813d

@@ -418,16 +418,16 @@ command! -bang -nargs=* Rg
   \ call fzf#vim#grep(
   \   'rg --color ansi --column --line-number --no-heading --smart-case '.shellescape(<q-args>),
   \   1,
-  \   fzf#vim#with_preview({'options': '--bind ctrl-a:select-all,ctrl-d:deselect-all --color=hl+:#8c9e3d,hl:#d2813d --delimiter : --nth 4..'}), <bang>0)
+  \   fzf#vim#with_preview({'options': '--prompt="Grep> " --bind ctrl-a:select-all,ctrl-d:deselect-all --color=hl+:#8c9e3d,hl:#d2813d --delimiter : --nth 4..'}), <bang>0)
 
 command! -bang -nargs=* Rgg
   \ call fzf#vim#grep(
   \   'rg --color ansi --hidden --no-ignore --column --line-number --no-heading --smart-case '.shellescape(<q-args>),
   \   1,
-  \   fzf#vim#with_preview({'options': '--bind ctrl-a:select-all,ctrl-d:deselect-all --color=hl+:#8c9e3d,hl:#d2813d --delimiter : --nth 4..'}), <bang>0)
+  \   fzf#vim#with_preview({'options': '--prompt="Global Grep> " --bind ctrl-a:select-all,ctrl-d:deselect-all --color=hl+:#8c9e3d,hl:#d2813d --delimiter : --nth 4..'}), <bang>0)
 
 command! -bang -nargs=? -complete=dir Files
-    \ call fzf#vim#files(<q-args>, fzf#vim#with_preview({'options': ['--layout=reverse', '--info=inline']}), <bang>0)
+    \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
 
 "###############################################################################
 "# Coc Configurations ##########################################################
@@ -524,25 +524,23 @@ augroup END
 
 " Use ripgrep for fzf
 let $FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --iglob "!.DS_Store" --iglob "!.git"'
-
-let $FZF_DEFAULT_OPTS = '--layout=reverse'
+let $FZF_DEFAULT_OPTS = '--layout=default' .
+  \  ' --info inline' .
+  \  ' --color gutter:#232323' .
+  \  ' --color fg:#aeadaf' .
+  \  ' --color bg:#232323' .
+  \  ' --color fg+:#aeadaf' .
+  \  ' --color bg+:#312e30' .
+  \  ' --color hl:#d2813d' .
+  \  ' --color hl+:#8c9e3d' .
+  \  ' --color pointer:#d2813d' .
+  \  ' --color info:#b58d88' .
+  \  ' --color spinner:#949d9f' .
+  \  ' --color header:#949d9f' .
+  \  ' --color prompt:#6e9cb0' .
+  \  ' --color marker:#d2813d'
 
 let g:fzf_layout = { 'down': '~40%' }
-
-let g:fzf_colors = {
-    \ 'fg':      ['fg', 'Normal'],
-    \ 'bg':      ['bg', 'Normal'],
-    \ 'hl':      ['fg', 'Comment'],
-    \ 'fg+':     ['fg', 'CursorLine'],
-    \ 'bg+':     ['bg', 'Normal'],
-    \ 'hl+':     ['fg', 'Statement'],
-    \ 'info':    ['fg', 'PreProc'],
-    \ 'border':  ['fg', 'CursorLine'],
-    \ 'prompt':  ['fg', 'Conditional'],
-    \ 'pointer': ['fg', 'Exception'],
-    \ 'marker':  ['fg', 'Keyword'],
-    \ 'spinner': ['fg', 'Label'],
-    \ 'header':  ['fg', 'Comment'] }
 
 " Configure Airline Theme
 let g:airline#extensions#tabline#enabled = 0
