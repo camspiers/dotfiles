@@ -23,6 +23,9 @@ export LDFLAGS="-L/usr/local/opt/ruby/lib"
 export CPPFLAGS="-I/usr/local/opt/ruby/include"
 export PKG_CONFIG_PATH="/usr/local/opt/ruby/lib/pkgconfig"
 
+# Include git information in fzf preview
+export FZF_PREVIEW_COMMAND='bat --style="changes" --color=always {}'
+
 # Theme for fzf
 export FZF_DEFAULT_OPTS='
 --color fg:#aeadaf
@@ -47,7 +50,7 @@ export TMUX_1PASSWORD_OP_ITEMS_JQ_FILTER="
 | .[]
 "
 
-export BAT_THEME="Dracula"
+export BAT_THEME="1337"
 
 export RIPGREP_CONFIG_PATH=$HOME/.config/ripgrep/rc
 
