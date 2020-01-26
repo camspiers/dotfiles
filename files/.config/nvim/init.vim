@@ -5,15 +5,20 @@
 " This Neovim config is tailored towards PHP and JavaScript/TypeScript work
 " it uses the vim-plug plugin manager and requires the following tools:
 "
-" - vim-plug
-" - font with devicons
-" - fzf
-" - git
-" - nvim
-" - python3 support
-" - ripgrep
-" - tmux
-" - yarn
+" | Tool                    | Description            |
+" | ----------------------- | ---------------------- |
+" | Neovim                  | Untested in vim        |
+" | vim-plug                | Plugin Manger          |
+" | Yarn                    | Required by Plugins    |
+" | Git                     | Required by Plugins    |
+" | python3 support         | Required by Plugins    |
+" | font with devicons      | Devicons in statusline |
+" | Fuzzy Finder (fzf)      | Search                 |
+" | ripgrep                 | Search                 |
+" | bat                     | Search Previews        |
+" | tmux                    | Open Projects          |
+" | tmuxinator              | Open Projects          |
+" | tmuxinator-fzf-start.sh | Open Projects          |
 "
 "###############################################################################
 "# Plugins #####################################################################
@@ -465,9 +470,6 @@ endfunction
 "###############################################################################
 "# Plugin Configurations #######################################################
 "###############################################################################
-
-let g:slime_target = "tmux"
-let g:slime_default_config = {"socket_name": "default", "target_pane": "{right-of}"}
 
 " 3-way merge
 let g:mergetool_layout = 'bmr'
