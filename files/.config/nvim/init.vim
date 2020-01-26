@@ -7,7 +7,7 @@
 "
 " | Tool                    | Description            |
 " | ----------------------- | ---------------------- |
-" | Neovim                  | Untested in vim        |
+" | Neovim                  | Untested in Vim        |
 " | vim-plug                | Plugin Manger          |
 " | Yarn                    | Required by Plugins    |
 " | Git                     | Required by Plugins    |
@@ -24,7 +24,7 @@
 "# Plugins #####################################################################
 "###############################################################################
 
-" Start vim plug and set the plugin directory
+" Start Vim plug and set the plugin directory
 call plug#begin(stdpath('data') . '/plugged')
 
 "###############################################################################
@@ -86,7 +86,7 @@ Plug 'tpope/vim-projectionist'
 " Integrates with projectionist to add 'Ftype' type commands
 Plug 'c-brenn/fuzzy-projectionist.vim'
 
-" Common pane navigation for vim and tmux together
+" Common pane navigation for Vim and tmux together
 Plug 'christoomey/vim-tmux-navigator'
 
 " Jump to interesting places with a Git or Mercurial repo
@@ -158,7 +158,7 @@ Plug 'AndrewRadev/splitjoin.vim'
 " Nice docblock generator
 Plug 'kkoomen/vim-doge'
 
-" Better search motions (s and S)
+" Better search motions (s and S, z and Z)
 Plug 'justinmk/vim-sneak'
 
 "###############################################################################
@@ -260,6 +260,9 @@ set timeoutlen=500
 
 " Set up a dictionary
 set dictionary=/usr/share/dict/words
+
+" Turn spelling on
+set spell
 
 "###############################################################################
 "# Searching ###################################################################
@@ -550,7 +553,7 @@ let g:airline#extensions#tabline#formatter = 'unique_tail'
 let g:airline#extensions#tabline#left_sep = ' '
 let g:airline#extensions#tabline#left_alt_sep = '|'
 
-" Inlucde the mode map so this file doesn't get treated as binary
+" Include the mode map so this file doesn't get treated as binary
 source ~/.config/nvim/airline-mode-map.vim
 
 " Fix netrw buffer issue
