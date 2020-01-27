@@ -3,7 +3,6 @@ root: ~/dev/drive-website
 attach: false
 windows:
   - Editor: nvim
-  - Git: lazygit
   - Build:
       - cd app/client
       - yarn start
@@ -14,4 +13,3 @@ windows:
       - readydocker.sh
       - docker-compose up -d
       - sleep 5 && open "https://ndep.local/"
-      - lazydocker
