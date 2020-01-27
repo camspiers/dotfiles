@@ -379,6 +379,8 @@ nnoremap <silent> <Leader>m :call OpenProject()<CR>
 nnoremap <silent> <Leader>t :call OpenScratchTerm()<CR>
 " Open lazygit
 nnoremap <silent> <Leader>' :call OpenLazyGit()<CR>
+" Open lazydocker
+nnoremap <silent> <Leader>; :call OpenLazyDocker()<CR>
 " Open harvest
 nnoremap <silent> <Leader>h :call OpenHarvest()<CR>
 " Get outline
@@ -427,6 +429,12 @@ imap <c-x><c-k> <plug>(fzf-complete-word)
 imap <c-x><c-f> <plug>(fzf-complete-path)
 imap <c-x><c-j> <plug>(fzf-complete-file-ag)
 imap <c-x><c-l> <plug>(fzf-complete-line)
+
+" Remap arrows to resize
+nnoremap <Up>    :resize +2<CR>
+nnoremap <Down>  :resize -2<CR>
+nnoremap <Left>  :vertical resize +2<CR>
+nnoremap <Right> :vertical resize -2<CR>
 
 "###############################################################################
 "# FZF/Ripgrep Configuration ###################################################
@@ -553,6 +561,9 @@ let g:git_messenger_no_default_mappings = 1
 " Handle focus lost and gained events
 let g:diminactive_enable_focus = 1
 
+" Use color column to help with active/inactive
+let g:diminactive_use_colorcolumn = 1
+
 " 3-way merge
 let g:mergetool_layout = 'bmr'
 let g:mergetool_prefer_revision = 'local'
@@ -663,6 +674,11 @@ endfunction
 " Opens lazygit
 function! OpenLazyGit()
   :T lazygit && exit
+endfunction
+
+" Opens lazydocker
+function! OpenLazyDocker()
+  :T lazydocker && exit
 endfunction
 
 " Opens harvest starti
