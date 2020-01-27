@@ -2,3 +2,4 @@
 scripts/activespace
 node_modules
 extra/homebrew/Brewfile.lock.json
+tags
