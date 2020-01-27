@@ -95,6 +95,9 @@ Plug 'christoomey/vim-tmux-navigator'
 " Jump to interesting places with a Git or Mercurial repo
 Plug 'wincent/vcs-jump'
 
+" Search context improvements
+Plug 'wincent/loupe'
+
 "###############################################################################
 "# Code Formatting Plugins #####################################################
 "###############################################################################
@@ -164,6 +167,9 @@ Plug 'kkoomen/vim-doge'
 " Better search motions (s and S, z and Z)
 Plug 'justinmk/vim-sneak'
 
+" Highlighting
+Plug 'romainl/vim-cool'
+
 "###############################################################################
 "# Tool Plugins ################################################################
 "###############################################################################
@@ -216,6 +222,12 @@ Plug 'rhysd/git-messenger.vim'
 " Spelling errors to quickfix list
 Plug 'inkarkat/vim-ingo-library' | Plug 'inkarkat/vim-spellcheck'
 
+" When creating new files in directories that don't exist, it just works
+Plug 'duggiefresh/vim-easydir'
+
+" Tools for working with marks
+Plug 'kshenoy/vim-signature'
+
 "###############################################################################
 "# Syntax Plugins ##############################################################
 "###############################################################################
@@ -264,8 +276,8 @@ set timeoutlen=500
 " Set up a dictionary
 set dictionary=/usr/share/dict/words
 
-" Turn spelling on
-set spell
+" Make buffers hidden then abandoned
+set hidden
 
 "###############################################################################
 "# Searching ###################################################################
@@ -273,12 +285,6 @@ set spell
 
 set ignorecase
 set smartcase
-
-augroup IncSearchHighlight
-  autocmd!
-  autocmd CmdlineEnter /,\? :set hlsearch
-  autocmd CmdlineLeave /,\? :set nohlsearch
-augroup END
 
 "###############################################################################
 "# Editing #####################################################################
@@ -350,9 +356,9 @@ nnoremap <silent> <Leader>l :Lines<CR>
 " Open fuzzy buffers with leader b
 nnoremap <silent> <Leader>b :Buffers<CR>
 " Open ripgrep
-nnoremap <silent> <Leader>g :Rg<CR>
+nnoremap <silent> <Leader>f :Rg<CR>
 " Open global grep
-nnoremap <silent> <Leader>/ :Rgg<CR>
+nnoremap <silent> <Leader>g :Rgg<CR>
 " Open ripgrep for cursor word
 nnoremap <silent> <Leader>c :Rg <C-R><C-W><CR>
 " Close the current buffer
@@ -393,6 +399,8 @@ nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 " Find references
 nmap <silent> gr <Plug>(coc-references)
+" Git commit messages
+nmap <silent> gm <Plug>(git-messenger)
 " Get hint
 nnoremap <silent> gh :call CocActionAsync('doHover')<CR>
 " Use gx{text-object} in normal mode
@@ -425,7 +433,7 @@ imap <c-x><c-l> <plug>(fzf-complete-line)
 "###############################################################################
 
 " Some ripgrep searching defaults
-function GetRipgrepCommand(ignore)
+function! GetRipgrepCommand(ignore)
   if a:ignore == 1
       let ignoreFlag = '--ignore'
   else
@@ -443,14 +451,14 @@ function GetRipgrepCommand(ignore)
 endfunction
 
 " Restore appropriate colors, add prompt and bind ctrl-a and ctrl-d
-function GetPreviewFlags(prompt)
+function! GetPreviewFlags(prompt)
   return '--bind ctrl-a:select-all,ctrl-d:deselect-all' .
     \ ' --color=hl+:#8c9e3d,hl:#d2813d' .
     \ ' --prompt="' . a:prompt . '> "'
 endfunction
 
 " Ensure that only the 4th column delimited by : is filtered by FZF
-function GetGrepPreviewFlags(prompt)
+function! GetGrepPreviewFlags(prompt)
   return GetPreviewFlags(a:prompt) . ' --delimiter : --nth 4..'
 endfunction
 
@@ -503,9 +511,6 @@ let g:fzf_layout = { 'down': '~40%' }
 "# Coc Configuration ###########################################################
 "###############################################################################
 
-" if hidden is not set, TextEdit might fail.
-set hidden
-
 " Some servers have issues with backup files
 set nobackup
 set nowritebackup
@@ -536,6 +541,16 @@ endfunction
 "# Plugin Configurations #######################################################
 "###############################################################################
 
+" Go into popup when gm is triggered
+let g:git_messenger_always_into_popup = 1
+
+" Better background color
+hi link gitmessengerPopupNormal CursorLine
+
+" Don't use default mappings
+let g:git_messenger_no_default_mappings = 1
+
+" Handle focus lost and gained events
 let g:diminactive_enable_focus = 1
 
 " 3-way merge
@@ -595,6 +610,7 @@ source ~/.config/nvim/airline-mode-map.vim
 
 " Fix netrw buffer issue
 let g:netrw_fastbrowse = 0
+let g:netrw_liststyle = 3
 
 "###############################################################################
 "# Custom Functions ############################################################
