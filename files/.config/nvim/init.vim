@@ -70,6 +70,9 @@ Plug 'Yggdroot/indentLine'
 
 Plug 'https://gitlab.com/protesilaos/tempus-themes-vim'
 
+" Makes determining active window easier
+Plug 'blueyed/vim-diminactive'
+
 "###############################################################################
 "# Navigation/Search Plugins ###################################################
 "###############################################################################
@@ -532,6 +535,8 @@ endfunction
 "###############################################################################
 "# Plugin Configurations #######################################################
 "###############################################################################
+
+let g:diminactive_enable_focus = 1
 
 " 3-way merge
 let g:mergetool_layout = 'bmr'
