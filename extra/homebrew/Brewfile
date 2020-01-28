@@ -13,6 +13,7 @@ tap "Rigellute/tap"
 tap "Schniz/tap"
 
 # Homebrew essentials
+brew "rlue/utils/timer"
 brew "bash"
 brew "bash-completion"
 brew "bat"

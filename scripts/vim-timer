@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+################################################################################
+# Vim Timer - A Pomodoro Timer for Vim #########################################
+################################################################################
+# Depends on https://github.com/rlue/timer
+# brew install rlue/utils/timer
+
+
+PID_FILE="/tmp/vim-timer.pid"
+
+# If another instance is running then kill it
+[ -f $PID_FILE ] && pkill -F $PID_FILE && sleep 1
+
+# Handle explicit stop command
+[ $1 == "stop" ] && exit
+
+cleanup() {
+    trap - EXIT SIGHUP SIGINT SIGQUIT SIGTERM
+    rm -f $PID_FILE
+    pkill -P $$
+}
+
+# Trap appropriate signals
+trap cleanup EXIT SIGHUP SIGINT SIGQUIT SIGTERM
+
+# Create the pid
+echo $$ > $PID_FILE
+
+# Run timer (in background so we can respond to signals)
+timer "$@" > /dev/null 2>&1 &
+
+# Wait for child process
+wait

@@ -5,20 +5,21 @@
 " This Neovim config is tailored towards PHP and JavaScript/TypeScript work
 " it uses the vim-plug plugin manager and requires the following tools:
 "
-" | Tool                    | Description            |
-" | ----------------------- | ---------------------- |
-" | Neovim                  | Untested in Vim        |
-" | vim-plug                | Plugin Manger          |
-" | Yarn                    | Required by Plugins    |
-" | Git                     | Required by Plugins    |
-" | python3 support         | Required by Plugins    |
-" | font with devicons      | Devicons in statusline |
-" | Fuzzy Finder (fzf)      | Search                 |
-" | ripgrep                 | Search                 |
-" | bat                     | Search Previews        |
-" | tmux                    | Open Projects          |
-" | tmuxinator              | Open Projects          |
-" | tmuxinator-fzf-start.sh | Open Projects          |
+" | Tool                    | Description                                    |
+" | ----------------------- | ----------------------                         |
+" | Neovim                  | Untested in Vim                                |
+" | vim-plug                | Plugin Manger                                  |
+" | Yarn                    | Required by Plugins                            |
+" | Git                     | Required by Plugins                            |
+" | python3 support         | Required by Plugins                            |
+" | font with devicons      | Devicons in statusline                         |
+" | Fuzzy Finder (fzf)      | Search                                         |
+" | ripgrep                 | Search                                         |
+" | bat                     | Search Previews                                |
+" | tmux                    | Open Projects                                  |
+" | tmuxinator              | Open Projects                                  |
+" | tmuxinator-fzf-start.sh | Open Projects                                  |
+" | timer                   | Pomodoro timer (https://github.com/rlue/timer) |
 "
 "###############################################################################
 "# Plugins #####################################################################
@@ -375,14 +376,14 @@ nnoremap <silent> <Leader>r :call CycleLineNumbering()<CR>
 nnoremap <silent> <Leader>v :call ToggleVirtualEdit()<CR>
 " Open project
 nnoremap <silent> <Leader>m :call OpenProject()<CR>
-" Open scratch term
-nnoremap <silent> <Leader>t :call OpenScratchTerm()<CR>
 " Open lazygit
 nnoremap <silent> <Leader>' :call OpenLazyGit()<CR>
 " Open lazydocker
 nnoremap <silent> <Leader>; :call OpenLazyDocker()<CR>
 " Open harvest
 nnoremap <silent> <Leader>h :call OpenHarvest()<CR>
+" Toggle pomodoro
+nnoremap <silent> <Leader>p :call TogglePomodoro()<CR>
 " Get outline
 nnoremap <silent> <Leader>co :<C-u>CocList outline<CR>
 " Get symbols
@@ -581,7 +582,8 @@ let g:tmuxline_preset = {
       \'b'    : '#(whoami)',
       \'win'  : '#W',
       \'cwin' : '#W',
-      \'z'    : ['%R', '%d', '%a', '%Y', '#(battstat {p} | tr -d " ")']}
+      \'y'    : ['%R', '%a', '%d/%m/%y'],
+      \'z'    : '#(battstat {p} | tr -d " ")'}
 
 let g:tmuxline_powerline_separators = 0
 
@@ -650,6 +652,19 @@ function! ToggleVirtualEdit() abort
   endif
 endfunction
 
+" Pomodoro timer
+function! TogglePomodoro()
+  call inputsave()
+  let time = input("Units> ")
+  call inputrestore()
+  normal :<ESC>
+  if time == ""
+    silent execute "!vim-timer stop"
+  else
+    call system("nohup vim-timer " . time . " &")
+  endif
+endfunction
+
 "###############################################################################
 "# Terminal Handling ###########################################################
 "###############################################################################
@@ -685,4 +700,3 @@ endfunction
 function! OpenHarvest()
   :T clear && hstarti && exit
 endfunction
-
