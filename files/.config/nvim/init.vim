@@ -69,6 +69,7 @@ Plug 'psliwka/vim-smoothie'
 " Show indentation
 Plug 'Yggdroot/indentLine'
 
+" Tempus theme
 Plug 'https://gitlab.com/protesilaos/tempus-themes-vim'
 
 " Makes determining active window easier
@@ -78,10 +79,10 @@ Plug 'blueyed/vim-diminactive'
 "# Navigation/Search Plugins ###################################################
 "###############################################################################
 
-" Fuzzy file finding
+" Fuzzy file finding, relies on fzf being installed via brew
 Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf' | Plug 'junegunn/fzf.vim'
 
-" Better fzf searching for ripgrep, e.g. RgRaw
+" Allows the use of Rg options in Rg + FZF searching
 Plug 'jesseleite/vim-agriculture'
 
 " Helps root switching
@@ -223,7 +224,7 @@ Plug 'tpope/vim-fugitive'
 " DB tools
 Plug 'tpope/vim-dadbod'
 
-" [ and ] mappings, in particular for quickfix
+" [ and ] mappings, in particular for quickfix, and spell nospell
 Plug 'tpope/vim-unimpaired'
 
 " Tool for seeing git messages in a line, and visual context
@@ -342,7 +343,7 @@ set termguicolors
 highlight Comment cterm=italic gui=italic
 
 "###############################################################################
-"# Seach Mappings ##############################################################
+"# Search Mappings #############################################################
 "###############################################################################
 
 "###############################################################################
@@ -495,7 +496,8 @@ endfunction
 
 " Restore appropriate colors, add prompt and bind ctrl-a and ctrl-d
 function! GetPreviewFlags(prompt)
-  return ' --prompt="' . a:prompt . '> "'
+  return ' --color=hl+:#8c9e3d,hl:#d2813d' .
+    \ ' --prompt="' . a:prompt . '> "'
 endfunction
 
 " Ensure that only the 4th column delimited by : is filtered by FZF
