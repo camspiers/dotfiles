@@ -175,6 +175,12 @@ Plug 'romainl/vim-cool'
 "# Tool Plugins ################################################################
 "###############################################################################
 
+" Peak at registers
+Plug 'junegunn/vim-peekaboo'
+
+" Measure startuptime
+Plug 'dstein64/vim-startuptime'
+
 " Adds composer command support
 Plug 'noahfrederick/vim-composer'
 
@@ -185,7 +191,7 @@ Plug 'skanehira/docker-compose.vim'
 Plug 'vimwiki/vimwiki'
 
 " PHP Debugging
-Plug 'vim-vdebug/vdebug'
+Plug 'vim-vdebug/vdebug', { 'on': [] }
 
 " Markdown preview
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  }
@@ -384,6 +390,8 @@ nnoremap <silent> <Leader>; :call OpenLazyDocker()<CR>
 nnoremap <silent> <Leader>h :call OpenHarvest()<CR>
 " Toggle pomodoro
 nnoremap <silent> <Leader>p :call TogglePomodoro()<CR>
+" Register Vdebug
+nnoremap <silent> <Leader>~ :call RegisterVdebug()<CR>
 " Get outline
 nnoremap <silent> <Leader>co :<C-u>CocList outline<CR>
 " Get symbols
@@ -595,10 +603,6 @@ let g:rooter_patterns = ['docker-compose.yml', '.git/']
 " Change silently
 let g:rooter_silent_chdir = 1
 
-" Vdebug needs to be able to load files and understand how the file in the docker
-" container maps to the local system
-autocmd VimEnter * :call Vdebug_load_options( { 'path_maps' : { '/var/www/html/' : getcwd() } } )
-
 " Sets up within word motions to use ,
 let g:camelcasemotion_key = ','
 
@@ -663,6 +667,16 @@ function! TogglePomodoro()
   else
     call system("nohup vim-timer " . time . " &")
   endif
+endfunction
+
+" Vdebug needs to be able to load files and understand how the file in the docker
+function! RegisterVdebug()
+  call plug#load('vdebug')
+  call inputsave()
+  let root = input("Root> ", getcwd())
+  call inputrestore()
+  normal :<ESC>
+  call Vdebug_load_options( { 'path_maps' : { '/var/www/html/' : expand(root) } } )
 endfunction
 
 "###############################################################################
