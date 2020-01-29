@@ -10,6 +10,7 @@ export HISTSIZE=100000        # big big history
 export HISTFILESIZE=100000    # big big history
 shopt -s histappend           # append to history, don't overwrite it
 shopt -s expand_aliases
+set -o vi
 
 ################################################################################
 # Path Management ##############################################################
