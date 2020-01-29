@@ -81,6 +81,9 @@ Plug 'blueyed/vim-diminactive'
 " Fuzzy file finding
 Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf' | Plug 'junegunn/fzf.vim'
 
+" Better fzf searching for ripgrep, e.g. RgRaw
+Plug 'jesseleite/vim-agriculture'
+
 " Helps root switching
 Plug 'airblade/vim-rooter'
 
@@ -339,6 +342,32 @@ set termguicolors
 highlight Comment cterm=italic gui=italic
 
 "###############################################################################
+"# Seach Mappings ##############################################################
+"###############################################################################
+
+"###############################################################################
+"# Preview without Rg options | Daily Driver ###################################
+"###############################################################################
+
+" Open ripgrep
+nnoremap <silent> <Leader>f :Rg<CR>
+" Open global grep
+nnoremap <silent> <Leader>g :Rgg<CR>
+" Open ripgrep for cursor word
+nnoremap <silent> <Leader>c :Rg <C-R><C-W><CR>
+
+"###############################################################################
+"# No Preview with Rg options | Specialized ####################################
+"###############################################################################
+
+" Open ripgrep agriculture
+nmap <Leader>/ <Plug>RgRawSearch
+" Open ripgrep agriculture for visual selection
+vmap <Leader>/ <Plug>RgRawVisualSelection
+" Open ripgrep agriculture for cursor word
+nmap <Leader>* <Plug>RgRawWordUnderCursor
+
+"###############################################################################
 "# Mappings ####################################################################
 "###############################################################################
 
@@ -362,12 +391,6 @@ nnoremap <silent> <Leader>\ :Files<CR>
 nnoremap <silent> <Leader>l :Lines<CR>
 " Open fuzzy buffers with leader b
 nnoremap <silent> <Leader>b :Buffers<CR>
-" Open ripgrep
-nnoremap <silent> <Leader>f :Rg<CR>
-" Open global grep
-nnoremap <silent> <Leader>g :Rgg<CR>
-" Open ripgrep for cursor word
-nnoremap <silent> <Leader>c :Rg <C-R><C-W><CR>
 " Close the current buffer
 nnoremap <silent> <Leader>x :bdelete<CR>
 " Close all buffers
@@ -449,6 +472,9 @@ nnoremap <Right> :vertical resize -2<CR>
 "# FZF/Ripgrep Configuration ###################################################
 "###############################################################################
 
+" Use agriculture as a global no hidden search
+let g:agriculture#rg_options = '--no-ignore --hidden'
+
 " Some ripgrep searching defaults
 function! GetRipgrepCommand(ignore)
   if a:ignore == 1
@@ -469,9 +495,7 @@ endfunction
 
 " Restore appropriate colors, add prompt and bind ctrl-a and ctrl-d
 function! GetPreviewFlags(prompt)
-  return '--bind ctrl-a:select-all,ctrl-d:deselect-all' .
-    \ ' --color=hl+:#8c9e3d,hl:#d2813d' .
-    \ ' --prompt="' . a:prompt . '> "'
+  return ' --prompt="' . a:prompt . '> "'
 endfunction
 
 " Ensure that only the 4th column delimited by : is filtered by FZF
@@ -507,20 +531,22 @@ let $FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --iglob "!.DS_Store" -
 
 " Color FZF with tempus classic
 let $FZF_DEFAULT_OPTS = '--layout=default' .
-  \  ' --info inline' .
-  \  ' --color gutter:#232323' .
-  \  ' --color fg:#aeadaf' .
-  \  ' --color bg:#232323' .
-  \  ' --color fg+:#aeadaf' .
-  \  ' --color bg+:#312e30' .
-  \  ' --color hl:#d2813d' .
-  \  ' --color hl+:#8c9e3d' .
-  \  ' --color pointer:#d2813d' .
-  \  ' --color info:#b58d88' .
-  \  ' --color spinner:#949d9f' .
-  \  ' --color header:#949d9f' .
-  \  ' --color prompt:#6e9cb0' .
-  \  ' --color marker:#d2813d'
+  \ ' --info inline' .
+  \ ' --color gutter:#232323' .
+  \ ' --color fg:#aeadaf' .
+  \ ' --color bg:#232323' .
+  \ ' --color fg+:#aeadaf' .
+  \ ' --color bg+:#312e30' .
+  \ ' --color hl:#d2813d' .
+  \ ' --color hl+:#8c9e3d' .
+  \ ' --color pointer:#d2813d' .
+  \ ' --color info:#b58d88' .
+  \ ' --color spinner:#949d9f' .
+  \ ' --color header:#949d9f' .
+  \ ' --color prompt:#6e9cb0' .
+  \ ' --color marker:#d2813d' .
+  \ ' --bind ctrl-a:select-all,ctrl-d:deselect-all' .
+  \ ' --color=hl+:#8c9e3d,hl:#d2813d'
 
 let g:fzf_layout = { 'down': '~40%' }
 
