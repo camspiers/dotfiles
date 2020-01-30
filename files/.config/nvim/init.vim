@@ -643,9 +643,6 @@ let g:airline#extensions#tabline#formatter = 'unique_tail'
 let g:airline#extensions#tabline#left_sep = ' '
 let g:airline#extensions#tabline#left_alt_sep = '|'
 
-" Include the mode map so this file doesn't get treated as binary
-source ~/.config/nvim/airline-mode-map.vim
-
 " Fix netrw buffer issue
 let g:netrw_fastbrowse = 0
 let g:netrw_liststyle = 3
