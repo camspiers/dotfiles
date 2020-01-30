@@ -11,6 +11,7 @@ tap "camspiers/taps"
 tap "koekeishiya/formulae"
 tap "Rigellute/tap"
 tap "Schniz/tap"
+tap "rlue/utils"
 
 # Homebrew essentials
 brew "rlue/utils/timer"
