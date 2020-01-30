@@ -16,7 +16,7 @@ set show-mode-in-prompt on
 # 46      (bg color)
 # m       (end)
 # 1;      (bold)
-# 38;5;   (specifies 256 bg)
+# 38;5;   (specifies 256 fg)
 # 21      (fg color)
 # m       (end)
 # COMMAND (some text to display)
