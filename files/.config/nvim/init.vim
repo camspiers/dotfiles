@@ -426,14 +426,20 @@ nnoremap <silent> <Leader>cl :<C-u>CocList locationlist<CR>
 nnoremap <silent> <Leader>cc :<C-u>CocList commands<CR>
 " Restart server
 nnoremap <silent> <Leader>cR :<C-u>CocRestart<CR>
+" Rename
+nmap <leader>rn <Plug>(coc-rename)
 " Go to definition
 nmap gd <Plug>(coc-definition)
 " Go to type definition
 nmap <silent> gy <Plug>(coc-type-definition)
 " Go to implementation
 nmap <silent> gi <Plug>(coc-implementation)
-" Find references
+" Go to references
 nmap <silent> gr <Plug>(coc-references)
+" Go to type
+nmap <silent> gy <Plug>(coc-type-definition)
+" Go to implementation
+nmap <silent> gi <Plug>(coc-implementation)
 " Git commit messages
 nmap <silent> gm <Plug>(git-messenger)
 " Get hint
