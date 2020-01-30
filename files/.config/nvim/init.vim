@@ -46,7 +46,7 @@ Plug 'tpope/vim-vinegar'
 "###############################################################################
 
 " Status line
-Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline' | Plug 'vim-airline/vim-airline-themes'
 
 " Startup screen
 Plug 'mhinz/vim-startify'
@@ -69,8 +69,8 @@ Plug 'psliwka/vim-smoothie'
 " Show indentation
 Plug 'Yggdroot/indentLine'
 
-" Tempus theme
-Plug 'https://gitlab.com/protesilaos/tempus-themes-vim'
+" Themes
+Plug 'chriskempson/base16-vim'
 
 " Makes determining active window easier
 Plug 'blueyed/vim-diminactive'
@@ -333,8 +333,10 @@ set cursorline
 " Show line numbers
 set number relativenumber
 
-" Set the colorscheme but don't error if dracula doesn't exist
-silent! colorscheme tempus_classic
+" Set the colorscheme
+let base16colorspace=256
+colorscheme base16-chalk
+let g:airline_theme='base16_chalk'
 
 " Enables 24bit colors
 set termguicolors
@@ -502,8 +504,7 @@ endfunction
 
 " Restore appropriate colors, add prompt and bind ctrl-a and ctrl-d
 function! GetPreviewFlags(prompt)
-  return ' --color=hl+:#8c9e3d,hl:#d2813d' .
-    \ ' --prompt="' . a:prompt . '> "'
+  return ' --prompt="' . a:prompt . '> "'
 endfunction
 
 " Ensure that only the 4th column delimited by : is filtered by FZF
@@ -540,21 +541,7 @@ let $FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --iglob "!.DS_Store" -
 " Color FZF with tempus classic
 let $FZF_DEFAULT_OPTS = '--layout=default' .
   \ ' --info inline' .
-  \ ' --color gutter:#232323' .
-  \ ' --color fg:#aeadaf' .
-  \ ' --color bg:#232323' .
-  \ ' --color fg+:#aeadaf' .
-  \ ' --color bg+:#312e30' .
-  \ ' --color hl:#d2813d' .
-  \ ' --color hl+:#8c9e3d' .
-  \ ' --color pointer:#d2813d' .
-  \ ' --color info:#b58d88' .
-  \ ' --color spinner:#949d9f' .
-  \ ' --color header:#949d9f' .
-  \ ' --color prompt:#6e9cb0' .
-  \ ' --color marker:#d2813d' .
-  \ ' --bind ctrl-a:select-all,ctrl-d:deselect-all' .
-  \ ' --color=hl+:#8c9e3d,hl:#d2813d'
+  \ ' --bind ctrl-a:select-all,ctrl-d:deselect-all'
 
 let g:fzf_layout = { 'down': '~40%' }
 
@@ -620,12 +607,12 @@ let g:mkdp_auto_start = 0
 
 " Configures tmux line, use :TmuxlineSnapshot ~/.tmux/airline.conf to save
 let g:tmuxline_preset = {
-      \'a'    : '#S',
+      \'a'    : '#[bold]#S',
       \'b'    : '#(whoami)',
       \'win'  : '#W',
       \'cwin' : '#W',
       \'y'    : ['%R', '%a', '%d/%m/%y'],
-      \'z'    : '#(battstat {p} | tr -d " ")'}
+      \'z'    : '#[bold]#(battstat {p} | tr -d " ")'}
 
 let g:tmuxline_powerline_separators = 0
 

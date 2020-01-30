@@ -27,20 +27,37 @@ export PKG_CONFIG_PATH="/usr/local/opt/ruby/lib/pkgconfig"
 export FZF_PREVIEW_COMMAND='bat --style="changes" --color=always {}'
 
 # Theme for fzf
-export FZF_DEFAULT_OPTS='
---color fg:#aeadaf
---color bg:#232323
---color fg+:#aeadaf
---color bg+:#312e30
---color hl:#d2813d
---color hl+:#8c9e3d
---color pointer:#d2813d
---color info:#b58d88
---color spinner:#949d9f
---color header:#949d9f
---color prompt:#6e9cb0
---color marker:#d2813d
-'
+# Base16 Chalk
+# Author: Chris Kempson (http://chriskempson.com)
+
+_gen_fzf_default_opts() {
+
+local color00='#151515'
+local color01='#202020'
+local color02='#303030'
+local color03='#505050'
+local color04='#b0b0b0'
+local color05='#d0d0d0'
+local color06='#e0e0e0'
+local color07='#f5f5f5'
+local color08='#fb9fb1'
+local color09='#eda987'
+local color0A='#ddb26f'
+local color0B='#acc267'
+local color0C='#12cfc0'
+local color0D='#6fc2ef'
+local color0E='#e1a3ee'
+local color0F='#deaf8f'
+
+export FZF_DEFAULT_OPTS="
+  --color=bg+:$color01,bg:$color00,spinner:$color0C,hl:$color0D
+  --color=fg:$color04,header:$color0D,info:$color0A,pointer:$color0C
+  --color=marker:$color0C,fg+:$color06,prompt:$color0A,hl+:$color0D
+"
+
+}
+
+_gen_fzf_default_opts
 
 export TMUX_1PASSWORD_OP_ITEMS_JQ_FILTER="
 .[]
@@ -49,8 +66,6 @@ export TMUX_1PASSWORD_OP_ITEMS_JQ_FILTER="
 | join(\",\"))
 | .[]
 "
-
-export BAT_THEME="1337"
 
 export RIPGREP_CONFIG_PATH=$HOME/.config/ripgrep/rc
 
