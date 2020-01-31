@@ -105,6 +105,9 @@ Plug 'wincent/vcs-jump'
 " Search context improvements
 Plug 'wincent/loupe'
 
+" Improves the quickfix list
+Plug 'romainl/vim-qf'
+
 "###############################################################################
 "# Code Formatting Plugins #####################################################
 "###############################################################################
@@ -146,9 +149,6 @@ Plug 'neoclide/coc-html', {'do': 'yarn install --frozen-lockfile'}
 
 " Better commenting
 Plug 'tomtom/tcomment_vim'
-
-" Find and replace via quickfix list
-Plug 'stefandtw/quickfix-reflector.vim'
 
 " Surround motions
 Plug 'tpope/vim-surround'
@@ -541,7 +541,7 @@ augroup END
 " Use ripgrep for fzf
 let $FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --iglob "!.DS_Store" --iglob "!.git"'
 
-" Color FZF with tempus classic
+" Default FZF options with bindings to match layout and select all + none
 let $FZF_DEFAULT_OPTS = '--layout=default' .
   \ ' --info inline' .
   \ ' --bind ctrl-a:select-all,ctrl-d:deselect-all,tab:toggle+up,shift-tab:toggle+down'
@@ -559,7 +559,6 @@ function! s:populate_arg_list(lines)
 endfunction
 
 let g:fzf_action = { 'ctrl-l': function('s:populate_arg_list') }
-
 
 "###############################################################################
 "# Coc Configuration ###########################################################
