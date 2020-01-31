@@ -505,7 +505,7 @@ function! GetRipgrepCommand(ignore)
     \ ' ' . ignoreFlag
 endfunction
 
-" Restore appropriate colors, add prompt and bind ctrl-a and ctrl-d
+" Adds prompt
 function! GetPreviewFlags(prompt)
   return ' --prompt="' . a:prompt . '> "'
 endfunction
@@ -544,12 +544,24 @@ let $FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --iglob "!.DS_Store" -
 " Color FZF with tempus classic
 let $FZF_DEFAULT_OPTS = '--layout=default' .
   \ ' --info inline' .
-  \ ' --bind ctrl-a:select-all,ctrl-d:deselect-all'
+  \ ' --bind ctrl-a:select-all,ctrl-d:deselect-all,tab:toggle+up,shift-tab:toggle+down'
 
 let g:fzf_layout = { 'down': '~40%' }
+let g:fzf_action = { 'ctrl-l': function('s:populate_arg_list') }
+
+" Escape file names for use in map
+func s:fnameescape(key, val)
+  return fnameescape(a:val)
+endfunc
+
+" Populate the arglist with files from searches etc
+function! s:populate_arg_list(lines)
+  let arglist = map(a:lines, function('s:fnameescape'))
+  execute 'args ' . join(arglist, ' ') 
+endfunction
 
 "###############################################################################
-"# Coc Configuration ###########################################################
+"# Coc Configuration #########################################################
 "###############################################################################
 
 " Some servers have issues with backup files
