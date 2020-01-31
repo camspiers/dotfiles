@@ -37,11 +37,8 @@ call plug#begin(stdpath('data') . '/plugged')
 " Sensible defaults
 Plug 'tpope/vim-sensible'
 
-" Standard terminal integration improvements
+" Standard terminal integration improvements, mouse, cursor etc
 Plug 'wincent/terminus'
-
-" Improves netrw
-Plug 'tpope/vim-vinegar'
 
 "###############################################################################
 "# Visual Plugins ##############################################################
@@ -52,9 +49,6 @@ Plug 'vim-airline/vim-airline' | Plug 'vim-airline/vim-airline-themes'
 
 " Startup screen
 Plug 'mhinz/vim-startify'
-
-" No distraction mode
-Plug 'junegunn/goyo.vim'
 
 " Makes tmux use airline colors
 Plug 'edkolev/tmuxline.vim'
@@ -80,6 +74,12 @@ Plug 'blueyed/vim-diminactive'
 "###############################################################################
 "# Navigation/Search Plugins ###################################################
 "###############################################################################
+
+" Replacement for netrw
+Plug 'justinmk/vim-dirvish'
+
+" Projections for dirvish
+Plug 'fsharpasharp/vim-dirvinist'
 
 " Fuzzy file finding, relies on fzf being installed via brew
 Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf' | Plug 'junegunn/fzf.vim'
@@ -657,10 +657,6 @@ let g:airline#extensions#tabline#enabled = 0
 let g:airline#extensions#tabline#formatter = 'unique_tail'
 let g:airline#extensions#tabline#left_sep = ' '
 let g:airline#extensions#tabline#left_alt_sep = '|'
-
-" Fix netrw buffer issue
-let g:netrw_fastbrowse = 0
-let g:netrw_liststyle = 3
 
 "###############################################################################
 "# Custom Functions ############################################################
