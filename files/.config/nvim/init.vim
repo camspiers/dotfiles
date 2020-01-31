@@ -407,13 +407,14 @@ nnoremap <silent> <Leader>r :call CycleLineNumbering()<CR>
 " Toggle virtualedit
 nnoremap <silent> <Leader>v :call ToggleVirtualEdit()<CR>
 " Open project
-nnoremap <silent> <Leader>m :call OpenProject()<CR>
+nnoremap <silent> <Leader>m :call OpenTerm('tmuxinator-fzf-start.sh')<CR>
+nnoremap <silent> <Leader>] :call OpenTerm('tmuxinator-fzf-start.sh')<CR>
 " Open lazygit
-nnoremap <silent> <Leader>' :call OpenLazyGit()<CR>
+nnoremap <silent> <Leader>' :call OpenTerm('lazygit')<CR>
 " Open lazydocker
-nnoremap <silent> <Leader>; :call OpenLazyDocker()<CR>
+nnoremap <silent> <Leader>; :call OpenTerm('lazydocker')<CR>
 " Open harvest
-nnoremap <silent> <Leader>h :call OpenHarvest()<CR>
+nnoremap <silent> <Leader>h :call OpenTerm('hstarti')<CR>
 " Toggle pomodoro
 nnoremap <silent> <Leader>p :call TogglePomodoro()<CR>
 " Register Vdebug
@@ -702,33 +703,24 @@ endfunction
 "###############################################################################
 
 let g:neoterm_default_mod = 'botright'
-let g:neoterm_autoinsert = 1
 
 " Quit term buffer with ESC
 augroup TermHandling
   autocmd!
   " " Turn off line numbers etc
   autocmd TermOpen * setlocal listchars= nonumber norelativenumber
+  autocmd TermOpen * startinsert
   autocmd TermOpen * tnoremap <Esc> <c-\><c-n>
   autocmd! FileType fzf tnoremap <buffer> <Esc> <c-c>
 augroup END
 
-" Open Project
-function! OpenProject()
-  :T clear && tmuxinator-fzf-start.sh && exit
+function! OpenTerm(cmd)
+  new
+  call termopen(a:cmd, {'on_exit': function('s:OnExit')})
 endfunction
 
-" Opens lazygit
-function! OpenLazyGit()
-  :T lazygit && exit
-endfunction
-
-" Opens lazydocker
-function! OpenLazyDocker()
-  :T lazydocker && exit
-endfunction
-
-" Opens harvest starti
-function! OpenHarvest()
-  :T clear && hstarti && exit
+function! s:OnExit(job_id, code, event) dict
+  if a:code == 0
+    bd!
+  endif
 endfunction
