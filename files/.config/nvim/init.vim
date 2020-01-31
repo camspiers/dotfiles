@@ -20,6 +20,8 @@
 " | tmuxinator              | Open Projects                                  |
 " | tmuxinator-fzf-start.sh | Open Projects                                  |
 " | timer                   | Pomodoro timer (https://github.com/rlue/timer) |
+" | lazygit                 | Git terminal interfact                         |
+" | lazydocker              | Docker terminal interface                      |
 "
 "###############################################################################
 "# Plugins #####################################################################
@@ -715,8 +717,7 @@ augroup TermHandling
 augroup END
 
 function! OpenTerm(cmd)
-  new
-  call termopen(a:cmd, {'on_exit': function('s:OnExit')})
+  new | call termopen(a:cmd, {'on_exit': function('s:OnExit')})
 endfunction
 
 function! s:OnExit(job_id, code, event) dict
