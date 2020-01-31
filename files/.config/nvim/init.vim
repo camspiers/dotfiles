@@ -547,7 +547,6 @@ let $FZF_DEFAULT_OPTS = '--layout=default' .
   \ ' --bind ctrl-a:select-all,ctrl-d:deselect-all,tab:toggle+up,shift-tab:toggle+down'
 
 let g:fzf_layout = { 'down': '~40%' }
-let g:fzf_action = { 'ctrl-l': function('s:populate_arg_list') }
 
 " Escape file names for use in map
 func s:fnameescape(key, val)
@@ -556,12 +555,14 @@ endfunc
 
 " Populate the arglist with files from searches etc
 function! s:populate_arg_list(lines)
-  let arglist = map(a:lines, function('s:fnameescape'))
-  execute 'args ' . join(arglist, ' ') 
+  execute 'args ' . join(map(a:lines, function('s:fnameescape')), ' ') 
 endfunction
 
+let g:fzf_action = { 'ctrl-l': function('s:populate_arg_list') }
+
+
 "###############################################################################
-"# Coc Configuration #########################################################
+"# Coc Configuration ###########################################################
 "###############################################################################
 
 " Some servers have issues with backup files
