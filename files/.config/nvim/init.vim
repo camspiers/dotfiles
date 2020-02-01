@@ -313,7 +313,7 @@ nnoremap <silent> <Leader>\| :vsplit<CR>
 " Create hsplit
 nnoremap <silent> <Leader>- :split<CR>
 " Save file
-nnoremap <silent> <Leader>w :w<CR>
+nnoremap <silent> <Leader>w :write<CR>
 " Open startify with leader s
 nnoremap <silent> <Leader>s :Startify<CR>
 " Open fuzzy files with leader \
@@ -327,7 +327,7 @@ nnoremap <silent> <Leader>o <C-w>o<CR>
 " Close the current buffer
 nnoremap <silent> <Leader>x :bdelete<CR>
 " Close all buffers
-nnoremap <silent> <Leader>z :%bd<CR>
+nnoremap <silent> <Leader>z :%bdelete<CR>
 " Alternate file navigation
 nnoremap <silent> <Leader>a :A<CR>
 " Alternate file navigation vertical split
@@ -337,9 +337,9 @@ nnoremap <silent> <Leader>r :call CycleLineNumbering()<CR>
 " Toggle virtualedit
 nnoremap <silent> <Leader>v :call ToggleVirtualEdit()<CR>
 " Open project
-nnoremap <silent> <Leader>] :call OpenTerm('tmuxinator-fzf-start.sh', 0.2)<CR>
+nnoremap <silent> <Leader>] :call OpenTerm('tmuxinator-fzf-start.sh', 0.15, 'vertical')<CR>
 " Switch session
-nnoremap <silent> <Leader>[ :call OpenTerm('tmux-fzf-switch.sh', 0.2)<CR>
+nnoremap <silent> <Leader>[ :call OpenTerm('tmux-fzf-switch.sh', 0.15, 'vertical')<CR>
 " Open lazygit
 nnoremap <silent> <Leader>' :call OpenTerm('lazygit', 0.8)<CR>
 " Open lazydocker
@@ -376,20 +376,18 @@ nmap <silent> gr <Plug>(coc-references)
 nmap <silent> gy <Plug>(coc-type-definition)
 " Go to implementation
 nmap <silent> gi <Plug>(coc-implementation)
-" Git commit messages
-nmap <silent> gm <Plug>(git-messenger)
 " Get hint
 nnoremap <silent> gh :call CocActionAsync('doHover')<CR>
 " Use gx{text-object} in normal mode
 nmap gx <Plug>(neoterm-repl-send)
 " Send selected contents in visual mode.
 xmap gx <Plug>(neoterm-repl-send)
-
+" Git commit messages
+nmap <silent> gm <Plug>(git-messenger)
 " Mapping selecting mappings
 nmap <leader><tab> <plug>(fzf-maps-n)
 xmap <leader><tab> <plug>(fzf-maps-x)
 omap <leader><tab> <plug>(fzf-maps-o)
-
 " Insert mode completion
 imap <c-x><c-k> <plug>(fzf-complete-word)
 imap <c-x><c-f> <plug>(fzf-complete-path)
@@ -642,9 +640,15 @@ augroup TermHandling
   autocmd! FileType fzf tnoremap <buffer> <Esc> <c-c>
 augroup END
 
-" Wrapper for opening terms with auto close
+" Wrapper for opening terms with auto close, optional argument for size
+" percentag
 function! OpenTerm(cmd, ...)
   let percentage = get(a:, 1, 0.5)
-  new | execute 'resize ' . string(&lines * percentage)
+  let orientation = get(a:, 2, 'horizontal')
+  if orientation == 'horizontal'
+    new | execute 'resize ' . string(&lines * percentage)
+  else
+    vnew | execute 'vertical resize ' . string(&columns * percentage)
+  endif
   call termopen(a:cmd, {'on_exit': {j, c, e -> execute('if c == 0 | close | endif')}})
 endfunction

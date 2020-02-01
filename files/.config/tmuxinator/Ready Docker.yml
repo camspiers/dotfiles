@@ -2,4 +2,3 @@ name: Ready Docker
 root: ~/dev/readydocker
 windows:
   - Editor: nvim
-  - Git: lazygit
