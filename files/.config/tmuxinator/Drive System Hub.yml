@@ -3,7 +3,6 @@ root: ~/dev/system-hub
 attach: false
 windows:
   - Editor: nvim
-  - Git: lazygit
   - Docker:
       - readydocker.sh
       - docker-compose up -d

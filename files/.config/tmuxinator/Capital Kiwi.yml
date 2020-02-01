@@ -3,7 +3,6 @@ root: ~/dev/capital-kiwi
 attach: false
 windows:
   - Editor: nvim
-  - Git: lazygit
   - Build: yarn start
   - Docker:
       - readydocker.sh

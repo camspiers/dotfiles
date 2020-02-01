@@ -2,5 +2,4 @@ name: Zealandia
 root: ~/dev/zealandia
 windows:
   - Editor: nvim
-  - Git: lazygit
 

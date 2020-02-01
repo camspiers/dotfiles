@@ -13,7 +13,7 @@
 " | Git                     | Required by Plugins                            |
 " | python3 support         | Required by Plugins                            |
 " | font with devicons      | Devicons in statusline                         |
-" | Fuzzy Finder (fzf)      | Search                                         |
+" | Fuzzy Finder (FZF)      | Search                                         |
 " | ripgrep                 | Search                                         |
 " | bat                     | Search Previews                                |
 " | tmux                    | Open Projects                                  |
@@ -28,7 +28,7 @@
 "###############################################################################
 
 " Start Vim plug and set the plugin directory
-call plug#begin(stdpath('data') . '/plugged')
+call plug#begin(stdpath('config') . '/plugged')
 
 "###############################################################################
 "# Vim Defaults Plugins ########################################################
@@ -63,7 +63,7 @@ Plug 'ryanoasis/vim-devicons'
 Plug 'psliwka/vim-smoothie'
 
 " Show indentation
-Plug 'Yggdroot/indentLine'
+Plug 'nathanaelkane/vim-indent-guides'
 
 " Themes
 Plug 'chriskempson/base16-vim'
@@ -76,14 +76,15 @@ Plug 'blueyed/vim-diminactive'
 "###############################################################################
 
 " Replacement for netrw
-Plug 'justinmk/vim-dirvish'
+Plug 'justinmk/vim-dirvish' 
 
+" Support for displaying git statuses in dirvish
 Plug 'kristijanhusak/vim-dirvish-git'
 
 " Projections for dirvish
 Plug 'fsharpasharp/vim-dirvinist'
 
-" Fuzzy file finding, relies on fzf being installed via brew
+" Fuzzy file finding, relies on FZF being installed via brew
 Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf' | Plug 'junegunn/fzf.vim'
 
 " Allows the use of Rg options in Rg + FZF searching
@@ -136,6 +137,7 @@ Plug 'neoclide/coc-highlight', {'do': 'yarn install --frozen-lockfile'}
 Plug 'neoclide/coc-json', {'do': 'yarn install --frozen-lockfile'}
 Plug 'neoclide/coc-html', {'do': 'yarn install --frozen-lockfile'}
 Plug 'neoclide/coc-pairs', {'do': 'yarn install --frozen-lockfile'}
+Plug 'marlonfan/coc-phpls', {'do': 'yarn install --frozen-lockfile'}
 
 " Better commenting
 Plug 'tomtom/tcomment_vim'
@@ -207,7 +209,7 @@ Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
 " UNIX tools
 Plug 'tpope/vim-eunuch'
 
-" Term abstractions
+" Used as a replacement for vim-slime. Provides repl interaction with gx
 Plug 'kassio/neoterm'
 
 " Git tools
@@ -389,6 +391,8 @@ nnoremap <silent> <Leader>\ :Files<CR>
 nnoremap <silent> <Leader>l :Lines<CR>
 " Open fuzzy buffers with leader b
 nnoremap <silent> <Leader>b :Buffers<CR>
+" Close all by current window
+nnoremap <silent> <Leader>o <C-w>o<CR>
 " Close the current buffer
 nnoremap <silent> <Leader>x :bdelete<CR>
 " Close all buffers
@@ -402,18 +406,21 @@ nnoremap <silent> <Leader>r :call CycleLineNumbering()<CR>
 " Toggle virtualedit
 nnoremap <silent> <Leader>v :call ToggleVirtualEdit()<CR>
 " Open project
-nnoremap <silent> <Leader>m :call OpenTerm('tmuxinator-fzf-start.sh')<CR>
-nnoremap <silent> <Leader>] :call OpenTerm('tmuxinator-fzf-start.sh')<CR>
+nnoremap <silent> <Leader>] :call OpenTerm('tmuxinator-fzf-start.sh', 0.2)<CR>
+" Switch session
+nnoremap <silent> <Leader>[ :call OpenTerm('tmux-fzf-switch.sh', 0.2)<CR>
 " Open lazygit
-nnoremap <silent> <Leader>' :call OpenTerm('lazygit')<CR>
+nnoremap <silent> <Leader>' :call OpenTerm('lazygit', 0.8)<CR>
 " Open lazydocker
-nnoremap <silent> <Leader>; :call OpenTerm('lazydocker')<CR>
+nnoremap <silent> <Leader>; :call OpenTerm('lazydocker', 0.8)<CR>
 " Open harvest
-nnoremap <silent> <Leader>h :call OpenTerm('hstarti')<CR>
+nnoremap <silent> <Leader>h :call OpenTerm('hstarti', 0.1)<CR>
 " Toggle pomodoro
 nnoremap <silent> <Leader>p :call TogglePomodoro()<CR>
-" Register Vdebug
+" Register Vdebug only need to call this when you need to change the roots
 nnoremap <silent> <Leader>~ :call RegisterVdebug()<CR>
+" Calls the custom start function that requests path map to be defined if not already run
+nnoremap <silent> <F5> :call StartVdebug()<CR>
 " Get outline
 nnoremap <silent> <Leader>co :<C-u>CocList outline<CR>
 " Get symbols
@@ -446,15 +453,6 @@ nnoremap <silent> gh :call CocActionAsync('doHover')<CR>
 nmap gx <Plug>(neoterm-repl-send)
 " Send selected contents in visual mode.
 xmap gx <Plug>(neoterm-repl-send)
-" Give a color scheme chooser
-nnoremap <silent> <Leader>C :call fzf#run({
-      \   'source':
-      \     map(split(globpath(&rtp, "colors/*.vim"), "\n"),
-      \         "substitute(fnamemodify(v:val, ':t'), '\\..\\{-}$', '', '')"),
-      \   'sink':    'colo',
-      \   'options': '+m',
-      \   'left':    30
-      \ })<CR>
 
 " Mapping selecting mappings
 nmap <leader><tab> <plug>(fzf-maps-n)
@@ -473,6 +471,9 @@ nnoremap <Down>  :resize -2<CR>
 nnoremap <Left>  :vertical resize +2<CR>
 nnoremap <Right> :vertical resize -2<CR>
 
+" Run :VcsJump diff
+nnoremap <Leader>+ :VcsJump diff<CR>
+
 "###############################################################################
 "# FZF/Ripgrep Configuration ###################################################
 "###############################################################################
@@ -482,12 +483,6 @@ let g:agriculture#rg_options = '--no-ignore --hidden'
 
 " Some ripgrep searching defaults
 function! GetRipgrepCommand(ignore)
-  if a:ignore == 1
-      let ignoreFlag = '--ignore'
-  else
-      let ignoreFlag = '--no-ignore'
-  endif
-
   return 'rg' .
     \ ' --hidden' .
     \ ' --color ansi' .
@@ -495,7 +490,7 @@ function! GetRipgrepCommand(ignore)
     \ ' --line-number' .
     \ ' --no-heading' .
     \ ' --smart-case' .
-    \ ' ' . ignoreFlag
+    \ ' ' . (a:ignore == 1 ? '--ignore' : '--no-ignore')
 endfunction
 
 " Adds prompt
@@ -508,7 +503,7 @@ function! GetGrepPreviewFlags(prompt)
   return GetPreviewFlags(a:prompt) . ' --delimiter : --nth 4..'
 endfunction
 
-" Configures ripgrep with fzf
+" Configures ripgrep with FZF
 command! -bang -nargs=* Rg
   \ call fzf#vim#grep(
   \   GetRipgrepCommand(1) . ' ' . shellescape(<q-args>),
@@ -522,16 +517,16 @@ command! -bang -nargs=* Rgg
   \   fzf#vim#with_preview({'options': GetGrepPreviewFlags('Global Grep')}), <bang>0)
 
 command! -bang -nargs=? -complete=dir Files
-    \ call fzf#vim#files(<q-args>, fzf#vim#with_preview({'options': GetPreviewFlags('Files')}), <bang>0)
+  \ call fzf#vim#files(<q-args>, fzf#vim#with_preview({'options': GetPreviewFlags('Files')}), <bang>0)
 
-" Don't use status line in fzf
+" Don't use status line in FZF
 augroup FzfConfig
   autocmd!
   autocmd! FileType fzf set laststatus=0 noshowmode noruler
     \| autocmd BufLeave <buffer> set laststatus=2 showmode ruler
 augroup END
 
-" Use ripgrep for fzf
+" Use ripgrep for FZF
 let $FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --iglob "!.DS_Store" --iglob "!.git"'
 
 " Default FZF options with bindings to match layout and select all + none
@@ -542,16 +537,12 @@ let $FZF_DEFAULT_OPTS = '--layout=default' .
 " Default location for FZF
 let g:fzf_layout = { 'down': '~40%' }
 
-" Escape file names for use in map
-func s:fnameescape(key, val)
-  return fnameescape(a:val)
-endfunc
-
 " Populate the arglist with files from searches etc
 function! s:populate_arg_list(lines)
-  execute 'args ' . join(map(a:lines, function('s:fnameescape')), ' ') 
+  execute 'args ' . join(map(a:lines, {_, val -> fnameescape(val)}), ' ') 
 endfunction
 
+" On ctrl-l populate the arg list with the current selection, useful for :cfdo
 let g:fzf_action = { 'ctrl-l': function('s:populate_arg_list') }
 
 "###############################################################################
@@ -584,7 +575,7 @@ inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
 function! s:check_back_space() abort
   let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
+  return !col || getline('.')[col - 1] =~# '\s'
 endfunction
 
 "###############################################################################
@@ -617,19 +608,17 @@ let g:vimwiki_global_ext = 0
 " Don't start markdown preview automatically, use :MarkdownPreview
 let g:mkdp_auto_start = 0
 
-" Configures tmux line, use :TmuxlineSnapshot ~/.tmux/airline.conf to save
+" Configures tmux line, use :TmuxlineSnapshot ~/.tmux/theme.conf to save
 let g:tmuxline_preset = {
-      \'a'    : '#[bold]#S',
-      \'b'    : '#(whoami)',
-      \'win'  : '#W',
-      \'cwin' : '#W',
-      \'y'    : ['%R', '%a', '%d/%m/%y'],
-      \'z'    : '#[bold]#(battstat {p} | tr -d " ")'}
+  \'a'    : '#[bold]#S',
+  \'b'    : '#(whoami)',
+  \'win'  : '#W',
+  \'cwin' : '#W',
+  \'y'    : ['%R', '%a', '%d/%m/%y'],
+  \'z'    : '#[bold]#(battstat {p} | tr -d " ")'}
 
 " Don't show powerline separators in tmuxline
 let g:tmuxline_powerline_separators = 0
-
-let g:indentLine_setConceal = 0
 
 " Use docker files and git
 let g:rooter_patterns = ['docker-compose.yml', '.git/']
@@ -646,10 +635,11 @@ let g:startify_lists = [ { 'type': 'dir', 'header': ['   Recent Files'] } ]
 " Don't change directories
 let g:startify_change_to_dir = 0
 
-" Better indents
-let g:indent_guides_guide_size = 1
-let g:indent_guides_color_change_percent = 3
+" Configure indentation guides
 let g:indent_guides_enable_on_vim_startup = 1
+let g:indent_guides_guide_size = 1
+let g:indent_guides_start_level = 2
+let g:indent_guides_color_change_percent = 1
 
 " Configure Airline Theme
 let g:airline#extensions#tabline#enabled = 0
@@ -676,28 +666,20 @@ silent execute 'hi default link DirvishGitUntrackedDir DirvishPathTail'
 
 " Cycle through relativenumber + number, number (only), and no numbering.
 function! CycleLineNumbering() abort
-  if exists('+relativenumber')
-    execute {
-          \ '00': 'set relativenumber   | set number',
-          \ '01': 'set norelativenumber | set number',
-          \ '10': 'set norelativenumber | set nonumber',
-          \ '11': 'set norelativenumber | set number' }[&number . &relativenumber]
-  else
-    " No relative numbering, just toggle numbers on and off.
-    set number!<CR>
-  endif
+  execute {
+    \ '00': 'set relativenumber   | set number',
+    \ '01': 'set norelativenumber | set number',
+    \ '10': 'set norelativenumber | set nonumber',
+    \ '11': 'set norelativenumber | set number' }[&number . &relativenumber]
 endfunction
 
 " Toggle virtualedit
 function! ToggleVirtualEdit() abort
-  if &virtualedit == "all"
-    set virtualedit=
-  else
-    set virtualedit=all
-  endif
+  set virtualedit=(if &virtualedit == "all" ? "" : "all")
 endfunction
 
-" Pomodoro timer
+" Pomodoro timer, example: "25 5 25 5" will run a timer for 25mins, ding then
+" 5mins, ding, then 25mins ding, then 5mins, ding
 function! TogglePomodoro()
   call inputsave()
   let time = input("Units> ")
@@ -710,14 +692,25 @@ function! TogglePomodoro()
   endif
 endfunction
 
+" Custom start function that requests path maps to be registed if they haven't
+" been already
+let g:register_vdebug = 0
+function! StartVdebug()
+  if g:register_vdebug == 0
+    call RegisterVdebug() | let g:register_vdebug = 1
+  endif
+  python3 debugger.run()
+endfunction
+
 " Vdebug needs to be able to load files and understand how the file in the docker
 function! RegisterVdebug()
   call plug#load('vdebug')
   call inputsave()
-  let root = input("Root> ", getcwd())
+  let server_root = input("Server Path> ", '/var/www/html/')
+  let local_root = input("Local Path> ", getcwd())
   call inputrestore()
   normal :<ESC>
-  call Vdebug_load_options( { 'path_maps' : { '/var/www/html/' : expand(root) } } )
+  let g:vdebug_options.path_maps[server_root] = local_root
 endfunction
 
 "###############################################################################
@@ -730,21 +723,18 @@ let g:neoterm_default_mod = 'botright'
 " Quit term buffer with ESC
 augroup TermHandling
   autocmd!
-  " " Turn off line numbers etc
+  " Turn off line numbers, listchars, auto enter insert mode and map esc to
+  " exit insert mode
   autocmd TermOpen * setlocal listchars= nonumber norelativenumber
-  autocmd TermOpen * startinsert
-  autocmd TermOpen * tnoremap <Esc> <c-\><c-n>
+    \ | startinsert
+    \ | tnoremap <Esc> <c-\><c-n>
   autocmd! FileType fzf tnoremap <buffer> <Esc> <c-c>
 augroup END
 
 " Wrapper for opening terms with auto close
-function! OpenTerm(cmd)
-  new | call termopen(a:cmd, {'on_exit': function('s:OnExit')})
-endfunction
-
-" Closes term when program exits
-function! s:OnExit(job_id, code, event) dict
-  if a:code == 0
-    bd!
-  endif
+function! OpenTerm(cmd, ...)
+  let percentage = get(a:, 1, 0.5)
+  new
+  execute 'resize ' . string(&lines * percentage)
+  call termopen(a:cmd, {'on_exit': {j, c, e -> execute('if c == 0 | close | endif')}})
 endfunction

@@ -3,7 +3,6 @@ root: ~/dev/dsx
 attach: false
 windows:
   - Editor: nvim
-  - Git: lazygit
   - Build:
       - cd app
       - yarn start
