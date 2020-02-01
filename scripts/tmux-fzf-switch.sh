@@ -4,7 +4,7 @@
 # Tmux FZF Switch
 ###############################################################
 
-SESSION=$(tmux list-sessions -F "#S" | fzf --prompt="Session: ")
+SESSION=$(tmux list-sessions -F "#S" | fzf --prompt="Switch: ")
 
 if [ -n "$TMUX" ]; then
     tmux switch-client -t "$SESSION"

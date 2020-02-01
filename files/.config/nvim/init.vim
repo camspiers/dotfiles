@@ -340,6 +340,8 @@ nnoremap <silent> <Leader>v :call ToggleVirtualEdit()<CR>
 nnoremap <silent> <Leader>] :call OpenTerm('tmuxinator-fzf-start.sh', 0.15, 'vertical')<CR>
 " Switch session
 nnoremap <silent> <Leader>[ :call OpenTerm('tmux-fzf-switch.sh', 0.15, 'vertical')<CR>
+" Kill session
+nnoremap <silent> <Leader>} :call OpenTerm('tmux-fzf-kill.sh', 0.15, 'vertical')<CR>
 " Open lazygit
 nnoremap <silent> <Leader>' :call OpenTerm('lazygit', 0.8)<CR>
 " Open lazydocker
