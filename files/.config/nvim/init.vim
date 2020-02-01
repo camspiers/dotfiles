@@ -78,6 +78,8 @@ Plug 'blueyed/vim-diminactive'
 " Replacement for netrw
 Plug 'justinmk/vim-dirvish'
 
+Plug 'kristijanhusak/vim-dirvish-git'
+
 " Projections for dirvish
 Plug 'fsharpasharp/vim-dirvinist'
 
@@ -115,21 +117,8 @@ Plug 'romainl/vim-qf'
 " Import tabs etc from editorconfig
 Plug 'editorconfig/editorconfig-vim'
 
-" Vim prettier support
-Plug 'prettier/vim-prettier', {
-      \ 'do': 'yarn install',
-      \ 'branch': 'release/1.x',
-      \ 'for': [
-      \ 'javascript',
-      \ 'typescript',
-      \ 'css',
-      \ 'less',
-      \ 'json',
-      \ 'graphql',
-      \ 'markdown',
-      \ 'vue',
-      \ 'php',
-      \ 'html' ] }
+" Pretter for COC
+Plug 'neoclide/coc-prettier', {'do': 'yarn install --frozen-lockfile'}
 
 "###############################################################################
 "# Editor/Motion Plugins #######################################################
@@ -146,6 +135,7 @@ Plug 'neoclide/coc-lists', {'do': 'yarn install --frozen-lockfile'}
 Plug 'neoclide/coc-highlight', {'do': 'yarn install --frozen-lockfile'}
 Plug 'neoclide/coc-json', {'do': 'yarn install --frozen-lockfile'}
 Plug 'neoclide/coc-html', {'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc-pairs', {'do': 'yarn install --frozen-lockfile'}
 
 " Better commenting
 Plug 'tomtom/tcomment_vim'
@@ -549,6 +539,7 @@ let $FZF_DEFAULT_OPTS = '--layout=default' .
   \ ' --info inline' .
   \ ' --bind ctrl-a:select-all,ctrl-d:deselect-all,tab:toggle+up,shift-tab:toggle+down'
 
+" Default location for FZF
 let g:fzf_layout = { 'down': '~40%' }
 
 " Escape file names for use in map
@@ -566,6 +557,9 @@ let g:fzf_action = { 'ctrl-l': function('s:populate_arg_list') }
 "###############################################################################
 "# Coc Configuration ###########################################################
 "###############################################################################
+
+" Sets up comand for prettier
+command! -nargs=0 Prettier :CocCommand prettier.formatFile
 
 " Some servers have issues with backup files
 set nobackup
@@ -632,6 +626,7 @@ let g:tmuxline_preset = {
       \'y'    : ['%R', '%a', '%d/%m/%y'],
       \'z'    : '#[bold]#(battstat {p} | tr -d " ")'}
 
+" Don't show powerline separators in tmuxline
 let g:tmuxline_powerline_separators = 0
 
 let g:indentLine_setConceal = 0
@@ -645,6 +640,7 @@ let g:rooter_silent_chdir = 1
 " Sets up within word motions to use ,
 let g:camelcasemotion_key = ','
 
+" Changes startify to have a different heading and only dirs
 let g:startify_lists = [ { 'type': 'dir', 'header': ['   Recent Files'] } ]
 
 " Don't change directories
@@ -660,6 +656,19 @@ let g:airline#extensions#tabline#enabled = 0
 let g:airline#extensions#tabline#formatter = 'unique_tail'
 let g:airline#extensions#tabline#left_sep = ' '
 let g:airline#extensions#tabline#left_alt_sep = '|'
+
+" Configure colors for dirvish highligh groups
+let g:dirvish_git_modified = 'guifg=#ddb26f ctermfg=3'
+let g:dirvish_git_added = 'guifg=#acc267 ctermfg=2'
+let g:dirvish_git_unmerged = 'guifg=#fb9fb1 ctermfg=1'
+
+silent execute 'hi default DirvishGitModified '.g:dirvish_git_modified
+silent execute 'hi default DirvishGitStaged '.g:dirvish_git_added
+silent execute 'hi default DirvishGitRenamed '.g:dirvish_git_modified
+silent execute 'hi default DirvishGitUnmerged '.g:dirvish_git_unmerged
+silent execute 'hi default DirvishGitIgnored guifg=NONE guibg=NONE gui=NONE cterm=NONE ctermfg=NONE ctermbg=NONE'
+silent execute 'hi default DirvishGitUntracked guifg=NONE guibg=NONE gui=NONE cterm=NONE ctermfg=NONE ctermbg=NONE'
+silent execute 'hi default link DirvishGitUntrackedDir DirvishPathTail'
 
 "###############################################################################
 "# Custom Functions ############################################################
@@ -715,6 +724,7 @@ endfunction
 "# Terminal Handling ###########################################################
 "###############################################################################
 
+" Sets default location that neoterm opens
 let g:neoterm_default_mod = 'botright'
 
 " Quit term buffer with ESC
@@ -727,10 +737,12 @@ augroup TermHandling
   autocmd! FileType fzf tnoremap <buffer> <Esc> <c-c>
 augroup END
 
+" Wrapper for opening terms with auto close
 function! OpenTerm(cmd)
   new | call termopen(a:cmd, {'on_exit': function('s:OnExit')})
 endfunction
 
+" Closes term when program exits
 function! s:OnExit(job_id, code, event) dict
   if a:code == 0
     bd!
