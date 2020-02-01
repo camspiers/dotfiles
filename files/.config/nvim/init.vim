@@ -5,25 +5,25 @@
 " This Neovim config is tailored towards PHP and JavaScript/TypeScript work
 " it uses the vim-plug plugin manager and requires the following tools:
 "
-" | Tool                    | Description                                    |
-" | ----------------------- | ----------------------                         |
-" | Neovim                  | Untested in Vim                                |
-" | vim-plug                | Plugin Manger                                  |
-" | Yarn                    | Required by Plugins                            |
-" | Git                     | Required by Plugins                            |
-" | python3 support         | Required by Plugins                            |
-" | font with devicons      | Devicons in statusline                         |
-" | Fuzzy Finder (FZF)      | Search                                         |
-" | ripgrep                 | Search                                         |
-" | bat                     | Search Previews                                |
-" | tmux                    | Open Projects                                  |
-" | tmuxinator              | Open Projects                                  |
-" | tmuxinator-fzf-start.sh | Open Projects                                  |
-" | timer                   | Pomodoro timer (https://github.com/rlue/timer) |
-" | lazygit                 | Git terminal interfact                         |
-" | lazydocker              | Docker terminal interface                      |
-" | tmux-fzf-kill.sh        | Tmux session kill FZF interface                |
-" | tmux-fzf-switch.sh      | Tmux session switch FZF interface              |
+" | Local/External | Tool                    | Description                                    |
+" | -------------- | ----------------------- | ---------------------------------------------- |
+" | External       | Neovim                  | Untested in Vim                                |
+" | External       | vim-plug                | Plugin Manger                                  |
+" | External       | Yarn                    | Required by Plugins                            |
+" | External       | Git                     | Required by Plugins                            |
+" | External       | python3 support         | Required by Plugins                            |
+" | External       | font with devicons      | Devicons in statusline                         |
+" | External       | Fuzzy Finder (FZF)      | Search                                         |
+" | External       | ripgrep                 | Search                                         |
+" | External       | bat                     | Search Previews                                |
+" | External       | tmux                    | Open Projects                                  |
+" | External       | tmuxinator              | Open Projects                                  |
+" | External       | tmuxinator-fzf-start.sh | Open Projects                                  |
+" | External       | timer                   | Pomodoro timer (https://github.com/rlue/timer) |
+" | External       | lazygit                 | Git terminal interfact                         |
+" | External       | lazydocker              | Docker terminal interface                      |
+" | Local          | tmux-fzf-kill.sh        | Tmux session kill FZF interface                |
+" | Local          | tmux-fzf-switch.sh      | Tmux session switch FZF interface              |
 "
 "###############################################################################
 "# Plugins #####################################################################
