@@ -67,7 +67,7 @@ Plug 'blueyed/vim-diminactive'
 "###############################################################################
 
 " Replacement for netrw
-Plug 'justinmk/vim-dirvish' 
+Plug 'justinmk/vim-dirvish'
 " Support for displaying git statuses in dirvish
 Plug 'kristijanhusak/vim-dirvish-git'
 " Projections for dirvish
@@ -471,7 +471,7 @@ let g:fzf_layout = { 'down': '~40%' }
 
 " Populate the arglist with files from searches etc
 function! s:populate_arg_list(lines)
-  execute 'args ' . join(map(a:lines, {_, val -> fnameescape(val)}), ' ') 
+  execute 'args ' . join(map(a:lines, {_, val -> fnameescape(val)}), ' ')
 endfunction
 
 " On ctrl-l populate the arg list with the current selection, useful for :cfdo
