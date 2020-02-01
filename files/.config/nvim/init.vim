@@ -20,6 +20,8 @@
 " | tmuxinator              | Open Projects                                  |
 " | tmuxinator-fzf-start.sh | Open Projects                                  |
 " | timer                   | Pomodoro timer (https://github.com/rlue/timer) |
+" | lazygit                 | Git terminal interfact                         |
+" | lazydocker              | Docker terminal interface                      |
 "
 "###############################################################################
 "# Plugins #####################################################################
@@ -35,11 +37,8 @@ call plug#begin(stdpath('data') . '/plugged')
 " Sensible defaults
 Plug 'tpope/vim-sensible'
 
-" Standard terminal integration improvements
+" Standard terminal integration improvements, mouse, cursor etc
 Plug 'wincent/terminus'
-
-" Improves netrw
-Plug 'tpope/vim-vinegar'
 
 "###############################################################################
 "# Visual Plugins ##############################################################
@@ -50,9 +49,6 @@ Plug 'vim-airline/vim-airline' | Plug 'vim-airline/vim-airline-themes'
 
 " Startup screen
 Plug 'mhinz/vim-startify'
-
-" No distraction mode
-Plug 'junegunn/goyo.vim'
 
 " Makes tmux use airline colors
 Plug 'edkolev/tmuxline.vim'
@@ -79,6 +75,12 @@ Plug 'blueyed/vim-diminactive'
 "# Navigation/Search Plugins ###################################################
 "###############################################################################
 
+" Replacement for netrw
+Plug 'justinmk/vim-dirvish'
+
+" Projections for dirvish
+Plug 'fsharpasharp/vim-dirvinist'
+
 " Fuzzy file finding, relies on fzf being installed via brew
 Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf' | Plug 'junegunn/fzf.vim'
 
@@ -102,6 +104,9 @@ Plug 'wincent/vcs-jump'
 
 " Search context improvements
 Plug 'wincent/loupe'
+
+" Improves the quickfix list
+Plug 'romainl/vim-qf'
 
 "###############################################################################
 "# Code Formatting Plugins #####################################################
@@ -144,9 +149,6 @@ Plug 'neoclide/coc-html', {'do': 'yarn install --frozen-lockfile'}
 
 " Better commenting
 Plug 'tomtom/tcomment_vim'
-
-" Find and replace via quickfix list
-Plug 'stefandtw/quickfix-reflector.vim'
 
 " Surround motions
 Plug 'tpope/vim-surround'
@@ -410,13 +412,14 @@ nnoremap <silent> <Leader>r :call CycleLineNumbering()<CR>
 " Toggle virtualedit
 nnoremap <silent> <Leader>v :call ToggleVirtualEdit()<CR>
 " Open project
-nnoremap <silent> <Leader>m :call OpenProject()<CR>
+nnoremap <silent> <Leader>m :call OpenTerm('tmuxinator-fzf-start.sh')<CR>
+nnoremap <silent> <Leader>] :call OpenTerm('tmuxinator-fzf-start.sh')<CR>
 " Open lazygit
-nnoremap <silent> <Leader>' :call OpenLazyGit()<CR>
+nnoremap <silent> <Leader>' :call OpenTerm('lazygit')<CR>
 " Open lazydocker
-nnoremap <silent> <Leader>; :call OpenLazyDocker()<CR>
+nnoremap <silent> <Leader>; :call OpenTerm('lazydocker')<CR>
 " Open harvest
-nnoremap <silent> <Leader>h :call OpenHarvest()<CR>
+nnoremap <silent> <Leader>h :call OpenTerm('hstarti')<CR>
 " Toggle pomodoro
 nnoremap <silent> <Leader>p :call TogglePomodoro()<CR>
 " Register Vdebug
@@ -505,7 +508,7 @@ function! GetRipgrepCommand(ignore)
     \ ' ' . ignoreFlag
 endfunction
 
-" Restore appropriate colors, add prompt and bind ctrl-a and ctrl-d
+" Adds prompt
 function! GetPreviewFlags(prompt)
   return ' --prompt="' . a:prompt . '> "'
 endfunction
@@ -541,12 +544,24 @@ augroup END
 " Use ripgrep for fzf
 let $FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --iglob "!.DS_Store" --iglob "!.git"'
 
-" Color FZF with tempus classic
+" Default FZF options with bindings to match layout and select all + none
 let $FZF_DEFAULT_OPTS = '--layout=default' .
   \ ' --info inline' .
-  \ ' --bind ctrl-a:select-all,ctrl-d:deselect-all'
+  \ ' --bind ctrl-a:select-all,ctrl-d:deselect-all,tab:toggle+up,shift-tab:toggle+down'
 
 let g:fzf_layout = { 'down': '~40%' }
+
+" Escape file names for use in map
+func s:fnameescape(key, val)
+  return fnameescape(a:val)
+endfunc
+
+" Populate the arglist with files from searches etc
+function! s:populate_arg_list(lines)
+  execute 'args ' . join(map(a:lines, function('s:fnameescape')), ' ') 
+endfunction
+
+let g:fzf_action = { 'ctrl-l': function('s:populate_arg_list') }
 
 "###############################################################################
 "# Coc Configuration ###########################################################
@@ -646,10 +661,6 @@ let g:airline#extensions#tabline#formatter = 'unique_tail'
 let g:airline#extensions#tabline#left_sep = ' '
 let g:airline#extensions#tabline#left_alt_sep = '|'
 
-" Fix netrw buffer issue
-let g:netrw_fastbrowse = 0
-let g:netrw_liststyle = 3
-
 "###############################################################################
 "# Custom Functions ############################################################
 "###############################################################################
@@ -705,33 +716,23 @@ endfunction
 "###############################################################################
 
 let g:neoterm_default_mod = 'botright'
-let g:neoterm_autoinsert = 1
 
 " Quit term buffer with ESC
 augroup TermHandling
   autocmd!
   " " Turn off line numbers etc
   autocmd TermOpen * setlocal listchars= nonumber norelativenumber
+  autocmd TermOpen * startinsert
   autocmd TermOpen * tnoremap <Esc> <c-\><c-n>
   autocmd! FileType fzf tnoremap <buffer> <Esc> <c-c>
 augroup END
 
-" Open Project
-function! OpenProject()
-  :T clear && tmuxinator-fzf-start.sh && exit
+function! OpenTerm(cmd)
+  new | call termopen(a:cmd, {'on_exit': function('s:OnExit')})
 endfunction
 
-" Opens lazygit
-function! OpenLazyGit()
-  :T lazygit && exit
-endfunction
-
-" Opens lazydocker
-function! OpenLazyDocker()
-  :T lazydocker && exit
-endfunction
-
-" Opens harvest starti
-function! OpenHarvest()
-  :T clear && hstarti && exit
+function! s:OnExit(job_id, code, event) dict
+  if a:code == 0
+    bd!
+  endif
 endfunction
