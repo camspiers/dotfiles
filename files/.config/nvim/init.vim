@@ -221,6 +221,9 @@ Plug 'kassio/neoterm'
 " Git tools
 Plug 'tpope/vim-fugitive'
 
+" GitLab support
+Plug 'shumphrey/fugitive-gitlab.vim'
+
 " DB tools
 Plug 'tpope/vim-dadbod'
 
