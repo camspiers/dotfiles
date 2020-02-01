@@ -92,15 +92,6 @@ Plug 'wincent/loupe'
 Plug 'romainl/vim-qf'
 
 "###############################################################################
-"# Code Formatting Plugins #####################################################
-"###############################################################################
-
-" Import tabs etc from editorconfig
-Plug 'editorconfig/editorconfig-vim'
-" Pretter for COC
-Plug 'neoclide/coc-prettier', {'do': 'yarn install --frozen-lockfile'}
-
-"###############################################################################
 "# Editor/Motion Plugins #######################################################
 "###############################################################################
 
@@ -116,7 +107,6 @@ Plug 'neoclide/coc-highlight', {'do': 'yarn install --frozen-lockfile'}
 Plug 'neoclide/coc-json', {'do': 'yarn install --frozen-lockfile'}
 Plug 'neoclide/coc-html', {'do': 'yarn install --frozen-lockfile'}
 Plug 'neoclide/coc-pairs', {'do': 'yarn install --frozen-lockfile'}
-Plug 'marlonfan/coc-phpls', {'do': 'yarn install --frozen-lockfile'}
 
 " Better commenting
 Plug 'tomtom/tcomment_vim'
@@ -138,6 +128,15 @@ Plug 'kkoomen/vim-doge'
 Plug 'justinmk/vim-sneak'
 " Highlighting
 Plug 'romainl/vim-cool'
+
+"###############################################################################
+"# Code Formatting Plugins #####################################################
+"###############################################################################
+
+" Import tabs etc from editorconfig
+Plug 'editorconfig/editorconfig-vim'
+" Pretter for COC
+Plug 'neoclide/coc-prettier', {'do': 'yarn install --frozen-lockfile'}
 
 "###############################################################################
 "# Tool Plugins ################################################################
@@ -234,6 +233,8 @@ set hidden
 
 set ignorecase
 set smartcase
+" Displays incremental replacement without actually replacing content
+set inccommand=split
 
 "###############################################################################
 "# Editing #####################################################################
