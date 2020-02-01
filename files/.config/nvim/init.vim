@@ -22,6 +22,8 @@
 " | timer                   | Pomodoro timer (https://github.com/rlue/timer) |
 " | lazygit                 | Git terminal interfact                         |
 " | lazydocker              | Docker terminal interface                      |
+" | tmux-fzf-kill.sh        | Tmux session kill FZF interface                |
+" | tmux-fzf-switch.sh      | Tmux session switch FZF interface              |
 "
 "###############################################################################
 "# Plugins #####################################################################
