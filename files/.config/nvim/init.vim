@@ -410,6 +410,8 @@ let g:fzf_action = {
 "# Coc Configuration ###########################################################
 "###############################################################################
 
+" See coc-settings.json for more configuration
+
 " Sets up comand for prettier
 command! -nargs=0 Prettier :CocCommand prettier.formatFile
 
