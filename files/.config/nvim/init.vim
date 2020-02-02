@@ -128,13 +128,13 @@ set dictionary=/usr/share/dict/words
 " Make buffers hidden then abandoned
 set hidden
 " }}}
-" {{{ Searching
+" {{{ Search Settings
 set ignorecase
 set smartcase
 " Displays incremental replacement without actually replacing content
 set inccommand=split
 " }}}
-" {{{ Editing
+" {{{ Edit Settings
 set tabstop=4
 set shiftwidth=4
 set expandtab
@@ -165,7 +165,8 @@ set termguicolors
 " Make comments italic
 highlight Comment gui=italic
 " }}}
-" {{{ Search Mappings
+" {{{ Mappings
+" {{{ Search
 " {{{ Preview without Rg options | Daily Driver
 " Open ripgrep
 nnoremap <silent> <Leader>f :Rg<CR>
@@ -174,7 +175,6 @@ nnoremap <silent> <Leader>g :Rgg<CR>
 " Open ripgrep for cursor word
 nnoremap <silent> <Leader>c :Rg <C-R><C-W><CR>
 " }}}
-
 " {{{ No Preview with Rg options | Specialized
 " Open ripgrep agriculture
 nmap <Leader>/ <Plug>RgRawSearch
@@ -184,7 +184,7 @@ vmap <Leader>/ <Plug>RgRawVisualSelection
 nmap <Leader>* <Plug>RgRawWordUnderCursor
 " }}}
 " }}}
-" {{{ Mappings
+" {{{ General
 " Only window
 nnoremap <silent> <Leader>o :only<CR>
 " Next buffer
@@ -287,6 +287,7 @@ nnoremap <Right> :vertical resize -2<CR>
 
 " Run :VcsJump diff
 nnoremap <Leader>+ :VcsJump diff<CR>
+" }}}
 " }}}
 " {{{ Navigation/Search Configuration
 " Use agriculture as a global no hidden search
