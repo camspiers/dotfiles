@@ -46,7 +46,7 @@ Plug 'wincent/vcs-jump'               | " Jump to diffs
 " }}}
 
 " {{{ Editor/Motion Plugins
-" CoC Plugins
+" {{{ CoC Plugins
 Plug 'neoclide/coc.nvim',     { 'do': { -> coc#util#install()}}
 Plug 'neoclide/coc-css',      g:from_lock | " CSS language server
 Plug 'neoclide/coc-eslint',   g:from_lock | " Eslint integration
@@ -57,7 +57,8 @@ Plug 'neoclide/coc-pairs',    g:from_lock | " Auto-insert language aware pairs
 Plug 'neoclide/coc-snippets', g:from_lock | " Provides snippets
 Plug 'neoclide/coc-tslint',   g:from_lock | " Tslint integration
 Plug 'neoclide/coc-tsserver', g:from_lock | " TypeScript language server
-
+" }}}
+" {{{ General
 Plug 'AndrewRadev/splitjoin.vim' | " Split and join programming lines
 Plug 'bkad/CamelCaseMotion'      | " Motions for inside camel case
 Plug 'godlygeek/tabular'         | " Alignment for tables etc
@@ -68,6 +69,7 @@ Plug 'tomtom/tcomment_vim'       | " Better commenting
 Plug 'tpope/vim-repeat'          | " Improves repeats handling of Vim plugins
 Plug 'tpope/vim-surround'        | " Surround motions
 Plug 'wincent/replay'            | " Allows for easy repeat of last used macro
+" }}}
 " }}}
 
 " {{{ Code Formatting Plugins
