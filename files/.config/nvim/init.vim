@@ -1,30 +1,21 @@
 "###############################################################################
 "# Neovim Configuration (Cam Spiers) ###########################################
 "###############################################################################
-"
 " See README.md for more information
-"
-"###############################################################################
-"# Plugins #####################################################################
-"###############################################################################
-
-" Start Vim plug and set the plugin directory
-call plug#begin(stdpath('config') . '/plugged')
 
 " Common command to install from lock file
 let g:from_lock = {'do': 'yarn install --frozen-lockfile'}
 
-"###############################################################################
-"# Vim Defaults Plugins ########################################################
-"###############################################################################
+" {{{ Plugins
+" Start Vim plug and set the plugin directory
+call plug#begin(stdpath('config') . '/plugged')
 
+" {{{ Defaults Plugins
 Plug 'tpope/vim-sensible' | " Sensible defaults
 Plug 'wincent/terminus'   | " Terminal integration improvements
+" }}}
 
-"###############################################################################
-"# Visual Plugins ##############################################################
-"###############################################################################
-
+" {{{ Visual Plugins
 Plug 'blueyed/vim-diminactive'             | " Makes determining active window easier
 Plug 'chriskempson/base16-vim'             | " Themes
 Plug 'edkolev/tmuxline.vim'                | " Makes tmux use airline colors
@@ -36,11 +27,9 @@ Plug 'psliwka/vim-smoothie'                | " Nicer scrolling
 Plug 'ryanoasis/vim-devicons'              | " Dev icons
 Plug 'vim-airline/vim-airline'             | " Airline
 Plug 'vim-airline/vim-airline-themes'      | " Status line
+" }}}
 
-"###############################################################################
-"# Navigation/Search Plugins ###################################################
-"###############################################################################
-
+" {{{ Navigation/Search Plugins
 Plug '/usr/local/opt/fzf'             | " Brew version of FZF
 Plug 'airblade/vim-rooter'            | " Auto-root setting
 Plug 'christoomey/vim-tmux-navigator' | " Pane navigation
@@ -54,11 +43,9 @@ Plug 'romainl/vim-qf'                 | " Improves the quickfix list
 Plug 'tpope/vim-projectionist'        | " Navigation of related files
 Plug 'wincent/loupe'                  | " Search context improvements
 Plug 'wincent/vcs-jump'               | " Jump to diffs
+" }}}
 
-"###############################################################################
-"# Editor/Motion Plugins #######################################################
-"###############################################################################
-
+" {{{ Editor/Motion Plugins
 " CoC Plugins
 Plug 'neoclide/coc.nvim',     { 'do': { -> coc#util#install()}}
 Plug 'neoclide/coc-css',      g:from_lock | " CSS language server
@@ -81,18 +68,14 @@ Plug 'tomtom/tcomment_vim'       | " Better commenting
 Plug 'tpope/vim-repeat'          | " Improves repeats handling of Vim plugins
 Plug 'tpope/vim-surround'        | " Surround motions
 Plug 'wincent/replay'            | " Allows for easy repeat of last used macro
+" }}}
 
-"###############################################################################
-"# Code Formatting Plugins #####################################################
-"###############################################################################
-
+" {{{ Code Formatting Plugins
 Plug 'editorconfig/editorconfig-vim'      | " Import tabs etc from editorconfig
 Plug 'neoclide/coc-prettier', g:from_lock | " Prettier for COC
+" }}}
 
-"###############################################################################
-"# Tool Plugins ################################################################
-"###############################################################################
-
+" {{{ Tool Plugins
 Plug 'dstein64/vim-startuptime'        | " Measure startuptime
 Plug 'duggiefresh/vim-easydir'         | " Crete files in dirs that don't exist
 Plug 'inkarkat/vim-ingo-library'       | " Spellcheck dependency
@@ -110,15 +93,13 @@ Plug 'tpope/vim-dadbod'                | " DB tools
 Plug 'tpope/vim-eunuch'                | " UNIX tools
 Plug 'tpope/vim-fugitive'              | " Git tools
 Plug 'tpope/vim-unimpaired'            | " Common mappings for many needs
-Plug 'vim-vdebug/vdebug', { 'on': [] } | " PHP Debugging
+Plug 'vim-vdebug/vdebug', { 'on': [] } | " Debugging, loaded manually
 Plug 'vimwiki/vimwiki'                 | " Personal wiki
 Plug 'xuhdev/vim-latex-live-preview', { 'for': 'tex' }                   | " Live Latex
 Plug 'iamcco/markdown-preview.nvim',  { 'do': 'cd app & yarn install'  } | " Markdown preview
+" }}}
 
-"###############################################################################
-"# Syntax Plugins ##############################################################
-"###############################################################################
-
+" {{{ Syntax Plugins
 Plug 'bfontaine/Brewfile.vim'      | " Syntax for Brewfile
 Plug 'ekalinin/dockerfile.vim'     | " Syntax for Dockerfile
 Plug 'jwalton512/vim-blade'        | " Syntax for blade templates
@@ -128,13 +109,11 @@ Plug 'peitalin/vim-jsx-typescript' | " Syntax for typescript jsx, .tsx
 Plug 'phalkunz/vim-ss'             | " Syntax for SilverStripe templates
 Plug 'StanAngeloff/php.vim'        | " Syntax for PHP
 Plug 'tmux-plugins/vim-tmux'       | " Syntax for Tmux conf files
-
+" }}}
 call plug#end()
+" }}}
 
-"###############################################################################
-"# General Settings ############################################################
-"###############################################################################
-
+" {{{ General Settings
 " Import local config for private config, e.g. keys, tokens
 silent! source ~/.config/nvim/local.vim
 " Default file encoding
@@ -156,28 +135,22 @@ set timeoutlen=500
 set dictionary=/usr/share/dict/words
 " Make buffers hidden then abandoned
 set hidden
+" }}}
 
-"###############################################################################
-"# Searching ###################################################################
-"###############################################################################
-
+" {{{ Searching
 set ignorecase
 set smartcase
 " Displays incremental replacement without actually replacing content
 set inccommand=split
+" }}}
 
-"###############################################################################
-"# Editing #####################################################################
-"###############################################################################
-
+" {{{ Editing
 set tabstop=4
 set shiftwidth=4
 set expandtab
+" }}}
 
-"###############################################################################
-"# Visual Settings #############################################################
-"###############################################################################
-
+" {{{ Visual Settings
 " Add bulk color past 120
 let &colorcolumn=join(range(121,999),",")
 " Spell checking
@@ -202,37 +175,29 @@ let g:airline_theme='base16_chalk'
 set termguicolors
 " Make comments italic
 highlight Comment gui=italic
+" }}}
 
-"###############################################################################
-"# Search Mappings #############################################################
-"###############################################################################
-
-"###############################################################################
-"# Preview without Rg options | Daily Driver ###################################
-"###############################################################################
-
+" {{{ Search Mappings
+" {{{ Preview without Rg options | Daily Driver
 " Open ripgrep
 nnoremap <silent> <Leader>f :Rg<CR>
 " Open global grep
 nnoremap <silent> <Leader>g :Rgg<CR>
 " Open ripgrep for cursor word
 nnoremap <silent> <Leader>c :Rg <C-R><C-W><CR>
+" }}}
 
-"###############################################################################
-"# No Preview with Rg options | Specialized ####################################
-"###############################################################################
-
+" {{{ No Preview with Rg options | Specialized
 " Open ripgrep agriculture
 nmap <Leader>/ <Plug>RgRawSearch
 " Open ripgrep agriculture for visual selection
 vmap <Leader>/ <Plug>RgRawVisualSelection
 " Open ripgrep agriculture for cursor word
 nmap <Leader>* <Plug>RgRawWordUnderCursor
+" }}}
+" }}}
 
-"###############################################################################
-"# Mappings ####################################################################
-"###############################################################################
-
+" {{{ Mappings
 " Only window
 nnoremap <silent> <Leader>o :only<CR>
 " Next buffer
@@ -335,11 +300,9 @@ nnoremap <Right> :vertical resize -2<CR>
 
 " Run :VcsJump diff
 nnoremap <Leader>+ :VcsJump diff<CR>
+" }}}
 
-"###############################################################################
-"# FZF/Ripgrep Configuration ###################################################
-"###############################################################################
-
+" {{{ FZF/Ripgrep Configuration
 " Use agriculture as a global no hidden search
 let g:agriculture#rg_options = '--no-ignore --hidden'
 
@@ -407,13 +370,10 @@ let g:fzf_layout = { 'down': '~40%' }
 let g:fzf_action = {
   \ 'ctrl-l': {l -> execute('args ' . join(map(l, {_, v -> fnameescape(v)}), ' '))},
   \ }
+" }}}
 
-"###############################################################################
-"# Coc Configuration ###########################################################
-"###############################################################################
-
+" {{{ Coc Configuration
 " See coc-settings.json for more configuration
-
 " Sets up comand for prettier
 command! -nargs=0 Prettier :CocCommand prettier.formatFile
 
@@ -439,11 +399,9 @@ function! CheckBackSpace() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1] =~# '\s'
 endfunction
+" }}}
 
-"###############################################################################
-"# Plugin Configurations #######################################################
-"###############################################################################
-
+" {{{ Plugin Configurations
 " Go into popup when gm is triggered
 let g:git_messenger_always_into_popup = 1
 " Better background color
@@ -503,11 +461,9 @@ silent execute 'hi default DirvishGitUnmerged '.g:dirvish_git_unmerged
 silent execute 'hi default DirvishGitIgnored guifg=NONE guibg=NONE gui=NONE cterm=NONE ctermfg=NONE ctermbg=NONE'
 silent execute 'hi default DirvishGitUntracked guifg=NONE guibg=NONE gui=NONE cterm=NONE ctermfg=NONE ctermbg=NONE'
 silent execute 'hi default link DirvishGitUntrackedDir DirvishPathTail'
+" }}}
 
-"###############################################################################
-"# Custom Functions ############################################################
-"###############################################################################
-
+" {{{ Custom Functions
 " Cycle through relativenumber + number, number (only), and no numbering.
 function! CycleLineNumbering() abort
   execute {
@@ -560,11 +516,9 @@ function! RegisterVdebug() abort
   normal :<ESC>
   let g:vdebug_options.path_maps[server_root] = local_root
 endfunction
+" }}}
 
-"###############################################################################
-"# Terminal Handling ###########################################################
-"###############################################################################
-
+" {{{ Terminal Handling
 " Sets default location that neoterm opens
 let g:neoterm_default_mod = 'botright'
 
@@ -592,3 +546,6 @@ function! OpenTerm(cmd, ...) abort
   endif
   call termopen(a:cmd, {'on_exit': {j,c,e -> execute('if c == 0 | close | endif')}})
 endfunction
+" }}}
+
+" vim:fdm=marker
