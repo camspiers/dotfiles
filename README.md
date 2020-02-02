@@ -7,7 +7,7 @@ macOS environment managed by git and GNU Stow.
 ## Overview
 
 - [Homebrew Defaults](extra/homebrew/Brewfile)
-- [NeoVim Config](files/.config/nvim/init.vim)
+- [Neovim Config](files/.config/nvim/init.vim)
 - [Tmux Config](files/.tmux.conf)
 - [Kitty.app Config](files/.config/kitty/kitty.conf)
 - [Bash Runcom](files/.bashrc)
