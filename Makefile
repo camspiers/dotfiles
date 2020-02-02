@@ -18,6 +18,7 @@ neovim:
 	nvim +CocInstall coc-vimlsp +qall
 	nvim +CocInstall coc-stylelint +qall
 	nvim +CocInstall coc-yaml +qall
+	nvim +CocInstall coc-sh +qall
 
 tmux:
 	if [ ! -d "$(TMUX_SHARE)/plugins/tpm" ]; then git clone https://github.com/tmux-plugins/tpm "$(TMUX_SHARE)/plugins/tpm"; fi
