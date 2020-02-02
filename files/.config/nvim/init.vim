@@ -395,6 +395,8 @@ function! RgWithPreview(ignore, args, prompt, bang) abort
   call fzf#vim#grep(command, 1, Preview(RgPreviewFlags(a:prompt)), a:bang)
 endfunction
 
+" Defines search command for :Files
+let $FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --iglob "!.DS_Store" --iglob "!.git"'
 " Opens files search with preview
 function! FilesWithPreview(args, bang) abort
   call fzf#vim#files(a:args, Preview(PreviewFlags('Files')), a:bang)
@@ -412,9 +414,6 @@ augroup FzfConfig
     \| autocmd BufLeave <buffer> set laststatus=2 showmode ruler
 augroup END
 
-" Use ripgrep for FZF
-let $FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --iglob "!.DS_Store" --iglob "!.git"'
-
 " Default FZF options with bindings to match layout and select all + none
 let $FZF_DEFAULT_OPTS = '--layout=default' .
   \ ' --info inline' .
@@ -423,8 +422,7 @@ let $FZF_DEFAULT_OPTS = '--layout=default' .
 " Default location for FZF
 let g:fzf_layout = { 'down': '~40%' }
 
-" On ctrl-l populate the arg list with the current selection, useful for
-" :cfdo. Only works in :Files
+" Ctrl-l populates arglist. Use with :cfdo. Only works in :Files
 let g:fzf_action = {
   \ 'ctrl-l': {l -> execute('args ' . join(map(l, {_, v -> fnameescape(v)}), ' '))},
   \ }
@@ -447,15 +445,14 @@ set signcolumn=yes
 " You will have bad experience for diagnostic messages when it's default 4000.
 set updatetime=300
 
-" Use tab for trigger completion with characters ahead and navigate.
-" Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
+" Use tab for trigger completion
 inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
+  \ pumvisible() ? "\<C-n>" :
+  \ <SID>CheckBackSpace() ? "\<TAB>" :
+  \ coc#refresh()
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
-function! s:check_back_space() abort
+function! CheckBackSpace() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1] =~# '\s'
 endfunction
@@ -552,12 +549,12 @@ function! TogglePomodoro() abort
   if time == ""
     silent execute "!vim-timer stop"
   else
+    " Don't listen to hang up signal and background, basic daemonization
     call system("nohup vim-timer " . time . " &")
   endif
 endfunction
 
-" Custom start function that requests path maps to be registed if they haven't
-" been already
+" Start Vdebug and request pathmap if not yet set
 let g:register_vdebug = 0
 function! StartVdebug() abort
   if g:register_vdebug == 0
@@ -594,11 +591,10 @@ augroup TermHandling
     \ | tnoremap <Esc> <c-\><c-n>
     \ | IndentGuidesDisable
   autocmd TermClose * IndentGuidesEnable
-  autocmd! FileType fzf tnoremap <buffer> <Esc> <c-c>
+  autocmd FileType fzf tnoremap <buffer> <Esc> <c-c>
 augroup END
 
-" Wrapper for opening terms with auto close, optional argument for size
-" percentag
+" Open autoclosing terminal, with optional size and orientation
 function! OpenTerm(cmd, ...) abort
   let percentage = get(a:, 1, 0.5)
   let orientation = get(a:, 2, 'horizontal')
@@ -607,5 +603,5 @@ function! OpenTerm(cmd, ...) abort
   else
     vnew | execute 'vertical resize ' . string(&columns * percentage)
   endif
-  call termopen(a:cmd, {'on_exit': {j, c, e -> execute('if c == 0 | close | endif')}})
+  call termopen(a:cmd, {'on_exit': {j,c,e -> execute('if c == 0 | close | endif')}})
 endfunction
