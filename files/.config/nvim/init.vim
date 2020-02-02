@@ -166,37 +166,8 @@ set termguicolors
 highlight Comment gui=italic
 " }}}
 " {{{ Mappings
-" {{{ Search
-" {{{ Preview without Rg options | Daily Driver
-" Open ripgrep
-nnoremap <silent> <Leader>f :Rg<CR>
-" Open global grep
-nnoremap <silent> <Leader>g :Rgg<CR>
-" Open ripgrep for cursor word
-nnoremap <silent> <Leader>c :Rg <C-R><C-W><CR>
-" }}}
-" {{{ No Preview with Rg options | Specialized
-" Open ripgrep agriculture
-nmap <Leader>/ <Plug>RgRawSearch
-" Open ripgrep agriculture for visual selection
-vmap <Leader>/ <Plug>RgRawVisualSelection
-" Open ripgrep agriculture for cursor word
-nmap <Leader>* <Plug>RgRawWordUnderCursor
-" }}}
-" }}}
+" {{{ Navigation/Layout
 " {{{ General
-" Only window
-nnoremap <silent> <Leader>o :only<CR>
-" Next buffer
-nnoremap <silent> <Tab> :bnext<CR>
-" Previous buffer
-nnoremap <silent> <S-Tab> :bprevious<CR>
-" Create vsplit
-nnoremap <silent> <Leader>\| :vsplit<CR>
-" Create hsplit
-nnoremap <silent> <Leader>- :split<CR>
-" Save file
-nnoremap <silent> <Leader>w :write<CR>
 " Open startify with leader s
 nnoremap <silent> <Leader>s :Startify<CR>
 " Open fuzzy files with leader \
@@ -205,16 +176,62 @@ nnoremap <silent> <Leader>\ :Files<CR>
 nnoremap <silent> <Leader>l :Lines<CR>
 " Open fuzzy buffers with leader b
 nnoremap <silent> <Leader>b :Buffers<CR>
+" }}}
+" {{{ General Search
+" Open ripgrep
+nnoremap <silent> <Leader>f :Rg<CR>
+" Open global grep
+nnoremap <silent> <Leader>g :Rgg<CR>
+" Open ripgrep for cursor word
+nnoremap <silent> <Leader>c :Rg <C-R><C-W><CR>
+" }}}
+" {{{ Specialized Search
+" Open ripgrep agriculture
+nmap <Leader>/ <Plug>RgRawSearch
+" Open ripgrep agriculture for visual selection
+vmap <Leader>/ <Plug>RgRawVisualSelection
+" Open ripgrep agriculture for cursor word
+nmap <Leader>* <Plug>RgRawWordUnderCursor
+" }}}
+" {{{ Switching
+" Next buffer
+nnoremap <silent> <Tab> :bnext<CR>
+" Previous buffer
+nnoremap <silent> <S-Tab> :bprevious<CR>
+" Alternate file navigation
+nnoremap <silent> <Leader>a :A<CR>
+" Alternate file navigation vertical split
+nnoremap <silent> <Leader>v :AV<CR>
+" }}}
+" {{{ Create
+" Create vsplit
+nnoremap <silent> <Leader>\| :vsplit<CR>
+" Create hsplit
+nnoremap <silent> <Leader>- :split<CR>
+" }}}
+" {{{ Close
+" Only window
+nnoremap <silent> <Leader>o :only<CR>
 " Close all by current window
 nnoremap <silent> <Leader>o <C-w>o<CR>
 " Close the current buffer
 nnoremap <silent> <Leader>x :bdelete<CR>
 " Close all buffers
 nnoremap <silent> <Leader>z :%bdelete<CR>
-" Alternate file navigation
-nnoremap <silent> <Leader>a :A<CR>
-" Alternate file navigation vertical split
-nnoremap <silent> <Leader>v :AV<CR>
+" }}}
+" {{{ Resize
+" Remap arrows to resize
+nnoremap <Up>    :resize +2<CR>
+nnoremap <Down>  :resize -2<CR>
+nnoremap <Left>  :vertical resize +2<CR>
+nnoremap <Right> :vertical resize -2<CR>
+" }}}
+" }}}
+" {{{ General
+" Save file
+nnoremap <silent> <Leader>w :write<CR>
+" }}}
+" {{{ Custom Tools
 " Cycle line number modes
 nnoremap <silent> <Leader>r :call CycleLineNumbering()<CR>
 " Toggle virtualedit
@@ -237,6 +254,8 @@ nnoremap <silent> <Leader>p :call TogglePomodoro()<CR>
 nnoremap <silent> <Leader>~ :call RegisterVdebug()<CR>
 " Calls the custom start function that requests path map to be defined if not already run
 nnoremap <silent> <F5> :call StartVdebug()<CR>
+" }}}
+" {{{ CoC
 " Get outline
 nnoremap <silent> <Leader>co :<C-u>CocList outline<CR>
 " Get symbols
@@ -263,12 +282,20 @@ nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 " Get hint
 nnoremap <silent> gh :call CocActionAsync('doHover')<CR>
+" }}}
+" {{{ Neoterm
 " Use gx{text-object} in normal mode
 nmap gx <Plug>(neoterm-repl-send)
 " Send selected contents in visual mode.
 xmap gx <Plug>(neoterm-repl-send)
+" }}}
+" {{{ Git
 " Git commit messages
 nmap <silent> gm <Plug>(git-messenger)
+" Run :VcsJump diff
+nnoremap <Leader>+ :VcsJump diff<CR>
+" }}}
+" {{{ FZF
 " Mapping selecting mappings
 nmap <leader><tab> <plug>(fzf-maps-n)
 xmap <leader><tab> <plug>(fzf-maps-x)
@@ -278,15 +305,6 @@ imap <c-x><c-k> <plug>(fzf-complete-word)
 imap <c-x><c-f> <plug>(fzf-complete-path)
 imap <c-x><c-j> <plug>(fzf-complete-file-ag)
 imap <c-x><c-l> <plug>(fzf-complete-line)
-
-" Remap arrows to resize
-nnoremap <Up>    :resize +2<CR>
-nnoremap <Down>  :resize -2<CR>
-nnoremap <Left>  :vertical resize +2<CR>
-nnoremap <Right> :vertical resize -2<CR>
-
-" Run :VcsJump diff
-nnoremap <Leader>+ :VcsJump diff<CR>
 " }}}
 " }}}
 " {{{ Navigation/Search Configuration
@@ -386,7 +404,7 @@ function! CheckBackSpace() abort
   return !col || getline('.')[col - 1] =~# '\s'
 endfunction
 " }}}
-" {{{ Plugin Configurations
+" {{{ Plugin Configuration
 " {{{ Git Messenger
 " Go into popup when gm is triggered
 let g:git_messenger_always_into_popup = 1
@@ -467,7 +485,7 @@ silent execute 'hi default DirvishGitUntracked guifg=NONE guibg=NONE gui=NONE ct
 silent execute 'hi default link DirvishGitUntrackedDir DirvishPathTail'
 " }}}
 " }}}
-" {{{ Custom Functions
+" {{{ Custom Tools
 " Cycle through relativenumber + number, number (only), and no numbering.
 function! CycleLineNumbering() abort
   execute {
