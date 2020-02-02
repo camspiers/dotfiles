@@ -15,6 +15,7 @@ neovim:
 	curl -fLo ${NVIM_SHARE}/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 	nvim +PlugInstall +qall
 	nvim +CocInstall coc-phpls +qall
+	nvim +CocInstall coc-vimlsp +qall
 
 tmux:
 	if [ ! -d "$(TMUX_SHARE)/plugins/tpm" ]; then git clone https://github.com/tmux-plugins/tpm "$(TMUX_SHARE)/plugins/tpm"; fi

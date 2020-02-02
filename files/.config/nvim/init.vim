@@ -5,25 +5,25 @@
 " This Neovim config is tailored towards PHP and JavaScript/TypeScript work
 " it uses the vim-plug plugin manager and requires the following tools:
 "
-" | Local/External | Tool                    | Description                                    |
-" | -------------- | ----------------------- | ---------------------------------------------- |
-" | External       | Neovim                  | Untested in Vim                                |
-" | External       | vim-plug                | Plugin Manger                                  |
-" | External       | Yarn                    | Required by Plugins                            |
-" | External       | Git                     | Required by Plugins                            |
-" | External       | python3 support         | Required by Plugins                            |
-" | External       | font with devicons      | Devicons in statusline                         |
-" | External       | Fuzzy Finder (FZF)      | Search                                         |
-" | External       | ripgrep                 | Search                                         |
-" | External       | bat                     | Search Previews                                |
-" | External       | tmux                    | Open Projects                                  |
-" | External       | tmuxinator              | Open Projects                                  |
-" | External       | tmuxinator-fzf-start.sh | Open Projects                                  |
-" | External       | timer                   | Pomodoro timer (https://github.com/rlue/timer) |
-" | External       | lazygit                 | Git terminal interfact                         |
-" | External       | lazydocker              | Docker terminal interface                      |
-" | Local          | tmux-fzf-kill.sh        | Tmux session kill FZF interface                |
-" | Local          | tmux-fzf-switch.sh      | Tmux session switch FZF interface              |
+" | Local/External | Tool                    | Description                   |
+" | -------------- | ----------------------- | ----------------------------- |
+" | External       | Neovim                  | Untested in Vim               |
+" | External       | vim-plug                | Plugin Manger                 |
+" | External       | Yarn                    | Required by Plugins           |
+" | External       | Git                     | Required by Plugins           |
+" | External       | python3 support         | Required by Plugins           |
+" | External       | font with devicons      | Devicons in statusline        |
+" | External       | Fuzzy Finder (FZF)      | Search                        |
+" | External       | ripgrep                 | Search                        |
+" | External       | bat                     | Search Previews               |
+" | External       | tmux                    | Open Projects                 |
+" | External       | tmuxinator              | Open Projects                 |
+" | External       | tmuxinator-fzf-start.sh | Open Projects                 |
+" | External       | timer                   | https://github.com/rlue/timer |
+" | External       | lazygit                 | Git terminal interfact        |
+" | External       | lazydocker              | Docker terminal interface     |
+" | Local          | tmux-fzf-kill.sh        | Tmux kill FZF interface       |
+" | Local          | tmux-fzf-switch.sh      | Tmux switch FZF interface     |
 "
 "###############################################################################
 "# Plugins #####################################################################
@@ -36,62 +36,41 @@ call plug#begin(stdpath('config') . '/plugged')
 "# Vim Defaults Plugins ########################################################
 "###############################################################################
 
-" Sensible defaults
-Plug 'tpope/vim-sensible'
-" Standard terminal integration improvements, mouse, cursor etc
-Plug 'wincent/terminus'
+Plug 'tpope/vim-sensible' | " Sensible defaults
+Plug 'wincent/terminus'   | " Terminal integration improvements
 
 "###############################################################################
 "# Visual Plugins ##############################################################
 "###############################################################################
 
-" Status line
-Plug 'vim-airline/vim-airline' | Plug 'vim-airline/vim-airline-themes'
-" Startup screen
-Plug 'mhinz/vim-startify'
-" Makes tmux use airline colors
-Plug 'edkolev/tmuxline.vim'
-" Show git info in sidebar
-Plug 'mhinz/vim-signify'
-" Dev icons
-Plug 'ryanoasis/vim-devicons'
-" Nicer scrolling
-Plug 'psliwka/vim-smoothie'
-" Show indentation
-Plug 'nathanaelkane/vim-indent-guides'
-" Themes
-Plug 'chriskempson/base16-vim'
-" Makes determining active window easier
-Plug 'blueyed/vim-diminactive'
+Plug 'vim-airline/vim-airline'         | " Airline
+Plug 'vim-airline/vim-airline-themes'  | " Status line
+Plug 'mhinz/vim-startify'              | " Startup screen
+Plug 'edkolev/tmuxline.vim'            | " Makes tmux use airline colors
+Plug 'mhinz/vim-signify'               | " Show git info in sidebar
+Plug 'ryanoasis/vim-devicons'          | " Dev icons
+Plug 'psliwka/vim-smoothie'            | " Nicer scrolling
+Plug 'nathanaelkane/vim-indent-guides' | " Show indentation
+Plug 'chriskempson/base16-vim'         | " Themes
+Plug 'blueyed/vim-diminactive'         | " Makes determining active window easier
 
 "###############################################################################
 "# Navigation/Search Plugins ###################################################
 "###############################################################################
 
-" Replacement for netrw
-Plug 'justinmk/vim-dirvish'
-" Support for displaying git statuses in dirvish
-Plug 'kristijanhusak/vim-dirvish-git'
-" Projections for dirvish
-Plug 'fsharpasharp/vim-dirvinist'
-" Fuzzy file finding, relies on FZF being installed via brew
-Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf' | Plug 'junegunn/fzf.vim'
-" Allows the use of Rg options in Rg + FZF searching
-Plug 'jesseleite/vim-agriculture'
-" Helps root switching
-Plug 'airblade/vim-rooter'
-" Cyclic navigation bindings for filetypes and file patterns
-Plug 'tpope/vim-projectionist'
-" Integrates with projectionist to add 'Ftype' type commands
-Plug 'c-brenn/fuzzy-projectionist.vim'
-" Common pane navigation for Vim and tmux together
-Plug 'christoomey/vim-tmux-navigator'
-" Jump to interesting places with a Git or Mercurial repo
-Plug 'wincent/vcs-jump'
-" Search context improvements
-Plug 'wincent/loupe'
-" Improves the quickfix list
-Plug 'romainl/vim-qf'
+Plug 'justinmk/vim-dirvish'            | " Replacement for netrw
+Plug 'kristijanhusak/vim-dirvish-git'  | " Git statuses in dirvish
+Plug 'fsharpasharp/vim-dirvinist'      | " Projections for dirvish
+Plug '/usr/local/opt/fzf'              | " Brew version of FZF
+Plug 'junegunn/fzf'                    | " Main FZF plugin
+Plug 'junegunn/fzf.vim'                | " Fuzzy finding plugin
+Plug 'jesseleite/vim-agriculture'      | " Rg options for FZF
+Plug 'airblade/vim-rooter'             | " Auto-root setting
+Plug 'tpope/vim-projectionist'         | " Navigation of related files
+Plug 'christoomey/vim-tmux-navigator'  | " Pane navigation
+Plug 'wincent/vcs-jump'                | " Jump to diffs
+Plug 'wincent/loupe'                   | " Search context improvements
+Plug 'romainl/vim-qf'                  | " Improves the quickfix list
 
 "###############################################################################
 "# Editor/Motion Plugins #######################################################
@@ -110,82 +89,50 @@ Plug 'neoclide/coc-json', {'do': 'yarn install --frozen-lockfile'}
 Plug 'neoclide/coc-html', {'do': 'yarn install --frozen-lockfile'}
 Plug 'neoclide/coc-pairs', {'do': 'yarn install --frozen-lockfile'}
 
-" Better commenting
-Plug 'tomtom/tcomment_vim'
-" Surround motions
-Plug 'tpope/vim-surround'
-" Adds ability to adjust alignment in visual mode
-Plug 'godlygeek/tabular'
-" Motions for inside camel case
-Plug 'bkad/CamelCaseMotion'
-" Allows repeating of various custom commands
-Plug 'tpope/vim-repeat'
-" Allows for easy repeat of last used macro
-Plug 'wincent/replay'
-" Split and join programming lines
-Plug 'AndrewRadev/splitjoin.vim'
-" Nice docblock generator
-Plug 'kkoomen/vim-doge'
-" Better search motions (s and S, z and Z)
-Plug 'justinmk/vim-sneak'
-" Highlighting
-Plug 'romainl/vim-cool'
+Plug 'tomtom/tcomment_vim'       | " Better commenting
+Plug 'tpope/vim-surround'        | " Surround motions
+Plug 'godlygeek/tabular'         | " Alignment for tables etc
+Plug 'bkad/CamelCaseMotion'      | " Motions for inside camel case
+Plug 'tpope/vim-repeat'          | " Improves repeats handling of vim plugins
+Plug 'wincent/replay'            | " Allows for easy repeat of last used macro
+Plug 'AndrewRadev/splitjoin.vim' | " Split and join programming lines
+Plug 'kkoomen/vim-doge'          | " Docblock generator
+Plug 'justinmk/vim-sneak'        | " Better search motions (s and S, z and Z)
+Plug 'romainl/vim-cool'          | " Awesome highlighting
 
 "###############################################################################
 "# Code Formatting Plugins #####################################################
 "###############################################################################
 
-" Import tabs etc from editorconfig
-Plug 'editorconfig/editorconfig-vim'
-" Pretter for COC
-Plug 'neoclide/coc-prettier', {'do': 'yarn install --frozen-lockfile'}
+Plug 'editorconfig/editorconfig-vim'                                   | " Import tabs etc from editorconfig
+Plug 'neoclide/coc-prettier', {'do': 'yarn install --frozen-lockfile'} | " Pretter for COC
 
 "###############################################################################
 "# Tool Plugins ################################################################
 "###############################################################################
 
-" Peak at registers
-Plug 'junegunn/vim-peekaboo'
-" Measure startuptime
-Plug 'dstein64/vim-startuptime'
-" Adds composer command support
-Plug 'noahfrederick/vim-composer'
-" Docker compose tools
-Plug 'skanehira/docker-compose.vim'
-" Personal wiki
-Plug 'vimwiki/vimwiki'
-" PHP Debugging
-Plug 'vim-vdebug/vdebug', { 'on': [] }
-" Markdown preview
-Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  }
-" Merge tool for git
-Plug 'samoshkin/vim-mergetool'
-" Slack integration
-Plug 'prashantjois/vim-slack'
-" Live Latex
-Plug 'xuhdev/vim-latex-live-preview', { 'for': 'tex' }
-" Allow the use of Nvim from Brave/Chrome
-Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
-" UNIX tools
-Plug 'tpope/vim-eunuch'
-" Used as a replacement for vim-slime. Provides repl interaction with gx
-Plug 'kassio/neoterm'
-" Git tools
-Plug 'tpope/vim-fugitive'
-" GitLab support
-Plug 'shumphrey/fugitive-gitlab.vim'
-" DB tools
-Plug 'tpope/vim-dadbod'
-" [ and ] mappings, in particular for quickfix, and spell nospell
-Plug 'tpope/vim-unimpaired'
-" Tool for seeing git messages in a line, and visual context
-Plug 'rhysd/git-messenger.vim'
-" Spelling errors to quickfix list
-Plug 'inkarkat/vim-ingo-library' | Plug 'inkarkat/vim-spellcheck'
-" When creating new files in directories that don't exist, it just works
-Plug 'duggiefresh/vim-easydir'
-" Tools for working with marks
-Plug 'kshenoy/vim-signature'
+Plug 'junegunn/vim-peekaboo'           | " Peak at registers
+Plug 'dstein64/vim-startuptime'        | " Measure startuptime
+Plug 'noahfrederick/vim-composer'      | " Adds composer command support
+Plug 'skanehira/docker-compose.vim'    | " Docker compose tools
+Plug 'vimwiki/vimwiki'                 | " Personal wiki
+Plug 'vim-vdebug/vdebug', { 'on': [] } | " PHP Debugging
+Plug 'samoshkin/vim-mergetool'         | " Merge tool for git
+Plug 'prashantjois/vim-slack'          | " Slack integration
+Plug 'tpope/vim-eunuch'                | " UNIX tools
+Plug 'kassio/neoterm'                  | " Repl integration
+Plug 'tpope/vim-fugitive'              | " Git tools
+Plug 'shumphrey/fugitive-gitlab.vim'   | " GitLab support
+Plug 'tpope/vim-dadbod'                | " DB tools
+Plug 'tpope/vim-unimpaired'            | " Common mappings for many needs
+Plug 'rhysd/git-messenger.vim'         | " See git messages
+Plug 'inkarkat/vim-ingo-library'       | " Spellcheck dependency
+Plug 'inkarkat/vim-spellcheck'         | " Spelling errors to quickfix list
+Plug 'duggiefresh/vim-easydir'         | " Crete files in dirs that don't exist
+Plug 'kshenoy/vim-signature'           | " Tools for working with marks
+Plug 'xuhdev/vim-latex-live-preview', { 'for': 'tex' }                  | " Live Latex
+Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }       | " Nvim in Brave
+Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  } | " Markdown preview
 
 "###############################################################################
 "# Syntax Plugins ##############################################################
@@ -273,7 +220,7 @@ let g:airline_theme='base16_chalk'
 " Enables 24bit colors
 set termguicolors
 " Make comments italic
-highlight Comment cterm=italic gui=italic
+highlight Comment gui=italic
 
 "###############################################################################
 "# Search Mappings #############################################################
@@ -416,7 +363,7 @@ nnoremap <Leader>+ :VcsJump diff<CR>
 let g:agriculture#rg_options = '--no-ignore --hidden'
 
 " Some ripgrep searching defaults
-function! GetRipgrepCommand(ignore)
+function! RgCommand(ignore) abort
   return 'rg' .
     \ ' --hidden' .
     \ ' --color ansi' .
@@ -428,30 +375,35 @@ function! GetRipgrepCommand(ignore)
 endfunction
 
 " Adds prompt
-function! GetPreviewFlags(prompt)
+function! PreviewFlags(prompt) abort
   return ' --prompt="' . a:prompt . '> "'
 endfunction
 
 " Ensure that only the 4th column delimited by : is filtered by FZF
-function! GetGrepPreviewFlags(prompt)
-  return GetPreviewFlags(a:prompt) . ' --delimiter : --nth 4..'
+function! RgPreviewFlags(prompt) abort
+  return PreviewFlags(a:prompt) . ' --delimiter : --nth 4..'
 endfunction
 
-" Configures ripgrep with FZF
-command! -bang -nargs=* Rg
-  \ call fzf#vim#grep(
-  \   GetRipgrepCommand(1) . ' ' . shellescape(<q-args>),
-  \   1,
-  \   fzf#vim#with_preview({'options': GetGrepPreviewFlags('Grep')}), <bang>0)
+" Configs the preview
+function! Preview(flags) abort
+  return fzf#vim#with_preview({'options': a:flags})
+endfunction
 
-command! -bang -nargs=* Rgg
-  \ call fzf#vim#grep(
-  \   GetRipgrepCommand(0) . ' ' . shellescape(<q-args>),
-  \   1,
-  \   fzf#vim#with_preview({'options': GetGrepPreviewFlags('Global Grep')}), <bang>0)
+" Executes ripgrep with a preview
+function! RgWithPreview(ignore, args, prompt, bang) abort
+  let command = RgCommand(a:ignore).' '.shellescape(a:args)
+  call fzf#vim#grep(command, 1, Preview(RgPreviewFlags(a:prompt)), a:bang)
+endfunction
 
-command! -bang -nargs=? -complete=dir Files
-  \ call fzf#vim#files(<q-args>, fzf#vim#with_preview({'options': GetPreviewFlags('Files')}), <bang>0)
+" Opens files search with preview
+function! FilesWithPreview(args, bang) abort
+  call fzf#vim#files(a:args, Preview(PreviewFlags('Files')), a:bang)
+endfunction
+
+" Configures ripgrep with FZF, Rg for ignore, Rgg for no ignore, and Files
+command! -bang -nargs=* Rg call RgWithPreview(v:true, <q-args>, 'Grep', <bang>0)
+command! -bang -nargs=* Rgg call RgWithPreview(v:false, <q-args>, 'Global Grep', <bang>0)
+command! -bang -nargs=? -complete=dir Files call FilesWithPreview(<q-args>, <bang>0)
 
 " Don't use status line in FZF
 augroup FzfConfig
@@ -471,13 +423,11 @@ let $FZF_DEFAULT_OPTS = '--layout=default' .
 " Default location for FZF
 let g:fzf_layout = { 'down': '~40%' }
 
-" Populate the arglist with files from searches etc
-function! s:populate_arg_list(lines)
-  execute 'args ' . join(map(a:lines, {_, val -> fnameescape(val)}), ' ')
-endfunction
-
-" On ctrl-l populate the arg list with the current selection, useful for :cfdo
-let g:fzf_action = { 'ctrl-l': function('s:populate_arg_list') }
+" On ctrl-l populate the arg list with the current selection, useful for
+" :cfdo. Only works in :Files
+let g:fzf_action = {
+  \ 'ctrl-l': {l -> execute('args ' . join(map(l, {_, v -> fnameescape(v)}), ' '))},
+  \ }
 
 "###############################################################################
 "# Coc Configuration ###########################################################
@@ -594,7 +544,7 @@ endfunction
 
 " Pomodoro timer, example: "25 5 25 5" will run a timer for 25mins, ding then
 " 5mins, ding, then 25mins ding, then 5mins, ding
-function! TogglePomodoro()
+function! TogglePomodoro() abort
   call inputsave()
   let time = input("Units> ")
   call inputrestore()
@@ -609,7 +559,7 @@ endfunction
 " Custom start function that requests path maps to be registed if they haven't
 " been already
 let g:register_vdebug = 0
-function! StartVdebug()
+function! StartVdebug() abort
   if g:register_vdebug == 0
     call RegisterVdebug() | let g:register_vdebug = 1
   endif
@@ -617,7 +567,7 @@ function! StartVdebug()
 endfunction
 
 " Vdebug needs to be able to load files and understand how the file in the docker
-function! RegisterVdebug()
+function! RegisterVdebug() abort
   call plug#load('vdebug')
   call inputsave()
   let server_root = input("Server Path> ", '/var/www/html/')
@@ -649,7 +599,7 @@ augroup END
 
 " Wrapper for opening terms with auto close, optional argument for size
 " percentag
-function! OpenTerm(cmd, ...)
+function! OpenTerm(cmd, ...) abort
   let percentage = get(a:, 1, 0.5)
   let orientation = get(a:, 2, 'horizontal')
   if orientation == 'horizontal'
