@@ -106,33 +106,21 @@ Plug 'tmux-plugins/vim-tmux'       | " Syntax for Tmux conf files
 call plug#end()
 " }}}
 " General Settings {{{
-" Import local config for private config, e.g. keys, tokens
-silent! source ~/.config/nvim/local.vim
-" Default file encoding
-set encoding=UTF-8
-" Enable undo persistence across sessions
-set undofile
-" Split defaults
-set splitbelow splitright
-" Don't change dirs automatically, using rooter for that
-set noautochdir
-" System clipboard
-set clipboard=unnamed
-" Ignore patterns
-set wildignore+=.git/,.DS_Store
-" No sound
-set noerrorbells
-set timeoutlen=500
-" Set up a dictionary
-set dictionary=/usr/share/dict/words
-" Make buffers hidden then abandoned
-set hidden
+set encoding=UTF-8                   | " Default file encoding
+set undofile                         | " Enable undo persistence across sessions
+set splitbelow splitright            | " Split defaults
+set noautochdir                      | " Don't change dirs automatically, using rooter for that
+set clipboard=unnamed                | " System clipboard
+set wildignore+=.git/,.DS_Store      | " Ignore patterns
+set noerrorbells                     | " No sound
+set timeoutlen=750                   | " Wait less time for mapped sequences
+set dictionary=/usr/share/dict/words | " Set up a dictionary
+set hidden                           | " Make buffers hidden then abandoned
 " }}}
 " Search Settings {{{
-set ignorecase
-set smartcase
-" Displays incremental replacement without actually replacing content
-set inccommand=split
+set ignorecase       | " Ignores case in search
+set smartcase        | " Overrides ignore when capital exists
+set inccommand=split | " Displays incremental replacement
 " }}}
 " Edit Settings {{{
 set tabstop=4
@@ -140,32 +128,23 @@ set shiftwidth=4
 set expandtab
 " }}}
 " Visual Settings {{{
-" Clean folds
-set foldtext=clean_fold#fold_text_minimal()
-" Add bulk color past 120
-let &colorcolumn=join(range(121,999),",")
-" Spell checking
-set spelllang=en
-" Turn spelling on for markdown files
-autocmd FileType markdown setlocal spell
-" Don't redraw while performing a macro
-set lazyredraw
-" Don't display visual bell
-set novisualbell
-" Show matching braces
-set showmatch
-" Enable current line indicator
-set cursorline
-" Show line numbers
-set number relativenumber
+set foldtext=clean_fold#fold_text_minimal() | " Clean folds
+let &colorcolumn=join(range(121,999),",")   | " Add bulk color past 120
+set spelllang=en                            | " Spell checking
+autocmd FileType markdown setlocal spell    | " Turn spelling on for markdown files
+set lazyredraw                              | " Don't redraw while performing a macro
+set novisualbell                            | " Don't display visual bell
+set showmatch                               | " Show matching braces
+set cursorline                              | " Enable current line indicator
+set number relativenumber                   | " Show line numbers
+" Colorscheme {{{
 " Set the colorscheme
 let base16colorspace=256
 colorscheme base16-chalk
 let g:airline_theme='base16_chalk'
-" Enables 24bit colors
-set termguicolors
-" Make comments italic
-highlight Comment gui=italic
+" }}}
+set termguicolors            | " Enables 24bit colors
+highlight Comment gui=italic | " Make comments italic
 " }}}
 " Mappings {{{
 " Navigation/Layout {{{
@@ -312,7 +291,6 @@ imap <c-x><c-l> <plug>(fzf-complete-line)
 " Navigation/Search Configuration {{{
 " Use agriculture as a global no hidden search
 let g:agriculture#rg_options = '--no-ignore --hidden'
-
 " Some ripgrep searching defaults
 function! RgCommand(ignore) abort
   return 'rg' .
