@@ -2,16 +2,17 @@
 "# Neovim Configuration (Cam Spiers) ###########################################
 "###############################################################################
 " See README.md for more information
-" {{{ Plugins
+" Plugins {{{
 " Start Vim plug and set the plugin directory
 call plug#begin(stdpath('config') . '/plugged')
 " Common command to install from lock file
 let g:from_lock = {'do': 'yarn install --frozen-lockfile'}
-" {{{ Defaults Plugins
+" Defaults Plugins {{{
 Plug 'tpope/vim-sensible' | " Sensible defaults
 Plug 'wincent/terminus'   | " Terminal integration improvements
 " }}}
-" {{{ Visual Plugins
+" Visual Plugins {{{
+Plug 'arecarn/vim-clean-fold'              | " Improves folds
 Plug 'blueyed/vim-diminactive'             | " Makes determining active window easier
 Plug 'chriskempson/base16-vim'             | " Themes
 Plug 'edkolev/tmuxline.vim'                | " Makes tmux use airline colors
@@ -24,7 +25,7 @@ Plug 'ryanoasis/vim-devicons'              | " Dev icons
 Plug 'vim-airline/vim-airline'             | " Airline
 Plug 'vim-airline/vim-airline-themes'      | " Status line
 " }}}
-" {{{ Navigation/Search Plugins
+" Navigation/Search Plugins {{{
 Plug '/usr/local/opt/fzf'             | " Brew version of FZF
 Plug 'airblade/vim-rooter'            | " Auto-root setting
 Plug 'christoomey/vim-tmux-navigator' | " Pane navigation
@@ -39,8 +40,8 @@ Plug 'tpope/vim-projectionist'        | " Navigation of related files
 Plug 'wincent/loupe'                  | " Search context improvements
 Plug 'wincent/vcs-jump'               | " Jump to diffs
 " }}}
-" {{{ Editor/Motion Plugins
-" {{{ CoC Plugins
+" Editor/Motion Plugins {{{
+" CoC Plugins {{{
 Plug 'neoclide/coc.nvim',     { 'do': { -> coc#util#install()}}
 Plug 'neoclide/coc-css',      g:from_lock | " CSS language server
 Plug 'neoclide/coc-eslint',   g:from_lock | " Eslint integration
@@ -52,7 +53,7 @@ Plug 'neoclide/coc-snippets', g:from_lock | " Provides snippets
 Plug 'neoclide/coc-tslint',   g:from_lock | " Tslint integration
 Plug 'neoclide/coc-tsserver', g:from_lock | " TypeScript language server
 " }}}
-" {{{ General
+" General {{{
 Plug 'AndrewRadev/splitjoin.vim' | " Split and join programming lines
 Plug 'bkad/CamelCaseMotion'      | " Motions for inside camel case
 Plug 'godlygeek/tabular'         | " Alignment for tables etc
@@ -62,14 +63,13 @@ Plug 'romainl/vim-cool'          | " Awesome highlighting
 Plug 'tomtom/tcomment_vim'       | " Better commenting
 Plug 'tpope/vim-repeat'          | " Improves repeats handling of Vim plugins
 Plug 'tpope/vim-surround'        | " Surround motions
-Plug 'wincent/replay'            | " Allows for easy repeat of last used macro
 " }}}
 " }}}
-" {{{ Code Formatting Plugins
+" Code Formatting Plugins {{{
 Plug 'editorconfig/editorconfig-vim'      | " Import tabs etc from editorconfig
 Plug 'neoclide/coc-prettier', g:from_lock | " Prettier for COC
 " }}}
-" {{{ Tool Plugins
+" Tool Plugins {{{
 Plug 'dstein64/vim-startuptime'        | " Measure startuptime
 Plug 'duggiefresh/vim-easydir'         | " Crete files in dirs that don't exist
 Plug 'inkarkat/vim-ingo-library'       | " Spellcheck dependency
@@ -92,7 +92,7 @@ Plug 'vimwiki/vimwiki'                 | " Personal wiki
 Plug 'xuhdev/vim-latex-live-preview', { 'for': 'tex' }                   | " Live Latex
 Plug 'iamcco/markdown-preview.nvim',  { 'do': 'cd app & yarn install'  } | " Markdown preview
 " }}}
-" {{{ Syntax Plugins
+" Syntax Plugins {{{
 Plug 'bfontaine/Brewfile.vim'      | " Syntax for Brewfile
 Plug 'ekalinin/dockerfile.vim'     | " Syntax for Dockerfile
 Plug 'jwalton512/vim-blade'        | " Syntax for blade templates
@@ -105,7 +105,7 @@ Plug 'tmux-plugins/vim-tmux'       | " Syntax for Tmux conf files
 " }}}
 call plug#end()
 " }}}
-" {{{ General Settings
+" General Settings {{{
 " Import local config for private config, e.g. keys, tokens
 silent! source ~/.config/nvim/local.vim
 " Default file encoding
@@ -128,18 +128,20 @@ set dictionary=/usr/share/dict/words
 " Make buffers hidden then abandoned
 set hidden
 " }}}
-" {{{ Search Settings
+" Search Settings {{{
 set ignorecase
 set smartcase
 " Displays incremental replacement without actually replacing content
 set inccommand=split
 " }}}
-" {{{ Edit Settings
+" Edit Settings {{{
 set tabstop=4
 set shiftwidth=4
 set expandtab
 " }}}
-" {{{ Visual Settings
+" Visual Settings {{{
+" Clean folds
+set foldtext=clean_fold#fold_text_minimal()
 " Add bulk color past 120
 let &colorcolumn=join(range(121,999),",")
 " Spell checking
@@ -165,13 +167,13 @@ set termguicolors
 " Make comments italic
 highlight Comment gui=italic
 " }}}
-" {{{ Mappings
-" {{{ Navigation/Layout
-" {{{ General
+" Mappings {{{
+" Navigation/Layout {{{
+" General {{{
 " Open startify with leader s
 nnoremap <silent> <Leader>s :Startify<CR>
 " }}}
-" {{{ Search
+" Search {{{
 " Open fuzzy files with leader \
 nnoremap <silent> <Leader>\ :Files<CR>
 " Open fuzzy lines with leader l
@@ -185,7 +187,7 @@ nnoremap <silent> <Leader>g :Rgg<CR>
 " Open ripgrep for cursor word
 nnoremap <silent> <Leader>c :Rg <C-R><C-W><CR>
 " }}}
-" {{{ Specialized Search
+" Specialized Search {{{
 " Open ripgrep agriculture
 nmap <Leader>/ <Plug>RgRawSearch
 " Open ripgrep agriculture for visual selection
@@ -193,7 +195,7 @@ vmap <Leader>/ <Plug>RgRawVisualSelection
 " Open ripgrep agriculture for cursor word
 nmap <Leader>* <Plug>RgRawWordUnderCursor
 " }}}
-" {{{ Switch Pane
+" Switch Pane {{{
 " Next buffer
 nnoremap <silent> <Tab> :bnext<CR>
 " Previous buffer
@@ -203,13 +205,13 @@ nnoremap <silent> <Leader>a :A<CR>
 " Alternate file navigation vertical split
 nnoremap <silent> <Leader>v :AV<CR>
 " }}}
-" {{{ Create Pane
+" Create Pane {{{
 " Create vsplit
 nnoremap <silent> <Leader>\| :vsplit<CR>
 " Create hsplit
 nnoremap <silent> <Leader>- :split<CR>
 " }}}
-" {{{ Close
+" Close {{{
 " Only window
 nnoremap <silent> <Leader>o :only<CR>
 " Close all by current window
@@ -219,7 +221,7 @@ nnoremap <silent> <Leader>x :bdelete<CR>
 " Close all buffers
 nnoremap <silent> <Leader>z :%bdelete<CR>
 " }}}
-" {{{ Resize
+" Resize {{{
 " Remap arrows to resize
 nnoremap <Up>    :resize +2<CR>
 nnoremap <Down>  :resize -2<CR>
@@ -227,11 +229,11 @@ nnoremap <Left>  :vertical resize +2<CR>
 nnoremap <Right> :vertical resize -2<CR>
 " }}}
 " }}}
-" {{{ General
+" General {{{
 " Save file
 nnoremap <silent> <Leader>w :write<CR>
 " }}}
-" {{{ Custom Tools
+" Custom Tools {{{
 " Cycle line number modes
 nnoremap <silent> <Leader>r :call CycleLineNumbering()<CR>
 " Toggle virtualedit
@@ -255,7 +257,7 @@ nnoremap <silent> <Leader>~ :call RegisterVdebug()<CR>
 " Calls the custom start function that requests path map to be defined if not already run
 nnoremap <silent> <F5> :call StartVdebug()<CR>
 " }}}
-" {{{ CoC
+" CoC {{{
 " Get outline
 nnoremap <silent> <Leader>co :<C-u>CocList outline<CR>
 " Get symbols
@@ -283,19 +285,19 @@ nmap <silent> gi <Plug>(coc-implementation)
 " Get hint
 nnoremap <silent> gh :call CocActionAsync('doHover')<CR>
 " }}}
-" {{{ Neoterm
+" Neoterm {{{
 " Use gx{text-object} in normal mode
 nmap gx <Plug>(neoterm-repl-send)
 " Send selected contents in visual mode.
 xmap gx <Plug>(neoterm-repl-send)
 " }}}
-" {{{ Git
+" Git {{{
 " Git commit messages
 nmap <silent> gm <Plug>(git-messenger)
 " Run :VcsJump diff
 nnoremap <Leader>+ :VcsJump diff<CR>
 " }}}
-" {{{ FZF
+" FZF {{{
 " Mapping selecting mappings
 nmap <leader><tab> <plug>(fzf-maps-n)
 xmap <leader><tab> <plug>(fzf-maps-x)
@@ -307,7 +309,7 @@ imap <c-x><c-j> <plug>(fzf-complete-file-ag)
 imap <c-x><c-l> <plug>(fzf-complete-line)
 " }}}
 " }}}
-" {{{ Navigation/Search Configuration
+" Navigation/Search Configuration {{{
 " Use agriculture as a global no hidden search
 let g:agriculture#rg_options = '--no-ignore --hidden'
 
@@ -376,7 +378,7 @@ let g:fzf_action = {
   \ 'ctrl-l': {l -> execute('args ' . join(map(l, {_, v -> fnameescape(v)}), ' '))},
   \ }
 " }}}
-" {{{ Coc Configuration
+" Coc Configuration {{{
 " See coc-settings.json for more configuration
 " Sets up comand for prettier
 command! -nargs=0 Prettier :CocCommand prettier.formatFile
@@ -404,8 +406,8 @@ function! CheckBackSpace() abort
   return !col || getline('.')[col - 1] =~# '\s'
 endfunction
 " }}}
-" {{{ Plugin Configuration
-" {{{ Git Messenger
+" Plugin Configuration {{{
+" Git Messenger {{{
 " Go into popup when gm is triggered
 let g:git_messenger_always_into_popup = 1
 " Better background color
@@ -413,26 +415,26 @@ hi link gitmessengerPopupNormal CursorLine
 " Don't use default mappings
 let g:git_messenger_no_default_mappings = 1
 " }}}
-" {{{ Dim Inactive
+" Dim Inactive {{{
 " Handle focus lost and gained events
 let g:diminactive_enable_focus = 1
 " Use color column to help with active/inactive
 let g:diminactive_use_colorcolumn = 1
 " }}}
-" {{{ Merge
+" Merge {{{
 " 3-way merge
 let g:mergetool_layout = 'bmr'
 let g:mergetool_prefer_revision = 'local'
 " }}}
-" {{{ Vimwiki
+" Vimwiki {{{
 let g:vimwiki_list = [{'path': '~/vimwiki/', 'syntax': 'markdown', 'ext': '.md'}]
 let g:vimwiki_global_ext = 0
 " }}}
-" {{{ MarkdownPreview
+" MarkdownPreview {{{
 " Don't start markdown preview automatically, use :MarkdownPreview
 let g:mkdp_auto_start = 0
 " }}}
-" {{{ Tmuxline
+" Tmuxline {{{
 " Configures tmux line, use :TmuxlineSnapshot ~/.tmux/theme.conf to save
 let g:tmuxline_preset = {
   \'a'    : '#[bold]#S',
@@ -444,35 +446,35 @@ let g:tmuxline_preset = {
 " Don't show powerline separators in tmuxline
 let g:tmuxline_powerline_separators = 0
 " }}}
-" {{{ Rooter
+" Rooter {{{
 " Use docker files and git
 let g:rooter_patterns = ['docker-compose.yml', '.git/']
 " Change silently
 let g:rooter_silent_chdir = 1
 " }}}
-" {{{ Camelcase Motion
+" Camelcase Motion {{{
 " Sets up within word motions to use ,
 let g:camelcasemotion_key = ','
 " }}}
-" {{{ Startify
+" Startify {{{
 " Changes startify to have a different heading and only dirs
 let g:startify_lists = [ { 'type': 'dir', 'header': ['   Recent Files'] } ]
 " Don't change directories
 let g:startify_change_to_dir = 0
 " }}}
-" {{{ Indent guides
+" Indent guides {{{
 let g:indent_guides_enable_on_vim_startup = 1
 let g:indent_guides_guide_size = 1
 let g:indent_guides_start_level = 2
 let g:indent_guides_color_change_percent = 1
 " }}}
-" {{{ Airline
+" Airline {{{
 let g:airline#extensions#tabline#enabled = 0
 let g:airline#extensions#tabline#formatter = 'unique_tail'
 let g:airline#extensions#tabline#left_sep = ' '
 let g:airline#extensions#tabline#left_alt_sep = '|'
 " }}}
-" {{{ Dirvish
+" Dirvish {{{
 let g:dirvish_git_modified = 'guifg=#ddb26f ctermfg=3'
 let g:dirvish_git_added = 'guifg=#acc267 ctermfg=2'
 let g:dirvish_git_unmerged = 'guifg=#fb9fb1 ctermfg=1'
@@ -485,7 +487,7 @@ silent execute 'hi default DirvishGitUntracked guifg=NONE guibg=NONE gui=NONE ct
 silent execute 'hi default link DirvishGitUntrackedDir DirvishPathTail'
 " }}}
 " }}}
-" {{{ Custom Tools
+" Custom Tools {{{
 " Cycle through relativenumber + number, number (only), and no numbering.
 function! CycleLineNumbering() abort
   execute {
@@ -539,7 +541,7 @@ function! RegisterVdebug() abort
   let g:vdebug_options.path_maps[server_root] = local_root
 endfunction
 " }}}
-" {{{ Terminal Handling
+" Terminal Handling {{{
 " Sets default location that neoterm opens
 let g:neoterm_default_mod = 'botright'
 
