@@ -56,17 +56,17 @@ Plug 'romainl/vim-qf'                  | " Improves the quickfix list
 "###############################################################################
 
 " CoC Plugins
-Plug 'neoclide/coc.nvim', {'do': { -> coc#util#install()}}
-Plug 'neoclide/coc-snippets', {'do': 'yarn install --frozen-lockfile'}
-Plug 'neoclide/coc-tsserver', {'do': 'yarn install --frozen-lockfile'}
-Plug 'neoclide/coc-eslint', {'do': 'yarn install --frozen-lockfile'}
-Plug 'neoclide/coc-tslint', {'do': 'yarn install --frozen-lockfile'}
-Plug 'neoclide/coc-css', {'do': 'yarn install --frozen-lockfile'}
-Plug 'neoclide/coc-lists', {'do': 'yarn install --frozen-lockfile'}
-Plug 'neoclide/coc-highlight', {'do': 'yarn install --frozen-lockfile'}
-Plug 'neoclide/coc-json', {'do': 'yarn install --frozen-lockfile'}
-Plug 'neoclide/coc-html', {'do': 'yarn install --frozen-lockfile'}
-Plug 'neoclide/coc-pairs', {'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc.nvim',      { 'do': { -> coc#util#install()}}
+Plug 'neoclide/coc-snippets',  { 'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc-tsserver',  { 'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc-eslint',    { 'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc-tslint',    { 'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc-css',       { 'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc-lists',     { 'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc-highlight', { 'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc-json',      { 'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc-html',      { 'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc-pairs',     { 'do': 'yarn install --frozen-lockfile'}
 
 Plug 'tomtom/tcomment_vim'       | " Better commenting
 Plug 'tpope/vim-surround'        | " Surround motions
@@ -109,23 +109,23 @@ Plug 'inkarkat/vim-ingo-library'       | " Spellcheck dependency
 Plug 'inkarkat/vim-spellcheck'         | " Spelling errors to quickfix list
 Plug 'duggiefresh/vim-easydir'         | " Crete files in dirs that don't exist
 Plug 'kshenoy/vim-signature'           | " Tools for working with marks
-Plug 'xuhdev/vim-latex-live-preview', { 'for': 'tex' }                  | " Live Latex
-Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }       | " Nvim in Brave
-Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  } | " Markdown preview
+Plug 'xuhdev/vim-latex-live-preview', { 'for': 'tex' }                       | " Live Latex
+Plug 'glacambre/firenvim',            { 'do': { _ -> firenvim#install(0) } } | " Nvim in Brave
+Plug 'iamcco/markdown-preview.nvim',  { 'do': 'cd app & yarn install'  }     | " Markdown preview
 
 "###############################################################################
 "# Syntax Plugins ##############################################################
 "###############################################################################
 
-Plug 'bfontaine/Brewfile.vim'
-Plug 'ekalinin/dockerfile.vim'
-Plug 'jwalton512/vim-blade'
-Plug 'leafgarland/typescript-vim'
-Plug 'lilyball/vim-swift'
-Plug 'peitalin/vim-jsx-typescript'
-Plug 'phalkunz/vim-ss'
-Plug 'StanAngeloff/php.vim'
-Plug 'tmux-plugins/vim-tmux'
+Plug 'bfontaine/Brewfile.vim'      | " Syntax for Brewfile
+Plug 'ekalinin/dockerfile.vim'     | " Syntax for Dockerfile
+Plug 'jwalton512/vim-blade'        | " Syntax for blade templates
+Plug 'leafgarland/typescript-vim'  | " Syntax for typescript
+Plug 'lilyball/vim-swift'          | " Syntax for swift
+Plug 'peitalin/vim-jsx-typescript' | " Synxax for typescript jsx, .tsx
+Plug 'phalkunz/vim-ss'             | " Syntax for SilverStripe templates
+Plug 'StanAngeloff/php.vim'        | " Syntax for PHP
+Plug 'tmux-plugins/vim-tmux'       | " Syntax for Tmux conf files
 
 call plug#end()
 
