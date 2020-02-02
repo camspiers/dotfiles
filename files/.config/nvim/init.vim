@@ -642,6 +642,8 @@ augroup TermHandling
   autocmd TermOpen * setlocal listchars= nonumber norelativenumber
     \ | startinsert
     \ | tnoremap <Esc> <c-\><c-n>
+    \ | IndentGuidesDisable
+  autocmd TermClose * IndentGuidesEnable
   autocmd! FileType fzf tnoremap <buffer> <Esc> <c-c>
 augroup END
 
