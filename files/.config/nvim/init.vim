@@ -170,14 +170,14 @@ highlight Comment gui=italic
 " {{{ General
 " Open startify with leader s
 nnoremap <silent> <Leader>s :Startify<CR>
+" }}}
+" {{{ Search
 " Open fuzzy files with leader \
 nnoremap <silent> <Leader>\ :Files<CR>
 " Open fuzzy lines with leader l
 nnoremap <silent> <Leader>l :Lines<CR>
 " Open fuzzy buffers with leader b
 nnoremap <silent> <Leader>b :Buffers<CR>
-" }}}
-" {{{ General Search
 " Open ripgrep
 nnoremap <silent> <Leader>f :Rg<CR>
 " Open global grep
@@ -193,7 +193,7 @@ vmap <Leader>/ <Plug>RgRawVisualSelection
 " Open ripgrep agriculture for cursor word
 nmap <Leader>* <Plug>RgRawWordUnderCursor
 " }}}
-" {{{ Switching
+" {{{ Switch Pane
 " Next buffer
 nnoremap <silent> <Tab> :bnext<CR>
 " Previous buffer
@@ -203,7 +203,7 @@ nnoremap <silent> <Leader>a :A<CR>
 " Alternate file navigation vertical split
 nnoremap <silent> <Leader>v :AV<CR>
 " }}}
-" {{{ Create
+" {{{ Create Pane
 " Create vsplit
 nnoremap <silent> <Leader>\| :vsplit<CR>
 " Create hsplit
