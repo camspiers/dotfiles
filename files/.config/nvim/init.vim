@@ -61,7 +61,7 @@ Plug 'romainl/vim-qf'                 | " Improves the quickfix list
 
 " CoC Plugins
 Plug 'neoclide/coc.nvim',     { 'do': { -> coc#util#install()}}
-Plug 'neoclide/coc-snippets', g:from_lock | " Provides snippers
+Plug 'neoclide/coc-snippets', g:from_lock | " Provides snippets
 Plug 'neoclide/coc-tsserver', g:from_lock | " TypeScript language server
 Plug 'neoclide/coc-eslint',   g:from_lock | " Eslint integration
 Plug 'neoclide/coc-tslint',   g:from_lock | " Tslint integration
