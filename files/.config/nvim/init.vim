@@ -11,6 +11,9 @@
 " Start Vim plug and set the plugin directory
 call plug#begin(stdpath('config') . '/plugged')
 
+" Common command to install from lock file
+let g:from_lock = { 'do': 'yarn install --frozen-lockfile'}
+
 "###############################################################################
 "# Vim Defaults Plugins ########################################################
 "###############################################################################
@@ -22,57 +25,57 @@ Plug 'wincent/terminus'   | " Terminal integration improvements
 "# Visual Plugins ##############################################################
 "###############################################################################
 
-Plug 'vim-airline/vim-airline'         | " Airline
-Plug 'vim-airline/vim-airline-themes'  | " Status line
-Plug 'mhinz/vim-startify'              | " Startup screen
-Plug 'edkolev/tmuxline.vim'            | " Makes tmux use airline colors
-Plug 'mhinz/vim-signify'               | " Show git info in sidebar
-Plug 'ryanoasis/vim-devicons'          | " Dev icons
-Plug 'psliwka/vim-smoothie'            | " Nicer scrolling
-Plug 'nathanaelkane/vim-indent-guides' | " Show indentation
-Plug 'chriskempson/base16-vim'         | " Themes
-Plug 'blueyed/vim-diminactive'         | " Makes determining active window easier
+Plug 'vim-airline/vim-airline'             | " Airline
+Plug 'vim-airline/vim-airline-themes'      | " Status line
+Plug 'mhinz/vim-startify'                  | " Startup screen
+Plug 'edkolev/tmuxline.vim'                | " Makes tmux use airline colors
+Plug 'mhinz/vim-signify'                   | " Show git info in sidebar
+Plug 'ryanoasis/vim-devicons'              | " Dev icons
+Plug 'psliwka/vim-smoothie'                | " Nicer scrolling
+Plug 'nathanaelkane/vim-indent-guides'     | " Show indentation
+Plug 'chriskempson/base16-vim'             | " Themes
+Plug 'blueyed/vim-diminactive'             | " Makes determining active window easier
+Plug 'neoclide/coc-highlight', g:from_lock | " Displays hex colors in actual color
 
 "###############################################################################
 "# Navigation/Search Plugins ###################################################
 "###############################################################################
 
-Plug 'justinmk/vim-dirvish'            | " Replacement for netrw
-Plug 'kristijanhusak/vim-dirvish-git'  | " Git statuses in dirvish
-Plug 'fsharpasharp/vim-dirvinist'      | " Projections for dirvish
-Plug '/usr/local/opt/fzf'              | " Brew version of FZF
-Plug 'junegunn/fzf'                    | " Main FZF plugin
-Plug 'junegunn/fzf.vim'                | " Fuzzy finding plugin
-Plug 'jesseleite/vim-agriculture'      | " Rg options for FZF
-Plug 'airblade/vim-rooter'             | " Auto-root setting
-Plug 'tpope/vim-projectionist'         | " Navigation of related files
-Plug 'christoomey/vim-tmux-navigator'  | " Pane navigation
-Plug 'wincent/vcs-jump'                | " Jump to diffs
-Plug 'wincent/loupe'                   | " Search context improvements
-Plug 'romainl/vim-qf'                  | " Improves the quickfix list
+Plug 'justinmk/vim-dirvish'           | " Replacement for netrw
+Plug 'kristijanhusak/vim-dirvish-git' | " Git statuses in dirvish
+Plug 'fsharpasharp/vim-dirvinist'     | " Projections for dirvish
+Plug '/usr/local/opt/fzf'             | " Brew version of FZF
+Plug 'junegunn/fzf'                   | " Main FZF plugin
+Plug 'junegunn/fzf.vim'               | " Fuzzy finding plugin
+Plug 'jesseleite/vim-agriculture'     | " Rg options for FZF
+Plug 'airblade/vim-rooter'            | " Auto-root setting
+Plug 'tpope/vim-projectionist'        | " Navigation of related files
+Plug 'christoomey/vim-tmux-navigator' | " Pane navigation
+Plug 'wincent/vcs-jump'               | " Jump to diffs
+Plug 'wincent/loupe'                  | " Search context improvements
+Plug 'romainl/vim-qf'                 | " Improves the quickfix list
 
 "###############################################################################
 "# Editor/Motion Plugins #######################################################
 "###############################################################################
 
 " CoC Plugins
-Plug 'neoclide/coc.nvim',      { 'do': { -> coc#util#install()}}
-Plug 'neoclide/coc-snippets',  { 'do': 'yarn install --frozen-lockfile'}
-Plug 'neoclide/coc-tsserver',  { 'do': 'yarn install --frozen-lockfile'}
-Plug 'neoclide/coc-eslint',    { 'do': 'yarn install --frozen-lockfile'}
-Plug 'neoclide/coc-tslint',    { 'do': 'yarn install --frozen-lockfile'}
-Plug 'neoclide/coc-css',       { 'do': 'yarn install --frozen-lockfile'}
-Plug 'neoclide/coc-lists',     { 'do': 'yarn install --frozen-lockfile'}
-Plug 'neoclide/coc-highlight', { 'do': 'yarn install --frozen-lockfile'}
-Plug 'neoclide/coc-json',      { 'do': 'yarn install --frozen-lockfile'}
-Plug 'neoclide/coc-html',      { 'do': 'yarn install --frozen-lockfile'}
-Plug 'neoclide/coc-pairs',     { 'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc.nvim',     { 'do': { -> coc#util#install()}}
+Plug 'neoclide/coc-snippets', g:from_lock | " Provides snippers
+Plug 'neoclide/coc-tsserver', g:from_lock | " TypeScript language server
+Plug 'neoclide/coc-eslint',   g:from_lock | " Eslint integration
+Plug 'neoclide/coc-tslint',   g:from_lock | " Tslint integration
+Plug 'neoclide/coc-css',      g:from_lock | " CSS language server
+Plug 'neoclide/coc-lists',    g:from_lock | " Arbitrary lists
+Plug 'neoclide/coc-json',     g:from_lock | " JSON language server
+Plug 'neoclide/coc-html',     g:from_lock | " Html language server
+Plug 'neoclide/coc-pairs',    g:from_lock | " Auto-insert language aware pairs
 
 Plug 'tomtom/tcomment_vim'       | " Better commenting
 Plug 'tpope/vim-surround'        | " Surround motions
 Plug 'godlygeek/tabular'         | " Alignment for tables etc
 Plug 'bkad/CamelCaseMotion'      | " Motions for inside camel case
-Plug 'tpope/vim-repeat'          | " Improves repeats handling of vim plugins
+Plug 'tpope/vim-repeat'          | " Improves repeats handling of Vim plugins
 Plug 'wincent/replay'            | " Allows for easy repeat of last used macro
 Plug 'AndrewRadev/splitjoin.vim' | " Split and join programming lines
 Plug 'kkoomen/vim-doge'          | " Docblock generator
@@ -83,8 +86,8 @@ Plug 'romainl/vim-cool'          | " Awesome highlighting
 "# Code Formatting Plugins #####################################################
 "###############################################################################
 
-Plug 'editorconfig/editorconfig-vim'                                   | " Import tabs etc from editorconfig
-Plug 'neoclide/coc-prettier', {'do': 'yarn install --frozen-lockfile'} | " Pretter for COC
+Plug 'editorconfig/editorconfig-vim'      | " Import tabs etc from editorconfig
+Plug 'neoclide/coc-prettier', g:from_lock | " Prettier for COC
 
 "###############################################################################
 "# Tool Plugins ################################################################
@@ -99,7 +102,7 @@ Plug 'vim-vdebug/vdebug', { 'on': [] } | " PHP Debugging
 Plug 'samoshkin/vim-mergetool'         | " Merge tool for git
 Plug 'prashantjois/vim-slack'          | " Slack integration
 Plug 'tpope/vim-eunuch'                | " UNIX tools
-Plug 'kassio/neoterm'                  | " Repl integration
+Plug 'kassio/neoterm'                  | " REPL integration
 Plug 'tpope/vim-fugitive'              | " Git tools
 Plug 'shumphrey/fugitive-gitlab.vim'   | " GitLab support
 Plug 'tpope/vim-dadbod'                | " DB tools
@@ -109,9 +112,8 @@ Plug 'inkarkat/vim-ingo-library'       | " Spellcheck dependency
 Plug 'inkarkat/vim-spellcheck'         | " Spelling errors to quickfix list
 Plug 'duggiefresh/vim-easydir'         | " Crete files in dirs that don't exist
 Plug 'kshenoy/vim-signature'           | " Tools for working with marks
-Plug 'xuhdev/vim-latex-live-preview', { 'for': 'tex' }                       | " Live Latex
-Plug 'glacambre/firenvim',            { 'do': { _ -> firenvim#install(0) } } | " Nvim in Brave
-Plug 'iamcco/markdown-preview.nvim',  { 'do': 'cd app & yarn install'  }     | " Markdown preview
+Plug 'xuhdev/vim-latex-live-preview', { 'for': 'tex' }                   | " Live Latex
+Plug 'iamcco/markdown-preview.nvim',  { 'do': 'cd app & yarn install'  } | " Markdown preview
 
 "###############################################################################
 "# Syntax Plugins ##############################################################
@@ -122,7 +124,7 @@ Plug 'ekalinin/dockerfile.vim'     | " Syntax for Dockerfile
 Plug 'jwalton512/vim-blade'        | " Syntax for blade templates
 Plug 'leafgarland/typescript-vim'  | " Syntax for typescript
 Plug 'lilyball/vim-swift'          | " Syntax for swift
-Plug 'peitalin/vim-jsx-typescript' | " Synxax for typescript jsx, .tsx
+Plug 'peitalin/vim-jsx-typescript' | " Syntax for typescript jsx, .tsx
 Plug 'phalkunz/vim-ss'             | " Syntax for SilverStripe templates
 Plug 'StanAngeloff/php.vim'        | " Syntax for PHP
 Plug 'tmux-plugins/vim-tmux'       | " Syntax for Tmux conf files
@@ -517,7 +519,11 @@ endfunction
 
 " Toggle virtualedit
 function! ToggleVirtualEdit() abort
-  set virtualedit=(if &virtualedit == "all" ? "" : "all")
+  if &virtualedit == "all"
+    set virtualedit=
+  else
+    set virtualedit=all
+  endif
 endfunction
 
 " Pomodoro timer, example: "25 5 25 5" will run a timer for 25mins, ding then
