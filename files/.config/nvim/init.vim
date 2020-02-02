@@ -12,7 +12,7 @@
 call plug#begin(stdpath('config') . '/plugged')
 
 " Common command to install from lock file
-let g:from_lock = { 'do': 'yarn install --frozen-lockfile'}
+let g:from_lock = {'do': 'yarn install --frozen-lockfile'}
 
 "###############################################################################
 "# Vim Defaults Plugins ########################################################
@@ -25,35 +25,35 @@ Plug 'wincent/terminus'   | " Terminal integration improvements
 "# Visual Plugins ##############################################################
 "###############################################################################
 
-Plug 'vim-airline/vim-airline'             | " Airline
-Plug 'vim-airline/vim-airline-themes'      | " Status line
-Plug 'mhinz/vim-startify'                  | " Startup screen
+Plug 'blueyed/vim-diminactive'             | " Makes determining active window easier
+Plug 'chriskempson/base16-vim'             | " Themes
 Plug 'edkolev/tmuxline.vim'                | " Makes tmux use airline colors
 Plug 'mhinz/vim-signify'                   | " Show git info in sidebar
-Plug 'ryanoasis/vim-devicons'              | " Dev icons
-Plug 'psliwka/vim-smoothie'                | " Nicer scrolling
+Plug 'mhinz/vim-startify'                  | " Startup screen
 Plug 'nathanaelkane/vim-indent-guides'     | " Show indentation
-Plug 'chriskempson/base16-vim'             | " Themes
-Plug 'blueyed/vim-diminactive'             | " Makes determining active window easier
 Plug 'neoclide/coc-highlight', g:from_lock | " Displays hex colors in actual color
+Plug 'psliwka/vim-smoothie'                | " Nicer scrolling
+Plug 'ryanoasis/vim-devicons'              | " Dev icons
+Plug 'vim-airline/vim-airline'             | " Airline
+Plug 'vim-airline/vim-airline-themes'      | " Status line
 
 "###############################################################################
 "# Navigation/Search Plugins ###################################################
 "###############################################################################
 
-Plug 'justinmk/vim-dirvish'           | " Replacement for netrw
-Plug 'kristijanhusak/vim-dirvish-git' | " Git statuses in dirvish
-Plug 'fsharpasharp/vim-dirvinist'     | " Projections for dirvish
 Plug '/usr/local/opt/fzf'             | " Brew version of FZF
+Plug 'airblade/vim-rooter'            | " Auto-root setting
+Plug 'christoomey/vim-tmux-navigator' | " Pane navigation
+Plug 'fsharpasharp/vim-dirvinist'     | " Projections for dirvish
+Plug 'jesseleite/vim-agriculture'     | " Rg options for FZF
 Plug 'junegunn/fzf'                   | " Main FZF plugin
 Plug 'junegunn/fzf.vim'               | " Fuzzy finding plugin
-Plug 'jesseleite/vim-agriculture'     | " Rg options for FZF
-Plug 'airblade/vim-rooter'            | " Auto-root setting
-Plug 'tpope/vim-projectionist'        | " Navigation of related files
-Plug 'christoomey/vim-tmux-navigator' | " Pane navigation
-Plug 'wincent/vcs-jump'               | " Jump to diffs
-Plug 'wincent/loupe'                  | " Search context improvements
+Plug 'justinmk/vim-dirvish'           | " Replacement for netrw
+Plug 'kristijanhusak/vim-dirvish-git' | " Git statuses in dirvish
 Plug 'romainl/vim-qf'                 | " Improves the quickfix list
+Plug 'tpope/vim-projectionist'        | " Navigation of related files
+Plug 'wincent/loupe'                  | " Search context improvements
+Plug 'wincent/vcs-jump'               | " Jump to diffs
 
 "###############################################################################
 "# Editor/Motion Plugins #######################################################
@@ -61,26 +61,26 @@ Plug 'romainl/vim-qf'                 | " Improves the quickfix list
 
 " CoC Plugins
 Plug 'neoclide/coc.nvim',     { 'do': { -> coc#util#install()}}
-Plug 'neoclide/coc-snippets', g:from_lock | " Provides snippets
-Plug 'neoclide/coc-tsserver', g:from_lock | " TypeScript language server
-Plug 'neoclide/coc-eslint',   g:from_lock | " Eslint integration
-Plug 'neoclide/coc-tslint',   g:from_lock | " Tslint integration
 Plug 'neoclide/coc-css',      g:from_lock | " CSS language server
-Plug 'neoclide/coc-lists',    g:from_lock | " Arbitrary lists
-Plug 'neoclide/coc-json',     g:from_lock | " JSON language server
+Plug 'neoclide/coc-eslint',   g:from_lock | " Eslint integration
 Plug 'neoclide/coc-html',     g:from_lock | " Html language server
+Plug 'neoclide/coc-json',     g:from_lock | " JSON language server
+Plug 'neoclide/coc-lists',    g:from_lock | " Arbitrary lists
 Plug 'neoclide/coc-pairs',    g:from_lock | " Auto-insert language aware pairs
+Plug 'neoclide/coc-snippets', g:from_lock | " Provides snippets
+Plug 'neoclide/coc-tslint',   g:from_lock | " Tslint integration
+Plug 'neoclide/coc-tsserver', g:from_lock | " TypeScript language server
 
-Plug 'tomtom/tcomment_vim'       | " Better commenting
-Plug 'tpope/vim-surround'        | " Surround motions
-Plug 'godlygeek/tabular'         | " Alignment for tables etc
-Plug 'bkad/CamelCaseMotion'      | " Motions for inside camel case
-Plug 'tpope/vim-repeat'          | " Improves repeats handling of Vim plugins
-Plug 'wincent/replay'            | " Allows for easy repeat of last used macro
 Plug 'AndrewRadev/splitjoin.vim' | " Split and join programming lines
-Plug 'kkoomen/vim-doge'          | " Docblock generator
+Plug 'bkad/CamelCaseMotion'      | " Motions for inside camel case
+Plug 'godlygeek/tabular'         | " Alignment for tables etc
 Plug 'justinmk/vim-sneak'        | " Better search motions (s and S, z and Z)
+Plug 'kkoomen/vim-doge'          | " Docblock generator
 Plug 'romainl/vim-cool'          | " Awesome highlighting
+Plug 'tomtom/tcomment_vim'       | " Better commenting
+Plug 'tpope/vim-repeat'          | " Improves repeats handling of Vim plugins
+Plug 'tpope/vim-surround'        | " Surround motions
+Plug 'wincent/replay'            | " Allows for easy repeat of last used macro
 
 "###############################################################################
 "# Code Formatting Plugins #####################################################
@@ -93,25 +93,25 @@ Plug 'neoclide/coc-prettier', g:from_lock | " Prettier for COC
 "# Tool Plugins ################################################################
 "###############################################################################
 
-Plug 'junegunn/vim-peekaboo'           | " Peak at registers
 Plug 'dstein64/vim-startuptime'        | " Measure startuptime
-Plug 'noahfrederick/vim-composer'      | " Adds composer command support
-Plug 'skanehira/docker-compose.vim'    | " Docker compose tools
-Plug 'vimwiki/vimwiki'                 | " Personal wiki
-Plug 'vim-vdebug/vdebug', { 'on': [] } | " PHP Debugging
-Plug 'samoshkin/vim-mergetool'         | " Merge tool for git
-Plug 'prashantjois/vim-slack'          | " Slack integration
-Plug 'tpope/vim-eunuch'                | " UNIX tools
-Plug 'kassio/neoterm'                  | " REPL integration
-Plug 'tpope/vim-fugitive'              | " Git tools
-Plug 'shumphrey/fugitive-gitlab.vim'   | " GitLab support
-Plug 'tpope/vim-dadbod'                | " DB tools
-Plug 'tpope/vim-unimpaired'            | " Common mappings for many needs
-Plug 'rhysd/git-messenger.vim'         | " See git messages
+Plug 'duggiefresh/vim-easydir'         | " Crete files in dirs that don't exist
 Plug 'inkarkat/vim-ingo-library'       | " Spellcheck dependency
 Plug 'inkarkat/vim-spellcheck'         | " Spelling errors to quickfix list
-Plug 'duggiefresh/vim-easydir'         | " Crete files in dirs that don't exist
+Plug 'junegunn/vim-peekaboo'           | " Peak at registers
+Plug 'kassio/neoterm'                  | " REPL integration
 Plug 'kshenoy/vim-signature'           | " Tools for working with marks
+Plug 'noahfrederick/vim-composer'      | " Adds composer command support
+Plug 'prashantjois/vim-slack'          | " Slack integration
+Plug 'rhysd/git-messenger.vim'         | " See git messages
+Plug 'samoshkin/vim-mergetool'         | " Merge tool for git
+Plug 'shumphrey/fugitive-gitlab.vim'   | " GitLab support
+Plug 'skanehira/docker-compose.vim'    | " Docker compose tools
+Plug 'tpope/vim-dadbod'                | " DB tools
+Plug 'tpope/vim-eunuch'                | " UNIX tools
+Plug 'tpope/vim-fugitive'              | " Git tools
+Plug 'tpope/vim-unimpaired'            | " Common mappings for many needs
+Plug 'vim-vdebug/vdebug', { 'on': [] } | " PHP Debugging
+Plug 'vimwiki/vimwiki'                 | " Personal wiki
 Plug 'xuhdev/vim-latex-live-preview', { 'for': 'tex' }                   | " Live Latex
 Plug 'iamcco/markdown-preview.nvim',  { 'do': 'cd app & yarn install'  } | " Markdown preview
 
