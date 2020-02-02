@@ -2,19 +2,15 @@
 "# Neovim Configuration (Cam Spiers) ###########################################
 "###############################################################################
 " See README.md for more information
-
-" Common command to install from lock file
-let g:from_lock = {'do': 'yarn install --frozen-lockfile'}
-
 " {{{ Plugins
 " Start Vim plug and set the plugin directory
 call plug#begin(stdpath('config') . '/plugged')
-
+" Common command to install from lock file
+let g:from_lock = {'do': 'yarn install --frozen-lockfile'}
 " {{{ Defaults Plugins
 Plug 'tpope/vim-sensible' | " Sensible defaults
 Plug 'wincent/terminus'   | " Terminal integration improvements
 " }}}
-
 " {{{ Visual Plugins
 Plug 'blueyed/vim-diminactive'             | " Makes determining active window easier
 Plug 'chriskempson/base16-vim'             | " Themes
@@ -28,7 +24,6 @@ Plug 'ryanoasis/vim-devicons'              | " Dev icons
 Plug 'vim-airline/vim-airline'             | " Airline
 Plug 'vim-airline/vim-airline-themes'      | " Status line
 " }}}
-
 " {{{ Navigation/Search Plugins
 Plug '/usr/local/opt/fzf'             | " Brew version of FZF
 Plug 'airblade/vim-rooter'            | " Auto-root setting
@@ -44,7 +39,6 @@ Plug 'tpope/vim-projectionist'        | " Navigation of related files
 Plug 'wincent/loupe'                  | " Search context improvements
 Plug 'wincent/vcs-jump'               | " Jump to diffs
 " }}}
-
 " {{{ Editor/Motion Plugins
 " {{{ CoC Plugins
 Plug 'neoclide/coc.nvim',     { 'do': { -> coc#util#install()}}
@@ -71,12 +65,10 @@ Plug 'tpope/vim-surround'        | " Surround motions
 Plug 'wincent/replay'            | " Allows for easy repeat of last used macro
 " }}}
 " }}}
-
 " {{{ Code Formatting Plugins
 Plug 'editorconfig/editorconfig-vim'      | " Import tabs etc from editorconfig
 Plug 'neoclide/coc-prettier', g:from_lock | " Prettier for COC
 " }}}
-
 " {{{ Tool Plugins
 Plug 'dstein64/vim-startuptime'        | " Measure startuptime
 Plug 'duggiefresh/vim-easydir'         | " Crete files in dirs that don't exist
@@ -100,7 +92,6 @@ Plug 'vimwiki/vimwiki'                 | " Personal wiki
 Plug 'xuhdev/vim-latex-live-preview', { 'for': 'tex' }                   | " Live Latex
 Plug 'iamcco/markdown-preview.nvim',  { 'do': 'cd app & yarn install'  } | " Markdown preview
 " }}}
-
 " {{{ Syntax Plugins
 Plug 'bfontaine/Brewfile.vim'      | " Syntax for Brewfile
 Plug 'ekalinin/dockerfile.vim'     | " Syntax for Dockerfile
@@ -114,7 +105,6 @@ Plug 'tmux-plugins/vim-tmux'       | " Syntax for Tmux conf files
 " }}}
 call plug#end()
 " }}}
-
 " {{{ General Settings
 " Import local config for private config, e.g. keys, tokens
 silent! source ~/.config/nvim/local.vim
@@ -138,20 +128,17 @@ set dictionary=/usr/share/dict/words
 " Make buffers hidden then abandoned
 set hidden
 " }}}
-
 " {{{ Searching
 set ignorecase
 set smartcase
 " Displays incremental replacement without actually replacing content
 set inccommand=split
 " }}}
-
 " {{{ Editing
 set tabstop=4
 set shiftwidth=4
 set expandtab
 " }}}
-
 " {{{ Visual Settings
 " Add bulk color past 120
 let &colorcolumn=join(range(121,999),",")
@@ -178,7 +165,6 @@ set termguicolors
 " Make comments italic
 highlight Comment gui=italic
 " }}}
-
 " {{{ Search Mappings
 " {{{ Preview without Rg options | Daily Driver
 " Open ripgrep
@@ -198,7 +184,6 @@ vmap <Leader>/ <Plug>RgRawVisualSelection
 nmap <Leader>* <Plug>RgRawWordUnderCursor
 " }}}
 " }}}
-
 " {{{ Mappings
 " Only window
 nnoremap <silent> <Leader>o :only<CR>
@@ -303,8 +288,7 @@ nnoremap <Right> :vertical resize -2<CR>
 " Run :VcsJump diff
 nnoremap <Leader>+ :VcsJump diff<CR>
 " }}}
-
-" {{{ FZF/Ripgrep Configuration
+" {{{ Navigation/Search Configuration
 " Use agriculture as a global no hidden search
 let g:agriculture#rg_options = '--no-ignore --hidden'
 
@@ -373,7 +357,6 @@ let g:fzf_action = {
   \ 'ctrl-l': {l -> execute('args ' . join(map(l, {_, v -> fnameescape(v)}), ' '))},
   \ }
 " }}}
-
 " {{{ Coc Configuration
 " See coc-settings.json for more configuration
 " Sets up comand for prettier
@@ -402,26 +385,35 @@ function! CheckBackSpace() abort
   return !col || getline('.')[col - 1] =~# '\s'
 endfunction
 " }}}
-
 " {{{ Plugin Configurations
+" {{{ Git Messenger
 " Go into popup when gm is triggered
 let g:git_messenger_always_into_popup = 1
 " Better background color
 hi link gitmessengerPopupNormal CursorLine
 " Don't use default mappings
 let g:git_messenger_no_default_mappings = 1
+" }}}
+" {{{ Dim Inactive
 " Handle focus lost and gained events
 let g:diminactive_enable_focus = 1
 " Use color column to help with active/inactive
 let g:diminactive_use_colorcolumn = 1
+" }}}
+" {{{ Merge
 " 3-way merge
 let g:mergetool_layout = 'bmr'
 let g:mergetool_prefer_revision = 'local'
-" Config vim wiki
+" }}}
+" {{{ Vimwiki
 let g:vimwiki_list = [{'path': '~/vimwiki/', 'syntax': 'markdown', 'ext': '.md'}]
 let g:vimwiki_global_ext = 0
+" }}}
+" {{{ MarkdownPreview
 " Don't start markdown preview automatically, use :MarkdownPreview
 let g:mkdp_auto_start = 0
+" }}}
+" {{{ Tmuxline
 " Configures tmux line, use :TmuxlineSnapshot ~/.tmux/theme.conf to save
 let g:tmuxline_preset = {
   \'a'    : '#[bold]#S',
@@ -432,27 +424,36 @@ let g:tmuxline_preset = {
   \'z'    : '#[bold]#(battstat {p} | tr -d " ")'}
 " Don't show powerline separators in tmuxline
 let g:tmuxline_powerline_separators = 0
+" }}}
+" {{{ Rooter
 " Use docker files and git
 let g:rooter_patterns = ['docker-compose.yml', '.git/']
 " Change silently
 let g:rooter_silent_chdir = 1
+" }}}
+" {{{ Camelcase Motion
 " Sets up within word motions to use ,
 let g:camelcasemotion_key = ','
+" }}}
+" {{{ Startify
 " Changes startify to have a different heading and only dirs
 let g:startify_lists = [ { 'type': 'dir', 'header': ['   Recent Files'] } ]
 " Don't change directories
 let g:startify_change_to_dir = 0
-" Configure indentation guides
+" }}}
+" {{{ Indent guides
 let g:indent_guides_enable_on_vim_startup = 1
 let g:indent_guides_guide_size = 1
 let g:indent_guides_start_level = 2
 let g:indent_guides_color_change_percent = 1
-" Configure Airline Theme
+" }}}
+" {{{ Airline
 let g:airline#extensions#tabline#enabled = 0
 let g:airline#extensions#tabline#formatter = 'unique_tail'
 let g:airline#extensions#tabline#left_sep = ' '
 let g:airline#extensions#tabline#left_alt_sep = '|'
-" Configure colors for dirvish highligh groups
+" }}}
+" {{{ Dirvish
 let g:dirvish_git_modified = 'guifg=#ddb26f ctermfg=3'
 let g:dirvish_git_added = 'guifg=#acc267 ctermfg=2'
 let g:dirvish_git_unmerged = 'guifg=#fb9fb1 ctermfg=1'
@@ -464,7 +465,7 @@ silent execute 'hi default DirvishGitIgnored guifg=NONE guibg=NONE gui=NONE cter
 silent execute 'hi default DirvishGitUntracked guifg=NONE guibg=NONE gui=NONE cterm=NONE ctermfg=NONE ctermbg=NONE'
 silent execute 'hi default link DirvishGitUntrackedDir DirvishPathTail'
 " }}}
-
+" }}}
 " {{{ Custom Functions
 " Cycle through relativenumber + number, number (only), and no numbering.
 function! CycleLineNumbering() abort
@@ -519,7 +520,6 @@ function! RegisterVdebug() abort
   let g:vdebug_options.path_maps[server_root] = local_root
 endfunction
 " }}}
-
 " {{{ Terminal Handling
 " Sets default location that neoterm opens
 let g:neoterm_default_mod = 'botright'
@@ -549,5 +549,4 @@ function! OpenTerm(cmd, ...) abort
   call termopen(a:cmd, {'on_exit': {j,c,e -> execute('if c == 0 | close | endif')}})
 endfunction
 " }}}
-
 " vim:fdm=marker
