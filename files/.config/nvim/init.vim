@@ -138,8 +138,8 @@ set cursorline                              | " Enable current line indicator
 set number relativenumber                   | " Show line numbers
 " Visual Autocommands {{{
 " Put the quickfix window always at the bottom
-autocmd FileType qf if (getwininfo(win_getid())[0].loclist != 1) | wincmd J | endif
-autocmd FileType markdown setlocal spell    | " Turn spelling on for markdown files
+autocmd! FileType qf if (getwininfo(win_getid())[0].loclist != 1) | wincmd J | endif
+autocmd! FileType markdown setlocal spell    | " Turn spelling on for markdown files
 " }}}
 " Colorscheme {{{
 " Set the colorscheme
@@ -222,11 +222,11 @@ nnoremap <silent> <Leader>r :call CycleLineNumbering()<CR>
 " Toggle virtualedit
 nnoremap <silent> <Leader>v :call ToggleVirtualEdit()<CR>
 " Open project
-nnoremap <silent> <Leader>] :call OpenTerm('tmuxinator-fzf-start.sh', 0.15, 'vertical')<CR>
+nnoremap <silent> <Leader>] :call OpenTerm('tmuxinator-fzf-start.sh', 0.33, 'vertical')<CR>
 " Switch session
-nnoremap <silent> <Leader>[ :call OpenTerm('tmux-fzf-switch.sh', 0.15, 'vertical')<CR>
+nnoremap <silent> <Leader>[ :call OpenTerm('tmux-fzf-switch.sh', 0.33, 'vertical')<CR>
 " Kill session
-nnoremap <silent> <Leader>} :call OpenTerm('tmux-fzf-kill.sh', 0.15, 'vertical')<CR>
+nnoremap <silent> <Leader>} :call OpenTerm('tmux-fzf-kill.sh', 0.33, 'vertical')<CR>
 " Open lazygit
 nnoremap <silent> <Leader>' :call OpenTerm('lazygit', 0.8)<CR>
 " Open lazydocker
@@ -335,11 +335,6 @@ function! FilesWithPreview(args, bang) abort
   call fzf#vim#files(a:args, Preview(PreviewFlags('Files')), a:bang)
 endfunction
 
-" Configures ripgrep with FZF, Rg for ignore, Rgg for no ignore, and Files
-command! -bang -nargs=* Rg call RgWithPreview(v:true, <q-args>, 'Grep', <bang>0)
-command! -bang -nargs=* Rgg call RgWithPreview(v:false, <q-args>, 'Global Grep', <bang>0)
-command! -bang -nargs=? -complete=dir Files call FilesWithPreview(<q-args>, <bang>0)
-
 " Don't use status line in FZF
 augroup FzfConfig
   autocmd!
@@ -362,9 +357,6 @@ let g:fzf_action = {
 " }}}
 " Coc Configuration {{{
 " See coc-settings.json for more configuration
-" Sets up comand for prettier
-command! -nargs=0 Prettier :CocCommand prettier.formatFile
-
 " Some servers have issues with backup files
 set nobackup
 set nowritebackup
@@ -536,8 +528,9 @@ augroup TermHandling
     \ | startinsert
     \ | tnoremap <Esc> <c-c>
     \ | IndentGuidesDisable
-  autocmd TermClose * IndentGuidesEnable
-  autocmd FileType fzf call LayoutTerm(0.75, 'horizontal')
+  autocmd! TermClose * IndentGuidesEnable
+  autocmd! FileType fzf call LayoutTerm(0.5, 'horizontal')
+  autocmd! FileType neoterm call LayoutTerm(0.5, 'horizontal')
 augroup END
 
 function! LayoutTerm(size, orientation) abort
@@ -574,7 +567,25 @@ function! OpenTerm(cmd, ...) abort
     vnew | wincmd L
   endif
   call LayoutTerm(get(a:, 1, 0.5), orientation)
-  call termopen(a:cmd, {'on_exit': {j,c,e -> execute('if c == 0 | close | endif')}})
+  call termopen(a:cmd, {'on_exit': {j,c,e -> execute('if c == 0 | bd! | endif')}})
 endfunction
+" }}}
+" Custom Commands {{{
+" New works particularly well with neoterm
+command! -nargs=1 -complete=filetype New :new +setf\ <args>
+autocmd! FileType * call NewTemplate()
+function! NewTemplate() abort
+  if line('$') == 1 && col('$') == 1
+    silent! execute ":0r ~/.config/nvim/templates/".&ft
+    :$
+  endif
+endfunction
+
+" Configures ripgrep with FZF, Rg for ignore, Rgg for no ignore, and Files
+command! -bang -nargs=* Rg call RgWithPreview(v:true, <q-args>, 'Grep', <bang>0)
+command! -bang -nargs=* Rgg call RgWithPreview(v:false, <q-args>, 'Global Grep', <bang>0)
+command! -bang -nargs=? -complete=dir Files call FilesWithPreview(<q-args>, <bang>0)
+" Sets up comand for prettier
+command! -nargs=0 Prettier :CocCommand prettier.formatFile
 " }}}
 " vim:fdm=marker
