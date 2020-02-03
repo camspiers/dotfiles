@@ -555,13 +555,13 @@ function! LayoutTerm(size, orientation) abort
   \}
 
   if a:orientation == 'horizontal'
-    execute 'resize 1'
+    resize 1
     function! timer.f(timer)
       execute 'resize ' . string(&lines * self.size * (self.step / self.steps))
       let self.step += 1
     endfunction
   else
-    execute 'vertical resize 1'
+    vertical resize 1
     function! timer.f(timer)
       execute 'vertical resize ' . string(&columns * self.size * (self.step / self.steps))
       let self.step += 1
