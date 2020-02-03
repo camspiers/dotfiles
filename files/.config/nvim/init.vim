@@ -545,13 +545,13 @@ function! OnFzfOpen() abort
   call LayoutTerm(0.5, 'horizontal')
 endfunction
 
-let g:layout_term_ms = 16.0
-let g:layout_term_ms_total = 200.0
 function! LayoutTerm(size, orientation) abort
+  let timeout = 16.0
+  let animation_total = 200.0
   let timer = {
     \ 'size': a:size,
     \ 'step': 1,
-    \ 'steps': g:layout_term_ms_total / g:layout_term_ms
+    \ 'steps': animation_total / timeout
   \}
 
   if a:orientation == 'horizontal'
@@ -567,7 +567,7 @@ function! LayoutTerm(size, orientation) abort
       let self.step += 1
     endfunction
   endif
-  call timer_start(16, timer.f, {'repeat': float2nr(timer.steps)})
+  call timer_start(float2nr(timeout), timer.f, {'repeat': float2nr(timer.steps)})
 endfunction
 
 " Open autoclosing terminal, with optional size and orientation
