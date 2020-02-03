@@ -534,20 +534,15 @@ augroup TermHandling
   " exit insert mode
   autocmd TermOpen * setlocal listchars= nonumber norelativenumber
     \ | startinsert
-    \ | tnoremap <Esc> <c-\><c-n>
+    \ | tnoremap <Esc> <c-c>
     \ | IndentGuidesDisable
   autocmd TermClose * IndentGuidesEnable
-  autocmd FileType fzf call OnFzfOpen()
+  autocmd FileType fzf call LayoutTerm(0.75, 'horizontal')
 augroup END
-
-function! OnFzfOpen() abort
-  tnoremap <buffer> <Esc> <c-c>
-  call LayoutTerm(0.5, 'horizontal')
-endfunction
 
 function! LayoutTerm(size, orientation) abort
   let timeout = 16.0
-  let animation_total = 200.0
+  let animation_total = 150.0
   let timer = {
     \ 'size': a:size,
     \ 'step': 1,
