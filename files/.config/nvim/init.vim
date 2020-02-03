@@ -383,7 +383,7 @@ inoremap <silent><expr> <TAB>
   \ coc#refresh()
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
-function! CheckBackSpace() abort
+function! s:CheckBackSpace() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1] =~# '\s'
 endfunction
@@ -537,20 +537,48 @@ augroup TermHandling
     \ | tnoremap <Esc> <c-\><c-n>
     \ | IndentGuidesDisable
   autocmd TermClose * IndentGuidesEnable
-  autocmd FileType fzf tnoremap <buffer> <Esc> <c-c>
+  autocmd FileType fzf call OnFzfOpen()
 augroup END
+
+function! OnFzfOpen() abort
+  tnoremap <buffer> <Esc> <c-c>
+  call LayoutTerm(0.5, 'horizontal')
+endfunction
+
+let g:layout_term_ms = 16.0
+let g:layout_term_ms_total = 200.0
+function! LayoutTerm(size, orientation) abort
+  let timer = {
+    \ 'size': a:size,
+    \ 'step': 1,
+    \ 'steps': g:layout_term_ms_total / g:layout_term_ms
+  \}
+
+  if a:orientation == 'horizontal'
+    execute 'resize 1'
+    function! timer.f(timer)
+      execute 'resize ' . string(&lines * self.size * (self.step / self.steps))
+      let self.step += 1
+    endfunction
+  else
+    execute 'vertical resize 1'
+    function! timer.f(timer)
+      execute 'vertical resize ' . string(&columns * self.size * (self.step / self.steps))
+      let self.step += 1
+    endfunction
+  endif
+  call timer_start(16, timer.f, {'repeat': float2nr(timer.steps)})
+endfunction
 
 " Open autoclosing terminal, with optional size and orientation
 function! OpenTerm(cmd, ...) abort
-  let percentage = get(a:, 1, 0.5)
   let orientation = get(a:, 2, 'horizontal')
   if orientation == 'horizontal'
-    " Uses wincmd J to send the window all the way to the bottom
-    new | wincmd J | execute 'resize ' . string(&lines * percentage)
+    new | wincmd J
   else
-    " Uses wincmd L to send the window all the way to the right
-    vnew | wincmd L | execute 'vertical resize ' . string(&columns * percentage)
+    vnew | wincmd L
   endif
+  call LayoutTerm(get(a:, 1, 0.5), orientation)
   call termopen(a:cmd, {'on_exit': {j,c,e -> execute('if c == 0 | close | endif')}})
 endfunction
 " }}}
