@@ -106,21 +106,21 @@ Plug 'tmux-plugins/vim-tmux'       | " Syntax for Tmux conf files
 call plug#end()
 " }}}
 " General Settings {{{
-set encoding=UTF-8                   | " Default file encoding
-set undofile                         | " Enable undo persistence across sessions
-set splitbelow splitright            | " Split defaults
-set noautochdir                      | " Don't change dirs automatically, using rooter for that
-set clipboard=unnamed                | " System clipboard
-set wildignore+=.git/,.DS_Store      | " Ignore patterns
-set noerrorbells                     | " No sound
-set timeoutlen=750                   | " Wait less time for mapped sequences
-set dictionary=/usr/share/dict/words | " Set up a dictionary
-set hidden                           | " Make buffers hidden then abandoned
+set encoding=UTF-8                          | " Default file encoding
+set undofile                                | " Enable undo persistence across sessions
+set splitbelow splitright                   | " Split defaults
+set noautochdir                             | " Don't change dirs automatically
+set clipboard=unnamed                       | " System clipboard
+set wildignore+=.git/,.DS_Store             | " Ignore patterns
+set noerrorbells                            | " No sound
+set timeoutlen=750                          | " Wait less time for mapped sequences
+set dictionary=/usr/share/dict/words        | " Set up a dictionary
+set hidden                                  | " Make buffers hidden then abandoned
 " }}}
 " Search Settings {{{
-set ignorecase       | " Ignores case in search
-set smartcase        | " Overrides ignore when capital exists
-set inccommand=split | " Displays incremental replacement
+set ignorecase                              | " Ignores case in search
+set smartcase                               | " Overrides ignore when capital exists
+set inccommand=split                        | " Displays incremental replacement
 " }}}
 " Edit Settings {{{
 set tabstop=4
@@ -131,12 +131,16 @@ set expandtab
 set foldtext=clean_fold#fold_text_minimal() | " Clean folds
 let &colorcolumn=join(range(121,999),",")   | " Add bulk color past 120
 set spelllang=en                            | " Spell checking
-autocmd FileType markdown setlocal spell    | " Turn spelling on for markdown files
 set lazyredraw                              | " Don't redraw while performing a macro
 set novisualbell                            | " Don't display visual bell
 set showmatch                               | " Show matching braces
 set cursorline                              | " Enable current line indicator
 set number relativenumber                   | " Show line numbers
+" Visual Autocommands {{{
+" Put the quickfix window always at the bottom
+autocmd FileType qf if (getwininfo(win_getid())[0].loclist != 1) | wincmd J | endif
+autocmd FileType markdown setlocal spell    | " Turn spelling on for markdown files
+" }}}
 " Colorscheme {{{
 " Set the colorscheme
 let base16colorspace=256
@@ -541,9 +545,11 @@ function! OpenTerm(cmd, ...) abort
   let percentage = get(a:, 1, 0.5)
   let orientation = get(a:, 2, 'horizontal')
   if orientation == 'horizontal'
-    new | execute 'resize ' . string(&lines * percentage)
+    " Uses wincmd J to send the window all the way to the bottom
+    new | wincmd J | execute 'resize ' . string(&lines * percentage)
   else
-    vnew | execute 'vertical resize ' . string(&columns * percentage)
+    " Uses wincmd L to send the window all the way to the right
+    vnew | wincmd L | execute 'vertical resize ' . string(&columns * percentage)
   endif
   call termopen(a:cmd, {'on_exit': {j,c,e -> execute('if c == 0 | close | endif')}})
 endfunction
