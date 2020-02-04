@@ -292,7 +292,7 @@ imap <c-x><c-j> <plug>(fzf-complete-file-ag)
 imap <c-x><c-l> <plug>(fzf-complete-line)
 " }}}
 " }}}
-" Navigation/Search Configuration {{{
+" Search Configuration {{{
 " Use agriculture as a global no hidden search
 let g:agriculture#rg_options = '--no-ignore --hidden'
 " Some ripgrep searching defaults
@@ -323,9 +323,9 @@ function! Preview(flags) abort
 endfunction
 
 " Executes ripgrep with a preview
-function! RgWithPreview(ignore, args, prompt, bang) abort
+function! RgWithPreview(ignore, args, bang) abort
   let command = RgCommand(a:ignore).' '.shellescape(a:args)
-  call fzf#vim#grep(command, 1, Preview(RgPreviewFlags(a:prompt)), a:bang)
+  call fzf#vim#grep(command, 1, Preview(RgPreviewFlags(a:ignore ? 'Grep' : 'Global Grep')), a:bang)
 endfunction
 
 " Defines search command for :Files
@@ -533,29 +533,27 @@ augroup TermHandling
   autocmd! FileType neoterm call LayoutTerm(0.5, 'horizontal')
 augroup END
 
-function! LayoutTerm(size, orientation) abort
-  let timeout = 16.0
-  let animation_total = 150.0
-  let timer = {
-    \ 'size': a:size,
-    \ 'step': 1,
-    \ 'steps': animation_total / timeout
-  \}
+function! GetTime()
+  return str2float(reltimestr(reltime())) * 1000.0
+endfunction
 
-  if a:orientation == 'horizontal'
-    resize 1
-    function! timer.f(timer)
-      execute 'resize ' . string(&lines * self.size * (self.step / self.steps))
-      let self.step += 1
-    endfunction
-  else
-    vertical resize 1
-    function! timer.f(timer)
-      execute 'vertical resize ' . string(&columns * self.size * (self.step / self.steps))
-      let self.step += 1
-    endfunction
-  endif
-  call timer_start(float2nr(timeout), timer.f, {'repeat': float2nr(timer.steps)})
+function! LayoutTerm(size, orientation) abort
+  let timer = {
+    \ 'interval': 16,
+    \ 'size': a:orientation == 'horizontal' ? &lines * a:size : &columns * a:size,
+    \ 'start': GetTime(),
+    \ 'total': 250.0,
+    \ 'resize_cmd': a:orientation == 'horizontal' ? 'resize' : 'vertical resize'
+  \}
+  execute timer.resize_cmd . ' 1'
+  function! timer.f(timer)
+    let time = min([float2nr(self.total), float2nr(GetTime() - self.start)])
+    execute self.resize_cmd . ' ' . string(float2nr(self.size * (time / self.total)))
+    if time < self.total
+      call timer_start(self.interval, self.f)
+    endif
+  endfunction
+  call timer.f(0)
 endfunction
 
 " Open autoclosing terminal, with optional size and orientation
@@ -574,6 +572,8 @@ endfunction
 " New works particularly well with neoterm
 command! -nargs=1 -complete=filetype New :new +setf\ <args>
 autocmd! FileType * call NewTemplate()
+" For empty files it attempts to read a template. Not using au BufNewFile as the
+" filetype is being manually set by :New instead of via *.php
 function! NewTemplate() abort
   if line('$') == 1 && col('$') == 1
     silent! execute ":0r ~/.config/nvim/templates/".&ft
@@ -582,8 +582,8 @@ function! NewTemplate() abort
 endfunction
 
 " Configures ripgrep with FZF, Rg for ignore, Rgg for no ignore, and Files
-command! -bang -nargs=* Rg call RgWithPreview(v:true, <q-args>, 'Grep', <bang>0)
-command! -bang -nargs=* Rgg call RgWithPreview(v:false, <q-args>, 'Global Grep', <bang>0)
+command! -bang -nargs=* Rg call RgWithPreview(v:true, <q-args>, <bang>0)
+command! -bang -nargs=* Rgg call RgWithPreview(v:false, <q-args>, <bang>0)
 command! -bang -nargs=? -complete=dir Files call FilesWithPreview(<q-args>, <bang>0)
 " Sets up comand for prettier
 command! -nargs=0 Prettier :CocCommand prettier.formatFile
