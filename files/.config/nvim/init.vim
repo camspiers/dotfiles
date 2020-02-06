@@ -222,17 +222,19 @@ nnoremap <silent> <Leader>r :call CycleLineNumbering()<CR>
 " Toggle virtualedit
 nnoremap <silent> <Leader>v :call ToggleVirtualEdit()<CR>
 " Open project
-nnoremap <silent> <Leader>] :call OpenTerm('tmuxinator-fzf-start.sh', 0.33, 'vertical')<CR>
+nnoremap <silent> <Leader>] :call OpenTerm('tmuxinator-fzf-start.sh', 0.33, 'v')<CR>
 " Switch session
-nnoremap <silent> <Leader>[ :call OpenTerm('tmux-fzf-switch.sh', 0.33, 'vertical')<CR>
+nnoremap <silent> <Leader>[ :call OpenTerm('tmux-fzf-switch.sh', 0.33, 'v')<CR>
 " Kill session
-nnoremap <silent> <Leader>} :call OpenTerm('tmux-fzf-kill.sh', 0.33, 'vertical')<CR>
+nnoremap <silent> <Leader>} :call OpenTerm('tmux-fzf-kill.sh', 0.33, 'v')<CR>
 " Open lazygit
 nnoremap <silent> <Leader>' :call OpenTerm('lazygit', 0.8)<CR>
 " Open lazydocker
 nnoremap <silent> <Leader>; :call OpenTerm('lazydocker', 0.8)<CR>
 " Open harvest
 nnoremap <silent> <Leader>h :call OpenTerm('hstarti', 0.1)<CR>
+" Open calendar + todo
+nnoremap <silent> <Leader>t :call OpenTerm('calcurse', 0.8)<CR>
 " Toggle pomodoro
 nnoremap <silent> <Leader>p :call TogglePomodoro()<CR>
 " Register Vdebug only need to call this when you need to change the roots
@@ -353,7 +355,8 @@ let g:fzf_layout = { 'down': '~40%' }
 " Ctrl-l populates arglist. Use with :cfdo. Only works in :Files
 let g:fzf_action = {
   \ 'ctrl-l': {l -> execute('args ' . join(map(l, {_, v -> fnameescape(v)}), ' '))},
-  \ }
+  \ 'ctrl-x': 'split',
+  \ 'ctrl-v': 'vsplit' }
 " }}}
 " Coc Configuration {{{
 " See coc-settings.json for more configuration
@@ -518,6 +521,7 @@ endfunction
 " Terminal Handling {{{
 " Sets default location that neoterm opens
 let g:neoterm_default_mod = 'botright'
+let g:neoterm_autojump = 1
 
 " Quit term buffer with ESC
 augroup TermHandling
@@ -526,46 +530,59 @@ augroup TermHandling
   " exit insert mode
   autocmd TermOpen * setlocal listchars= nonumber norelativenumber
     \ | startinsert
-    \ | tnoremap <Esc> <c-c>
     \ | IndentGuidesDisable
   autocmd! TermClose * IndentGuidesEnable
-  autocmd! FileType fzf call LayoutTerm(0.5, 'horizontal')
-  autocmd! FileType neoterm call LayoutTerm(0.5, 'horizontal')
+  autocmd! FileType fzf,openterm tnoremap <Esc> <c-c>
+  autocmd! FileType fzf call LayoutTerm(0.5, 'h')
+  autocmd! FileType neoterm call LayoutTerm(0.33, 'h')
 augroup END
 
 function! GetTime()
   return str2float(reltimestr(reltime())) * 1000.0
 endfunction
 
-function! LayoutTerm(size, orientation) abort
+" Size is a percentage of the screen (in a direction), and orien is either 'h'
+" or 'v'
+function! LayoutTerm(size, orien) abort
   let timer = {
     \ 'interval': 16,
-    \ 'size': a:orientation == 'horizontal' ? &lines * a:size : &columns * a:size,
+    \ 'size': a:orien == 'h' ? &lines * a:size : &columns * a:size,
     \ 'start': GetTime(),
     \ 'total': 250.0,
-    \ 'resize_cmd': a:orientation == 'horizontal' ? 'resize' : 'vertical resize'
+    \ 'resize_cmd': a:orien == 'h' ? 'resize' : 'vertical resize'
   \}
   execute timer.resize_cmd . ' 1'
-  function! timer.f(timer)
+  function! timer.step(timer)
     let time = min([float2nr(self.total), float2nr(GetTime() - self.start)])
-    execute self.resize_cmd . ' ' . string(float2nr(self.size * (time / self.total)))
+    let size = float2nr(self.size * (time / self.total))
+    if size != winheight(0)
+        execute self.resize_cmd . ' ' . string(size)
+    endif
     if time < self.total
-      call timer_start(self.interval, self.f)
+      call timer_start(self.interval, self.step)
     endif
   endfunction
-  call timer.f(0)
+  call timer.step(0)
 endfunction
 
-" Open autoclosing terminal, with optional size and orientation
-function! OpenTerm(cmd, ...) abort
-  let orientation = get(a:, 2, 'horizontal')
-  if orientation == 'horizontal'
-    new | wincmd J
-  else
-    vnew | wincmd L
+" Handles closing in cases where you would be the last window
+function! OnExit(code) abort
+  if a:code == 0
+    bd!
+    try
+      close
+    catch
+    endtry
   endif
-  call LayoutTerm(get(a:, 1, 0.5), orientation)
-  call termopen(a:cmd, {'on_exit': {j,c,e -> execute('if c == 0 | bd! | endif')}})
+endfunction
+
+" Open autoclosing terminal, with optional size and orien
+function! OpenTerm(cmd, ...) abort
+  let orien = get(a:, 2, 'h')
+  if orien == 'h' | new | wincmd J | else | vnew | wincmd L | endif
+  setf openterm
+  call termopen(a:cmd, {'on_exit': {_,c,__ -> OnExit(c)}})
+  call LayoutTerm(get(a:, 1, 0.5), orien)
 endfunction
 " }}}
 " Custom Commands {{{
