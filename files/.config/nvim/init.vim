@@ -60,7 +60,7 @@ Plug 'bkad/CamelCaseMotion'      | " Motions for inside camel case
 Plug 'godlygeek/tabular'         | " Alignment for tables etc
 Plug 'justinmk/vim-sneak'        | " Better search motions (s and S, z and Z)
 Plug 'kkoomen/vim-doge'          | " Docblock generator
-Plug 'romainl/vim-cool'          | " Awesome highlighting
+Plug 'romainl/vim-cool'          | " Awesome search highlighting
 Plug 'tomtom/tcomment_vim'       | " Better commenting
 Plug 'tpope/vim-repeat'          | " Improves repeats handling of Vim plugins
 Plug 'tpope/vim-surround'        | " Surround motions
@@ -72,7 +72,7 @@ Plug 'neoclide/coc-prettier', g:from_lock | " Prettier for COC
 " }}}
 " Tool Plugins {{{
 Plug 'dstein64/vim-startuptime'        | " Measure startuptime
-Plug 'duggiefresh/vim-easydir'         | " Crete files in dirs that don't exist
+Plug 'duggiefresh/vim-easydir'         | " Create files in dirs that don't exist
 Plug 'inkarkat/vim-ingo-library'       | " Spellcheck dependency
 Plug 'inkarkat/vim-spellcheck'         | " Spelling errors to quickfix list
 Plug 'junegunn/vim-peekaboo'           | " Peak at registers
@@ -107,21 +107,21 @@ Plug 'tmux-plugins/vim-tmux'       | " Syntax for Tmux conf files
 call plug#end()
 " }}}
 " General Settings {{{
-set encoding=UTF-8                          | " Default file encoding
-set undofile                                | " Enable undo persistence across sessions
-set splitbelow splitright                   | " Split defaults
-set noautochdir                             | " Don't change dirs automatically
-set clipboard=unnamed                       | " System clipboard
-set wildignore+=.git/,.DS_Store             | " Ignore patterns
-set noerrorbells                            | " No sound
-set timeoutlen=750                          | " Wait less time for mapped sequences
-set dictionary=/usr/share/dict/words        | " Set up a dictionary
-set hidden                                  | " Make buffers hidden then abandoned
+set encoding=UTF-8                    | " Default file encoding
+set undofile                          | " Enable undo persistence across sessions
+set splitbelow splitright             | " Split defaults
+set noautochdir                       | " Don't change dirs automatically
+set clipboard=unnamed                 | " System clipboard
+set wildignore+=.git/,.DS_Store       | " Ignore patterns
+set noerrorbells                      | " No sound
+set timeoutlen=750                    | " Wait less time for mapped sequences
+set dictionary=/usr/share/dict/words  | " Set up a dictionary
+set hidden                            | " Make buffers hidden then abandoned
 " }}}
 " Search Settings {{{
-set ignorecase                              | " Ignores case in search
-set smartcase                               | " Overrides ignore when capital exists
-set inccommand=split                        | " Displays incremental replacement
+set ignorecase       | " Ignores case in search
+set smartcase        | " Overrides ignore when capital exists
+set inccommand=split | " Displays incremental replacement
 " }}}
 " Edit Settings {{{
 set tabstop=4
@@ -156,7 +156,8 @@ highlight Comment gui=italic | " Make comments italic
 " General {{{
 " Open startify with leader s
 nnoremap <silent> <Leader>s :Startify<CR>
-nnoremap <silent> z= :call CustomFoldDigest()<CR>
+" Open custom digest for folds
+nnoremap <silent> <Leader>= :call CustomFoldDigest()<CR>
 " }}}
 " Search {{{
 " Open fuzzy files with leader \
@@ -199,10 +200,8 @@ nnoremap <silent> <Leader>- :split<CR>
 " Close {{{
 " Only window
 nnoremap <silent> <Leader>o :only<CR>
-" Close all by current window
-nnoremap <silent> <Leader>o <C-w>o<CR>
 " Close the current buffer
-nnoremap <silent> <Leader>x :bdelete<CR>
+nnoremap <silent> <Leader>x :close<CR>
 " Close all buffers
 nnoremap <silent> <Leader>z :%bdelete<CR>
 " }}}
