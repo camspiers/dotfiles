@@ -24,6 +24,7 @@ Plug 'psliwka/vim-smoothie'                | " Nicer scrolling
 Plug 'ryanoasis/vim-devicons'              | " Dev icons
 Plug 'vim-airline/vim-airline'             | " Airline
 Plug 'vim-airline/vim-airline-themes'      | " Status line
+Plug 'vim-scripts/folddigest.vim'          | " Visualize folds
 " }}}
 " Navigation/Search Plugins {{{
 Plug '/usr/local/opt/fzf'             | " Brew version of FZF
@@ -128,7 +129,7 @@ set shiftwidth=4
 set expandtab
 " }}}
 " Visual Settings {{{
-set foldtext=clean_fold#fold_text_minimal() | " Clean folds
+set foldtext=FoldText() | " Clean folds
 let &colorcolumn=join(range(121,999),",")   | " Add bulk color past 120
 set spelllang=en                            | " Spell checking
 set lazyredraw                              | " Don't redraw while performing a macro
@@ -155,6 +156,7 @@ highlight Comment gui=italic | " Make comments italic
 " General {{{
 " Open startify with leader s
 nnoremap <silent> <Leader>s :Startify<CR>
+nnoremap <silent> z= :call CustomFoldDigest()<CR>
 " }}}
 " Search {{{
 " Open fuzzy files with leader \
@@ -222,11 +224,11 @@ nnoremap <silent> <Leader>r :call CycleLineNumbering()<CR>
 " Toggle virtualedit
 nnoremap <silent> <Leader>v :call ToggleVirtualEdit()<CR>
 " Open project
-nnoremap <silent> <Leader>] :call OpenTerm('tmuxinator-fzf-start.sh', 0.33, 'v')<CR>
+nnoremap <silent> <Leader>] :call OpenTerm('tmuxinator-fzf-start.sh', 0.2, 'v')<CR>
 " Switch session
-nnoremap <silent> <Leader>[ :call OpenTerm('tmux-fzf-switch.sh', 0.33, 'v')<CR>
+nnoremap <silent> <Leader>[ :call OpenTerm('tmux-fzf-switch.sh', 0.2, 'v')<CR>
 " Kill session
-nnoremap <silent> <Leader>} :call OpenTerm('tmux-fzf-kill.sh', 0.33, 'v')<CR>
+nnoremap <silent> <Leader>} :call OpenTerm('tmux-fzf-kill.sh', 0.2, 'v')<CR>
 " Open lazygit
 nnoremap <silent> <Leader>' :call OpenTerm('lazygit', 0.8)<CR>
 " Open lazydocker
@@ -325,24 +327,29 @@ function! Preview(flags) abort
 endfunction
 
 " Executes ripgrep with a preview
-function! RgWithPreview(ignore, args, bang) abort
+function! Rg(ignore, args, bang) abort
   let command = RgCommand(a:ignore).' '.shellescape(a:args)
   call fzf#vim#grep(command, 1, Preview(RgPreviewFlags(a:ignore ? 'Grep' : 'Global Grep')), a:bang)
+  call LayoutTerm(0.8, 'h')
 endfunction
 
 " Defines search command for :Files
 let $FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --iglob "!.DS_Store" --iglob "!.git"'
 " Opens files search with preview
-function! FilesWithPreview(args, bang) abort
+function! Files(args, bang) abort
   call fzf#vim#files(a:args, Preview(PreviewFlags('Files')), a:bang)
+  call LayoutTerm(0.4, 'h')
 endfunction
 
-" Don't use status line in FZF
-augroup FzfConfig
-  autocmd!
-  autocmd! FileType fzf set laststatus=0 noshowmode noruler
-    \| autocmd BufLeave <buffer> set laststatus=2 showmode ruler
-augroup END
+function! Lines(args, bang) abort
+  call fzf#vim#lines(a:args, a:bang)
+  call LayoutTerm(0.8, 'h')
+endfunction
+
+function! Buffers(args, bang) abort
+  call fzf#vim#buffers(a:args, a:bang)
+  call LayoutTerm(0.2, 'h')
+endfunction
 
 " Default FZF options with bindings to match layout and select all + none
 let $FZF_DEFAULT_OPTS = '--layout=default' .
@@ -463,8 +470,21 @@ silent execute 'hi default DirvishGitIgnored guifg=NONE guibg=NONE gui=NONE cter
 silent execute 'hi default DirvishGitUntracked guifg=NONE guibg=NONE gui=NONE cterm=NONE ctermfg=NONE ctermbg=NONE'
 silent execute 'hi default link DirvishGitUntrackedDir DirvishPathTail'
 " }}}
+" FoldDigest {{{
+let folddigest_options = "nofoldclose,vertical,flexnumwidth"
+let folddigest_size = 40
+" }}}
 " }}}
 " Custom Tools {{{
+" For empty files it attempts to read a template. Not using au BufNewFile as the
+" filetype is being manually set by :New instead of via *.php
+function! NewTemplate() abort
+  if line('$') == 1 && col('$') == 1
+    silent! execute ":0r ~/.config/nvim/templates/".&ft
+    :$
+  endif
+endfunction
+
 " Cycle through relativenumber + number, number (only), and no numbering.
 function! CycleLineNumbering() abort
   execute {
@@ -517,6 +537,15 @@ function! RegisterVdebug() abort
   normal :<ESC>
   let g:vdebug_options.path_maps[server_root] = local_root
 endfunction
+
+function! CustomFoldDigest() abort
+  call FoldDigest()
+  setlocal listchars= nonumber norelativenumber
+endfunction
+
+function! FoldText() abort
+  return repeat("=", v:foldlevel - 1) . clean_fold#fold_text_minimal()
+endfunction
 " }}}
 " Terminal Handling {{{
 " Sets default location that neoterm opens
@@ -531,9 +560,10 @@ augroup TermHandling
   autocmd TermOpen * setlocal listchars= nonumber norelativenumber
     \ | startinsert
     \ | IndentGuidesDisable
+    \ | set laststatus=0 noshowmode noruler
+    \ | autocmd BufLeave <buffer> set laststatus=2 showmode ruler
   autocmd! TermClose * IndentGuidesEnable
   autocmd! FileType fzf,openterm tnoremap <Esc> <c-c>
-  autocmd! FileType fzf call LayoutTerm(0.5, 'h')
   autocmd! FileType neoterm call LayoutTerm(0.33, 'h')
 augroup END
 
@@ -548,14 +578,15 @@ function! LayoutTerm(size, orien) abort
     \ 'interval': 16,
     \ 'size': a:orien == 'h' ? &lines * a:size : &columns * a:size,
     \ 'start': GetTime(),
-    \ 'total': 250.0,
-    \ 'resize_cmd': a:orien == 'h' ? 'resize' : 'vertical resize'
+    \ 'total': a:size * 400.0,
+    \ 'resize_cmd': a:orien == 'h' ? 'resize' : 'vertical resize',
+    \ 'get_size': a:orien == 'h' ? {-> winheight(0)} : {-> winwidth(0)}
   \}
   execute timer.resize_cmd . ' 1'
   function! timer.step(timer)
     let time = min([float2nr(self.total), float2nr(GetTime() - self.start)])
     let size = float2nr(self.size * (time / self.total))
-    if size != winheight(0)
+    if size != self.get_size()
         execute self.resize_cmd . ' ' . string(size)
     endif
     if time < self.total
@@ -586,23 +617,19 @@ function! OpenTerm(cmd, ...) abort
 endfunction
 " }}}
 " Custom Commands {{{
-" New works particularly well with neoterm
+" FZF {{{
 command! -nargs=1 -complete=filetype New :new +setf\ <args>
+command! -bang -nargs=*                       Rg      call Rg(v:true, <q-args>, <bang>0)
+command! -bang -nargs=*                       Rgg     call Rg(v:false, <q-args>, <bang>0)
+command! -bang -nargs=? -complete=dir         Files   call Files(<q-args>, <bang>0)
+command! -bang -nargs=*                       Lines   call Lines(<q-args>, <bang>0)
+command! -bar -bang -nargs=? -complete=buffer Buffers call Buffers(<q-args>, <bang>0)
+" }}}
+" General {{{
+" New works particularly well with neoterm
 autocmd! FileType * call NewTemplate()
-" For empty files it attempts to read a template. Not using au BufNewFile as the
-" filetype is being manually set by :New instead of via *.php
-function! NewTemplate() abort
-  if line('$') == 1 && col('$') == 1
-    silent! execute ":0r ~/.config/nvim/templates/".&ft
-    :$
-  endif
-endfunction
-
-" Configures ripgrep with FZF, Rg for ignore, Rgg for no ignore, and Files
-command! -bang -nargs=* Rg call RgWithPreview(v:true, <q-args>, <bang>0)
-command! -bang -nargs=* Rgg call RgWithPreview(v:false, <q-args>, <bang>0)
-command! -bang -nargs=? -complete=dir Files call FilesWithPreview(<q-args>, <bang>0)
 " Sets up comand for prettier
 command! -nargs=0 Prettier :CocCommand prettier.formatFile
+" }}}
 " }}}
 " vim:fdm=marker
