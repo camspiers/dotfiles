@@ -2,33 +2,39 @@
 "# Neovim Configuration (Cam Spiers) ###########################################
 "###############################################################################
 " See README.md for more information
+
 " Plugins {{{
 " Start Vim plug and set the plugin directory
 call plug#begin(stdpath('config') . '/plugged')
 " Common command to install from lock file
 let g:from_lock = {'do': 'yarn install --frozen-lockfile'}
+
 " Defaults {{{
 Plug 'tpope/vim-sensible'             | " Sensible defaults
 Plug 'wincent/terminus'               | " Terminal integration improvements
 Plug 'christoomey/vim-tmux-navigator' | " Pane navigation
 " }}}
+
 " Search {{{
 Plug '/usr/local/opt/fzf'         | " Brew version of FZF
 Plug 'junegunn/fzf'               | " Main FZF plugin
 Plug 'junegunn/fzf.vim'           | " Fuzzy finding plugin
 Plug 'jesseleite/vim-agriculture' | " Rg options for FZF
 " }}}
+
 " Navigation {{{
 Plug 'justinmk/vim-dirvish'           | " Replacement for netrw
 Plug 'kristijanhusak/vim-dirvish-git' | " Git statuses in dirvish
 Plug 'tpope/vim-projectionist'        | " Navigation of related files
 Plug 'wincent/vcs-jump'               | " Jump to git things
 " }}}
+
 " Visual {{{
 Plug 'arecarn/vim-clean-fold'          | " Provides cleaning function for folds
 Plug 'blueyed/vim-diminactive'         | " Makes determining active window easier
 Plug 'chriskempson/base16-vim'         | " Base16 theme pack
 Plug 'edkolev/tmuxline.vim'            | " Makes tmux use airline colors
+Plug 'luochen1990/rainbow'             | " Parentheses with matching colors
 Plug 'mhinz/vim-signify'               | " Show git info in sidebar
 Plug 'mhinz/vim-startify'              | " Startup screen
 Plug 'nathanaelkane/vim-indent-guides' | " Provides indentation guides
@@ -39,6 +45,7 @@ Plug 'vim-airline/vim-airline-themes'  | " Status line
 Plug 'vim-scripts/folddigest.vim'      | " Visualize folds
 Plug 'wincent/loupe'                   | " Search context improvements
 " }}}
+
 " Editor {{{
 Plug 'neoclide/coc.nvim',     { 'do': { -> coc#util#install()}}
 Plug 'neoclide/coc-css',      g:from_lock | " CSS language server
@@ -60,10 +67,12 @@ Plug 'tomtom/tcomment_vim'                | " Better commenting
 Plug 'tpope/vim-repeat'                   | " Improves repeats handling of Vim plugins
 Plug 'tpope/vim-surround'                 | " Surround motions
 " }}}
+
 " Formatting {{{
 Plug 'editorconfig/editorconfig-vim'      | " Import tabs etc from editorconfig
 Plug 'neoclide/coc-prettier', g:from_lock | " Prettier for COC
 " }}}
+
 " Tools {{{
 Plug 'airblade/vim-rooter'             | " Auto-root setting
 Plug 'dstein64/vim-startuptime'        | " Measure startuptime
@@ -83,6 +92,7 @@ Plug 'tpope/vim-unimpaired'            | " Common mappings for many needs
 Plug 'vim-vdebug/vdebug', { 'on': [] } | " Debugging, loaded manually
 Plug 'iamcco/markdown-preview.nvim',  { 'do': 'cd app & yarn install'  } | " Markdown preview
 " }}}
+
 " Syntax {{{
 Plug 'bfontaine/Brewfile.vim'      | " Brewfile
 Plug 'ekalinin/dockerfile.vim'     | " Dockerfile
@@ -96,7 +106,9 @@ Plug 'tmux-plugins/vim-tmux'       | " Tmux conf
 " }}}
 call plug#end()
 " }}}
+
 " Settings {{{
+
 " General {{{
 set encoding=UTF-8                    | " Default file encoding
 set undofile                          | " Enable undo persistence across sessions
@@ -108,11 +120,13 @@ set noerrorbells                      | " No sound
 set dictionary=/usr/share/dict/words  | " Set up a dictionary
 set hidden                            | " Make buffers hidden then abandoned
 " }}}
+
 " Search {{{
 set ignorecase       | " Ignores case in search
 set smartcase        | " Overrides ignore when capital exists
 set inccommand=split | " Displays incremental replacement
 " }}}
+
 " Editor {{{
 set tabstop=2      | " Number of spaces a <Tab> is
 set shiftwidth=2   | " Number of spaces for indentation
@@ -120,6 +134,7 @@ set expandtab      | " Expand tab to spaces
 set spelllang=en   | " Spell checking
 set timeoutlen=750 | " Wait less time for mapped sequences
 " }}}
+
 " Visual {{{
 set foldtext=clean_fold#fold_text_minimal() | " Clean folds
 let &colorcolumn=join(range(121,999),",")   | " Add bulk color past 120
@@ -133,9 +148,14 @@ colorscheme base16-chalk                    | " Sets theme to chalk
 let g:airline_theme='base16_chalk'          | " Sets airline theme to chalk
 set termguicolors                           | " Enables 24bit colors
 highlight Comment gui=italic                | " Make comments italic
+set noshowmode                              | " Don't show mode changes
+
 " }}}
+
 " }}}
+
 " Mappings {{{
+
 " General {{{
 " Save file
 nnoremap <silent> <Leader>w :write<CR>
@@ -147,7 +167,10 @@ nmap     ga <Plug>(EasyAlign)
 nnoremap <silent> <Leader>s :Startify<CR>
 " Open custom digest for folds
 nnoremap <silent> <Leader>= :call CustomFoldDigest()<CR>
+" Make BS/DEL work as expected in visual modes (i.e. delete the selected text)...
+xmap <BS> x
 " }}}
+
 " Search {{{
 " Open fuzzy files with leader \
 nnoremap <silent> <Leader>\ :Files<CR>
@@ -168,6 +191,7 @@ vmap <Leader>/ <Plug>RgRawVisualSelection
 " Open ripgrep agriculture for cursor word
 nmap <Leader>* <Plug>RgRawWordUnderCursor
 " }}}
+
 " Switching {{{
 " Next buffer
 nnoremap <silent> <Tab> :bnext<CR>
@@ -178,6 +202,7 @@ nnoremap <silent> <Leader>a :A<CR>
 " Alternate file navigation vertical split
 nnoremap <silent> <Leader>v :AV<CR>
 " }}}
+
 " View Management {{{
 " Create vsplit
 nnoremap <silent> <Leader>\| :vsplit<CR>
@@ -197,6 +222,7 @@ nnoremap <Down>  :resize -2<CR>
 nnoremap <Left>  :vertical resize +2<CR>
 nnoremap <Right> :vertical resize -2<CR>
 " }}}
+
 " Conquer of Completion {{{
 " Get outline
 nnoremap <silent> <Leader>co :<C-u>CocList outline<CR>
@@ -207,7 +233,7 @@ nnoremap <silent> <Leader>cl :<C-u>CocList locationlist<CR>
 " Get available commands
 nnoremap <silent> <Leader>cc :<C-u>CocList commands<CR>
 " Rename
-nmap <leader>rn <Plug>(coc-rename)
+nmap <Leader>$ <Plug>(coc-rename)
 " Go to definition
 nmap gd <Plug>(coc-definition)
 " Go to type definition
@@ -223,18 +249,21 @@ nmap <silent> gi <Plug>(coc-implementation)
 " Get hint
 nnoremap <silent> gh :call CocActionAsync('doHover')<CR>
 " }}}
+
 " Neoterm {{{
 " Use gx{text-object} in normal mode
 nmap gx <Plug>(neoterm-repl-send)
 " Send selected contents in visual mode.
 xmap gx <Plug>(neoterm-repl-send)
 " }}}
+
 " Git {{{
 " Git commit messages
 nmap <silent> gm <Plug>(git-messenger)
 " Run :VcsJump diff
 nnoremap <Leader>+ :VcsJump diff<CR>
 " }}}
+
 " Fuzzy Finder {{{
 " Mapping selecting mappings
 nmap <leader><tab> <plug>(fzf-maps-n)
@@ -246,6 +275,7 @@ imap <c-x><c-f> <plug>(fzf-complete-path)
 imap <c-x><c-j> <plug>(fzf-complete-file-ag)
 imap <c-x><c-l> <plug>(fzf-complete-line)
 " }}}
+
 " Custom Tools {{{
 " Cycle line number modes
 nnoremap <silent> <Leader>r :call CycleLineNumbering()<CR>
@@ -272,44 +302,39 @@ nnoremap <silent> <Leader>~ :call RegisterVdebug()<CR>
 " Calls the custom start function that requests path map to be defined if not already run
 nnoremap <silent> <F5> :call StartVdebug()<CR>
 " }}}
+
 " }}}
+
 " Search Configuration {{{
 " Use agriculture as a global no hidden search
 let g:agriculture#rg_options = '--no-ignore --hidden'
 " Some ripgrep searching defaults
 function! RgCommand(ignore) abort
-  return 'rg' .
-    \ ' --hidden' .
-    \ ' --color ansi' .
-    \ ' --column' .
-    \ ' --line-number' .
-    \ ' --no-heading' .
-    \ ' --smart-case' .
-    \ ' ' . (a:ignore == 1 ? '--ignore' : '--no-ignore')
+  return join([
+    \ 'rg',
+    \ '--hidden', '--color ansi', '--column',
+    \ '--line-number', '--no-heading', '--smart-case',
+    \ (a:ignore == 1 ? '--ignore' : '--no-ignore')
+  \], ' ')
 endfunction
-
 " Adds prompt
 function! PreviewFlags(prompt) abort
   return ' --prompt="' . a:prompt . '> "'
 endfunction
-
 " Ensure that only the 4th column delimited by : is filtered by FZF
 function! RgPreviewFlags(prompt) abort
   return PreviewFlags(a:prompt) . ' --delimiter : --nth 4..'
 endfunction
-
 " Configs the preview
 function! Preview(flags) abort
   return fzf#vim#with_preview({'options': a:flags})
 endfunction
-
 " Executes ripgrep with a preview
 function! Rg(ignore, args, bang) abort
   let command = RgCommand(a:ignore).' '.shellescape(a:args)
   call fzf#vim#grep(command, 1, Preview(RgPreviewFlags(a:ignore ? 'Grep' : 'Global Grep')), a:bang)
   call AnimateWindow(0.8, 'h')
 endfunction
-
 " Defines search command for :Files
 let $FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --iglob "!.DS_Store" --iglob "!.git"'
 " Opens files search with preview
@@ -317,38 +342,47 @@ function! Files(args, bang) abort
   call fzf#vim#files(a:args, Preview(PreviewFlags('Files')), a:bang)
   call AnimateWindow(0.4, 'h')
 endfunction
-
+" Opens lines with animation
 function! Lines(args, bang) abort
   call fzf#vim#lines(a:args, a:bang)
   call AnimateWindow(0.8, 'h')
 endfunction
-
+" Opens buffers with animation
 function! Buffers(args, bang) abort
   call fzf#vim#buffers(a:args, a:bang)
   call AnimateWindow(0.2, 'h')
 endfunction
 
-" Default FZF options with bindings to match layout and select all + none
-let $FZF_DEFAULT_OPTS = '--layout=default' .
-  \ ' --info inline' .
-  \ ' --bind ctrl-a:select-all,ctrl-d:deselect-all,tab:toggle+up,shift-tab:toggle+down'
+let fzf_bindings = [
+  \ 'ctrl-a:select-all',
+  \ 'ctrl-d:deselect-all',
+  \ 'tab:toggle+up',
+  \ 'shift-tab:toggle+down'
+\ ]
 
+let fzf_opts = [
+  \ '--layout=default',
+  \ '--info inline',
+  \ '--bind ' . join(fzf_bindings, ',')
+\ ]
+" Default FZF options with bindings to match layout and select all + none
+let $FZF_DEFAULT_OPTS = join(fzf_opts, ' ')
 " Default location for FZF
 let g:fzf_layout = { 'down': '~40%' }
-
 " Ctrl-l populates arglist. Use with :cfdo. Only works in :Files
 let g:fzf_action = {
   \ 'ctrl-l': {l -> execute('args ' . join(map(l, {_, v -> fnameescape(v)}), ' '))},
   \ 'ctrl-x': 'split',
   \ 'ctrl-v': 'vsplit' }
 " }}}
+
 " Plugin Configuration {{{
+
 " Conquer of Completion {{{
 " See coc-settings.json for more configuration
 " Some servers have issues with backup files
 set nobackup
 set nowritebackup
-
 " Remove messages from in-completion menus
 set shortmess+=c
 " always show signcolumns
@@ -368,11 +402,14 @@ function! s:CheckBackSpace() abort
   return !col || getline('.')[col - 1] =~# '\s'
 endfunction
 " }}}
+
 " Neoterm {{{
+
 " Sets default location that neoterm opens
 let g:neoterm_default_mod = 'botright'
 let g:neoterm_autojump = 1
 " }}}
+
 " Tmuxline {{{
 " Configures tmux line, use :TmuxlineSnapshot ~/.tmux/theme.conf to save
 let g:tmuxline_preset = {
@@ -385,37 +422,44 @@ let g:tmuxline_preset = {
 " Don't show powerline separators in tmuxline
 let g:tmuxline_powerline_separators = 0
 " }}}
+
 " Rooter {{{
 " Use docker files and git
 let g:rooter_patterns = ['docker-compose.yml', '.git/']
 " Change silently
 let g:rooter_silent_chdir = 1
 " }}}
+
 " Dim Inactive {{{
 " Handle focus lost and gained events
 let g:diminactive_enable_focus = 1
 " Use color column to help with active/inactive
 let g:diminactive_use_colorcolumn = 1
 " }}}
+
 " Merge Tool {{{
 " 3-way merge
 let g:mergetool_layout = 'bmr'
 let g:mergetool_prefer_revision = 'local'
 " }}}
+
 " Markdown Preview {{{
 " Don't start markdown preview automatically, use :MarkdownPreview
 let g:mkdp_auto_start = 0
 " }}}
+
 " Camelcase Motion {{{
 " Sets up within word motions to use ,
 let g:camelcasemotion_key = ','
 " }}}
+
 " Startify {{{
 " Changes startify to have a different heading and only dirs
 let g:startify_lists = [ { 'type': 'dir', 'header': ['   Recent Files'] } ]
 " Don't change directories
 let g:startify_change_to_dir = 0
 " }}}
+
 " Indent Guides {{{
 let g:indent_guides_enable_on_vim_startup = 1
 let g:indent_guides_guide_size = 1
@@ -423,6 +467,7 @@ let g:indent_guides_start_level = 2
 let g:indent_guides_color_change_percent = 1
 let g:indent_guides_exclude_filetypes = ['help', 'startify', 'fzf', 'openterm', 'neoterm']
 " }}}
+
 " Dirvish {{{
 let g:dirvish_git_modified = 'guifg=#ddb26f ctermfg=3'
 let g:dirvish_git_added = 'guifg=#acc267 ctermfg=2'
@@ -435,11 +480,18 @@ silent execute 'hi default DirvishGitIgnored guifg=NONE guibg=NONE gui=NONE cter
 silent execute 'hi default DirvishGitUntracked guifg=NONE guibg=NONE gui=NONE cterm=NONE ctermfg=NONE ctermbg=NONE'
 silent execute 'hi default link DirvishGitUntrackedDir DirvishPathTail'
 " }}}
+
 " Fold Digest {{{
 let folddigest_options = "nofoldclose,vertical,flexnumwidth"
 let folddigest_size = 40
 " }}}
+
+" Rainbow Parenthesis {{{
+let g:rainbow_active = 1
 " }}}
+
+" }}}
+
 " Custom Tools {{{
 " PlugInstall and deletes plugins as needed
 function! ReloadPlugins() abort
@@ -453,7 +505,6 @@ function! ReloadPlugins() abort
     echo 'Deleted plugins: ' . join(map(delete, {_, dir-> fnamemodify(dir[:-2], ':t')}), ', ')
   endif
 endfunction
-
 " For empty files it attempts to read a template. Not using au BufNewFile as the
 " filetype is being manually set by :New instead of via *.php
 function! NewTemplate() abort
@@ -462,7 +513,6 @@ function! NewTemplate() abort
     :$
   endif
 endfunction
-
 " Cycle through relativenumber + number, number (only), and no numbering.
 function! CycleLineNumbering() abort
   execute {
@@ -471,7 +521,6 @@ function! CycleLineNumbering() abort
     \ '10': 'set norelativenumber | set nonumber',
     \ '11': 'set norelativenumber | set number' }[&number . &relativenumber]
 endfunction
-
 " Toggle virtualedit
 function! ToggleVirtualEdit() abort
   if &virtualedit == "all"
@@ -480,7 +529,6 @@ function! ToggleVirtualEdit() abort
     set virtualedit=all
   endif
 endfunction
-
 " Pomodoro timer, example: "25 5 25 5" will run a timer for 25mins, ding then
 " 5mins, ding, then 25mins ding, then 5mins, ding
 function! TogglePomodoro() abort
@@ -495,7 +543,6 @@ function! TogglePomodoro() abort
     call system("nohup vim-timer " . time . " &")
   endif
 endfunction
-
 " Start Vdebug and request pathmap if not yet set
 let g:register_vdebug = 0
 function! StartVdebug() abort
@@ -504,7 +551,6 @@ function! StartVdebug() abort
   endif
   python3 debugger.run()
 endfunction
-
 " Vdebug needs to be able to load files and understand how the file in the docker
 function! RegisterVdebug() abort
   call plug#load('vdebug')
@@ -515,35 +561,36 @@ function! RegisterVdebug() abort
   normal :<ESC>
   let g:vdebug_options.path_maps[server_root] = local_root
 endfunction
-
 " Opens FoldDigest with some default visual settings
 function! CustomFoldDigest() abort
   call FoldDigest()
   setlocal listchars= nonumber norelativenumber
 endfunction
-
 " Gets the current time as a float in milliseconds
 function! GetTime()
   return str2float(reltimestr(reltime())) * 1000.0
 endfunction
-
-" Lays out the current window 
-" size: % of width or height, dir: 'h' for horizontal and 'v' for vertical
-function! AnimateWindow(size, dir) abort
+" Lays out the current window
+" args:
+" size: % of width or height
+" dir: 'h' for horizontal and 'v' for vertical
+" interval: animation interval (default 16)
+" max_time: animation max time (default 400.0)
+function! AnimateWindow(size, dir, ...) abort
   let timer = {
-    \ 'interval': 16,
+    \ 'interval': get(a:, 3, 16),
     \ 'size': a:dir == 'h' ? &lines * a:size : &columns * a:size,
     \ 'start': GetTime(),
-    \ 'total': a:size * 400.0,
-    \ 'resize_cmd': a:dir == 'h' ? 'resize' : 'vertical resize',
-    \ 'get_size': a:dir == 'h' ? {-> winheight(0)} : {-> winwidth(0)}
+    \ 'total': a:size * get(a:, 4, 400.0),
+    \ 'cmd': a:dir == 'h' ? 'resize' : 'vertical resize',
+    \ 'win_size': a:dir == 'h' ? {-> winheight(0)} : {-> winwidth(0)}
   \}
-  execute timer.resize_cmd . ' 1'
+  execute timer.cmd . ' 1'
   function! timer.step(timer)
     let time = min([float2nr(self.total), float2nr(GetTime() - self.start)])
     let size = float2nr(self.size * (time / self.total))
-    if size != self.get_size()
-        execute self.resize_cmd . ' ' . string(size)
+    if size != self.win_size()
+      execute self.cmd . ' ' . string(size)
     endif
     if time < self.total
       call timer_start(self.interval, self.step)
@@ -551,27 +598,23 @@ function! AnimateWindow(size, dir) abort
   endfunction
   call timer.step(0)
 endfunction
-
 " Handles closing in cases where you would be the last window
 function! CloseWindowOnSuccess(code) abort
   if a:code == 0
-    bd!
-    try
-      close
-    catch
-    endtry
+    bdelete!
+    try | close | catch | endtry
   endif
 endfunction
-
 " Open autoclosing terminal, with optional size and dir
 function! OpenTerm(cmd, ...) abort
   let dir = get(a:, 2, 'h')
   if dir == 'h' | new | wincmd J | else | vnew | wincmd L | endif
   setf openterm
-  call termopen(a:cmd, {'on_exit': {_,c,__ -> CloseWindowOnSuccess(c)}})
+  call termopen(a:cmd, {'on_exit': {_,c -> CloseWindowOnSuccess(c)}})
   call AnimateWindow(get(a:, 1, 0.5), dir)
 endfunction
 " }}}
+
 " Commands {{{
 " Create new buffers of a particular filetype
 command! -nargs=1 -complete=filetype New :new +setf\ <args>
@@ -588,6 +631,7 @@ command! -bar -bang -nargs=? -complete=buffer Buffers call Buffers(<q-args>, <ba
 " Sets up command for prettier
 command! -nargs=0 Prettier :CocCommand prettier.formatFile
 " }}}
+
 " Auto Commands {{{
 " Uncategorized autocmds
 augroup General
@@ -600,8 +644,8 @@ augroup General
   autocmd! BufWritePost $MYVIMRC source $MYVIMRC | AirlineRefresh | call ReloadPlugins()
   " New works particularly well with neoterm
   autocmd! FileType * call NewTemplate()
+  autocmd! BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
 augroup END
-
 " Quit term buffer with ESC
 augroup TermHandling
   autocmd!
@@ -615,4 +659,5 @@ augroup TermHandling
   autocmd! FileType neoterm call AnimateWindow(0.33, 'h')
 augroup END
 " }}}
+
 " vim:fdm=marker
