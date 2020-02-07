@@ -25,13 +25,13 @@ Plug 'tpope/vim-projectionist'        | " Navigation of related files
 Plug 'wincent/vcs-jump'               | " Jump to git things
 " }}}
 " Visual {{{
-Plug 'arecarn/vim-clean-fold'          | " Improves folds
+Plug 'arecarn/vim-clean-fold'          | " Provides cleaning function for folds
 Plug 'blueyed/vim-diminactive'         | " Makes determining active window easier
-Plug 'chriskempson/base16-vim'         | " Themes
+Plug 'chriskempson/base16-vim'         | " Base16 theme pack
 Plug 'edkolev/tmuxline.vim'            | " Makes tmux use airline colors
 Plug 'mhinz/vim-signify'               | " Show git info in sidebar
 Plug 'mhinz/vim-startify'              | " Startup screen
-Plug 'nathanaelkane/vim-indent-guides' | " Show indentation
+Plug 'nathanaelkane/vim-indent-guides' | " Provides indentation guides
 Plug 'psliwka/vim-smoothie'            | " Nicer scrolling
 Plug 'ryanoasis/vim-devicons'          | " Dev icons
 Plug 'vim-airline/vim-airline'         | " Airline
