@@ -7,42 +7,39 @@
 call plug#begin(stdpath('config') . '/plugged')
 " Common command to install from lock file
 let g:from_lock = {'do': 'yarn install --frozen-lockfile'}
-" Defaults Plugins {{{
-Plug 'tpope/vim-sensible' | " Sensible defaults
-Plug 'wincent/terminus'   | " Terminal integration improvements
-" }}}
-" Visual Plugins {{{
-Plug 'arecarn/vim-clean-fold'              | " Improves folds
-Plug 'blueyed/vim-diminactive'             | " Makes determining active window easier
-Plug 'chriskempson/base16-vim'             | " Themes
-Plug 'edkolev/tmuxline.vim'                | " Makes tmux use airline colors
-Plug 'mhinz/vim-signify'                   | " Show git info in sidebar
-Plug 'mhinz/vim-startify'                  | " Startup screen
-Plug 'nathanaelkane/vim-indent-guides'     | " Show indentation
-Plug 'neoclide/coc-highlight', g:from_lock | " Displays hex colors in actual color
-Plug 'psliwka/vim-smoothie'                | " Nicer scrolling
-Plug 'ryanoasis/vim-devicons'              | " Dev icons
-Plug 'vim-airline/vim-airline'             | " Airline
-Plug 'vim-airline/vim-airline-themes'      | " Status line
-Plug 'vim-scripts/folddigest.vim'          | " Visualize folds
-" }}}
-" Navigation/Search Plugins {{{
-Plug '/usr/local/opt/fzf'             | " Brew version of FZF
-Plug 'airblade/vim-rooter'            | " Auto-root setting
+" Defaults {{{
+Plug 'tpope/vim-sensible'             | " Sensible defaults
+Plug 'wincent/terminus'               | " Terminal integration improvements
 Plug 'christoomey/vim-tmux-navigator' | " Pane navigation
-Plug 'fsharpasharp/vim-dirvinist'     | " Projections for dirvish
-Plug 'jesseleite/vim-agriculture'     | " Rg options for FZF
-Plug 'junegunn/fzf'                   | " Main FZF plugin
-Plug 'junegunn/fzf.vim'               | " Fuzzy finding plugin
+" }}}
+" Search {{{
+Plug '/usr/local/opt/fzf'         | " Brew version of FZF
+Plug 'junegunn/fzf'               | " Main FZF plugin
+Plug 'junegunn/fzf.vim'           | " Fuzzy finding plugin
+Plug 'jesseleite/vim-agriculture' | " Rg options for FZF
+" }}}
+" Navigation {{{
 Plug 'justinmk/vim-dirvish'           | " Replacement for netrw
 Plug 'kristijanhusak/vim-dirvish-git' | " Git statuses in dirvish
-Plug 'romainl/vim-qf'                 | " Improves the quickfix list
 Plug 'tpope/vim-projectionist'        | " Navigation of related files
-Plug 'wincent/loupe'                  | " Search context improvements
-Plug 'wincent/vcs-jump'               | " Jump to diffs
+Plug 'wincent/vcs-jump'               | " Jump to git things
 " }}}
-" Editor/Motion Plugins {{{
-" CoC Plugins {{{
+" Visual {{{
+Plug 'arecarn/vim-clean-fold'          | " Improves folds
+Plug 'blueyed/vim-diminactive'         | " Makes determining active window easier
+Plug 'chriskempson/base16-vim'         | " Themes
+Plug 'edkolev/tmuxline.vim'            | " Makes tmux use airline colors
+Plug 'mhinz/vim-signify'               | " Show git info in sidebar
+Plug 'mhinz/vim-startify'              | " Startup screen
+Plug 'nathanaelkane/vim-indent-guides' | " Show indentation
+Plug 'psliwka/vim-smoothie'            | " Nicer scrolling
+Plug 'ryanoasis/vim-devicons'          | " Dev icons
+Plug 'vim-airline/vim-airline'         | " Airline
+Plug 'vim-airline/vim-airline-themes'  | " Status line
+Plug 'vim-scripts/folddigest.vim'      | " Visualize folds
+Plug 'wincent/loupe'                   | " Search context improvements
+" }}}
+" Editor {{{
 Plug 'neoclide/coc.nvim',     { 'do': { -> coc#util#install()}}
 Plug 'neoclide/coc-css',      g:from_lock | " CSS language server
 Plug 'neoclide/coc-eslint',   g:from_lock | " Eslint integration
@@ -53,34 +50,29 @@ Plug 'neoclide/coc-pairs',    g:from_lock | " Auto-insert language aware pairs
 Plug 'neoclide/coc-snippets', g:from_lock | " Provides snippets
 Plug 'neoclide/coc-tslint',   g:from_lock | " Tslint integration
 Plug 'neoclide/coc-tsserver', g:from_lock | " TypeScript language server
+Plug 'AndrewRadev/splitjoin.vim'          | " Split and join programming lines
+Plug 'bkad/CamelCaseMotion'               | " Motions for inside camel case
+Plug 'junegunn/vim-easy-align'            | " Helps alignment
+Plug 'justinmk/vim-sneak'                 | " Better search motions (s and S, z and Z)
+Plug 'kkoomen/vim-doge'                   | " Docblock generator
+Plug 'romainl/vim-cool'                   | " Awesome search highlighting
+Plug 'tomtom/tcomment_vim'                | " Better commenting
+Plug 'tpope/vim-repeat'                   | " Improves repeats handling of Vim plugins
+Plug 'tpope/vim-surround'                 | " Surround motions
 " }}}
-" General {{{
-Plug 'AndrewRadev/splitjoin.vim' | " Split and join programming lines
-Plug 'bkad/CamelCaseMotion'      | " Motions for inside camel case
-Plug 'godlygeek/tabular'         | " Alignment for tables etc
-Plug 'justinmk/vim-sneak'        | " Better search motions (s and S, z and Z)
-Plug 'kkoomen/vim-doge'          | " Docblock generator
-Plug 'romainl/vim-cool'          | " Awesome search highlighting
-Plug 'tomtom/tcomment_vim'       | " Better commenting
-Plug 'tpope/vim-repeat'          | " Improves repeats handling of Vim plugins
-Plug 'tpope/vim-surround'        | " Surround motions
-" }}}
-" }}}
-" Code Formatting Plugins {{{
+" Formatting {{{
 Plug 'editorconfig/editorconfig-vim'      | " Import tabs etc from editorconfig
 Plug 'neoclide/coc-prettier', g:from_lock | " Prettier for COC
 " }}}
-" Tool Plugins {{{
+" Tools {{{
+Plug 'airblade/vim-rooter'             | " Auto-root setting
 Plug 'dstein64/vim-startuptime'        | " Measure startuptime
 Plug 'duggiefresh/vim-easydir'         | " Create files in dirs that don't exist
 Plug 'inkarkat/vim-ingo-library'       | " Spellcheck dependency
 Plug 'inkarkat/vim-spellcheck'         | " Spelling errors to quickfix list
 Plug 'junegunn/vim-peekaboo'           | " Peak at registers
 Plug 'kassio/neoterm'                  | " REPL integration
-Plug 'kshenoy/vim-signature'           | " Tools for working with marks
-Plug 'noahfrederick/vim-composer'      | " Adds composer command support
 Plug 'prashantjois/vim-slack'          | " Slack integration
-Plug 'rhysd/git-messenger.vim'         | " See git messages
 Plug 'samoshkin/vim-mergetool'         | " Merge tool for git
 Plug 'shumphrey/fugitive-gitlab.vim'   | " GitLab support
 Plug 'skanehira/docker-compose.vim'    | " Docker compose tools
@@ -89,24 +81,23 @@ Plug 'tpope/vim-eunuch'                | " UNIX tools
 Plug 'tpope/vim-fugitive'              | " Git tools
 Plug 'tpope/vim-unimpaired'            | " Common mappings for many needs
 Plug 'vim-vdebug/vdebug', { 'on': [] } | " Debugging, loaded manually
-Plug 'vimwiki/vimwiki'                 | " Personal wiki
-Plug 'xuhdev/vim-latex-live-preview', { 'for': 'tex' }                   | " Live Latex
 Plug 'iamcco/markdown-preview.nvim',  { 'do': 'cd app & yarn install'  } | " Markdown preview
 " }}}
-" Syntax Plugins {{{
-Plug 'bfontaine/Brewfile.vim'      | " Syntax for Brewfile
-Plug 'ekalinin/dockerfile.vim'     | " Syntax for Dockerfile
-Plug 'jwalton512/vim-blade'        | " Syntax for blade templates
-Plug 'leafgarland/typescript-vim'  | " Syntax for typescript
-Plug 'lilyball/vim-swift'          | " Syntax for swift
-Plug 'peitalin/vim-jsx-typescript' | " Syntax for typescript jsx, .tsx
-Plug 'phalkunz/vim-ss'             | " Syntax for SilverStripe templates
-Plug 'StanAngeloff/php.vim'        | " Syntax for PHP
-Plug 'tmux-plugins/vim-tmux'       | " Syntax for Tmux conf files
+" Syntax {{{
+Plug 'bfontaine/Brewfile.vim'      | " Brewfile
+Plug 'ekalinin/dockerfile.vim'     | " Dockerfile
+Plug 'jwalton512/vim-blade'        | " blade templates
+Plug 'leafgarland/typescript-vim'  | " typescript
+Plug 'lilyball/vim-swift'          | " swift
+Plug 'peitalin/vim-jsx-typescript' | " typescript jsx, .tsx
+Plug 'phalkunz/vim-ss'             | " SilverStripe templates
+Plug 'StanAngeloff/php.vim'        | " PHP
+Plug 'tmux-plugins/vim-tmux'       | " Tmux conf
 " }}}
 call plug#end()
 " }}}
-" General Settings {{{
+" Settings {{{
+" General {{{
 set encoding=UTF-8                    | " Default file encoding
 set undofile                          | " Enable undo persistence across sessions
 set splitbelow splitright             | " Split defaults
@@ -114,46 +105,44 @@ set noautochdir                       | " Don't change dirs automatically
 set clipboard=unnamed                 | " System clipboard
 set wildignore+=.git/,.DS_Store       | " Ignore patterns
 set noerrorbells                      | " No sound
-set timeoutlen=750                    | " Wait less time for mapped sequences
 set dictionary=/usr/share/dict/words  | " Set up a dictionary
 set hidden                            | " Make buffers hidden then abandoned
 " }}}
-" Search Settings {{{
+" Search {{{
 set ignorecase       | " Ignores case in search
 set smartcase        | " Overrides ignore when capital exists
 set inccommand=split | " Displays incremental replacement
 " }}}
-" Edit Settings {{{
-set tabstop=4
-set shiftwidth=4
-set expandtab
+" Editor {{{
+set tabstop=2      | " Number of spaces a <Tab> is
+set shiftwidth=2   | " Number of spaces for indentation
+set expandtab      | " Expand tab to spaces
+set spelllang=en   | " Spell checking
+set timeoutlen=750 | " Wait less time for mapped sequences
 " }}}
-" Visual Settings {{{
-set foldtext=FoldText() | " Clean folds
+" Visual {{{
+set foldtext=clean_fold#fold_text_minimal() | " Clean folds
 let &colorcolumn=join(range(121,999),",")   | " Add bulk color past 120
-set spelllang=en                            | " Spell checking
 set lazyredraw                              | " Don't redraw while performing a macro
 set novisualbell                            | " Don't display visual bell
 set showmatch                               | " Show matching braces
 set cursorline                              | " Enable current line indicator
 set number relativenumber                   | " Show line numbers
-" Visual Autocommands {{{
-" Put the quickfix window always at the bottom
-autocmd! FileType qf if (getwininfo(win_getid())[0].loclist != 1) | wincmd J | endif
-autocmd! FileType markdown setlocal spell    | " Turn spelling on for markdown files
+let base16colorspace=256                    | " Access colors present in 256 colorspace
+colorscheme base16-chalk                    | " Sets theme to chalk
+let g:airline_theme='base16_chalk'          | " Sets airline theme to chalk
+set termguicolors                           | " Enables 24bit colors
+highlight Comment gui=italic                | " Make comments italic
 " }}}
-" Colorscheme {{{
-" Set the colorscheme
-let base16colorspace=256
-colorscheme base16-chalk
-let g:airline_theme='base16_chalk'
-" }}}
-set termguicolors            | " Enables 24bit colors
-highlight Comment gui=italic | " Make comments italic
 " }}}
 " Mappings {{{
-" Navigation/Layout {{{
 " General {{{
+" Save file
+nnoremap <silent> <Leader>w :write<CR>
+" Easy align in visual mode
+xmap     ga <Plug>(EasyAlign)
+" Easy align in normal mode
+nmap     ga <Plug>(EasyAlign)
 " Open startify with leader s
 nnoremap <silent> <Leader>s :Startify<CR>
 " Open custom digest for folds
@@ -172,8 +161,6 @@ nnoremap <silent> <Leader>f :Rg<CR>
 nnoremap <silent> <Leader>g :Rgg<CR>
 " Open ripgrep for cursor word
 nnoremap <silent> <Leader>c :Rg <C-R><C-W><CR>
-" }}}
-" Specialized Search {{{
 " Open ripgrep agriculture
 nmap <Leader>/ <Plug>RgRawSearch
 " Open ripgrep agriculture for visual selection
@@ -181,7 +168,7 @@ vmap <Leader>/ <Plug>RgRawVisualSelection
 " Open ripgrep agriculture for cursor word
 nmap <Leader>* <Plug>RgRawWordUnderCursor
 " }}}
-" Switch Pane {{{
+" Switching {{{
 " Next buffer
 nnoremap <silent> <Tab> :bnext<CR>
 " Previous buffer
@@ -191,59 +178,26 @@ nnoremap <silent> <Leader>a :A<CR>
 " Alternate file navigation vertical split
 nnoremap <silent> <Leader>v :AV<CR>
 " }}}
-" Create Pane {{{
+" View Management {{{
 " Create vsplit
 nnoremap <silent> <Leader>\| :vsplit<CR>
 " Create hsplit
-nnoremap <silent> <Leader>- :split<CR>
-" }}}
-" Close {{{
+nnoremap <silent> <Leader>-  :split<CR>
 " Only window
-nnoremap <silent> <Leader>o :only<CR>
+nnoremap <silent> <Leader>o  :only<CR>
 " Close the current buffer
-nnoremap <silent> <Leader>x :close<CR>
+nnoremap <silent> <Leader>x    :close<CR>
+" Delete the current buffer
+nnoremap <silent> <Leader><BS> :bdelete!<CR>
 " Close all buffers
-nnoremap <silent> <Leader>z :%bdelete<CR>
-" }}}
-" Resize {{{
+nnoremap <silent> <Leader>z    :%bdelete<CR>
 " Remap arrows to resize
 nnoremap <Up>    :resize +2<CR>
 nnoremap <Down>  :resize -2<CR>
 nnoremap <Left>  :vertical resize +2<CR>
 nnoremap <Right> :vertical resize -2<CR>
 " }}}
-" }}}
-" General {{{
-" Save file
-nnoremap <silent> <Leader>w :write<CR>
-" }}}
-" Custom Tools {{{
-" Cycle line number modes
-nnoremap <silent> <Leader>r :call CycleLineNumbering()<CR>
-" Toggle virtualedit
-nnoremap <silent> <Leader>v :call ToggleVirtualEdit()<CR>
-" Open project
-nnoremap <silent> <Leader>] :call OpenTerm('tmuxinator-fzf-start.sh', 0.2, 'v')<CR>
-" Switch session
-nnoremap <silent> <Leader>[ :call OpenTerm('tmux-fzf-switch.sh', 0.2, 'v')<CR>
-" Kill session
-nnoremap <silent> <Leader>} :call OpenTerm('tmux-fzf-kill.sh', 0.2, 'v')<CR>
-" Open lazygit
-nnoremap <silent> <Leader>' :call OpenTerm('lazygit', 0.8)<CR>
-" Open lazydocker
-nnoremap <silent> <Leader>; :call OpenTerm('lazydocker', 0.8)<CR>
-" Open harvest
-nnoremap <silent> <Leader>h :call OpenTerm('hstarti', 0.1)<CR>
-" Open calendar + todo
-nnoremap <silent> <Leader>t :call OpenTerm('calcurse', 0.8)<CR>
-" Toggle pomodoro
-nnoremap <silent> <Leader>p :call TogglePomodoro()<CR>
-" Register Vdebug only need to call this when you need to change the roots
-nnoremap <silent> <Leader>~ :call RegisterVdebug()<CR>
-" Calls the custom start function that requests path map to be defined if not already run
-nnoremap <silent> <F5> :call StartVdebug()<CR>
-" }}}
-" CoC {{{
+" Conquer of Completion {{{
 " Get outline
 nnoremap <silent> <Leader>co :<C-u>CocList outline<CR>
 " Get symbols
@@ -252,8 +206,6 @@ nnoremap <silent> <Leader>cs :<C-u>CocList -I symbols<CR>
 nnoremap <silent> <Leader>cl :<C-u>CocList locationlist<CR>
 " Get available commands
 nnoremap <silent> <Leader>cc :<C-u>CocList commands<CR>
-" Restart server
-nnoremap <silent> <Leader>cR :<C-u>CocRestart<CR>
 " Rename
 nmap <leader>rn <Plug>(coc-rename)
 " Go to definition
@@ -283,7 +235,7 @@ nmap <silent> gm <Plug>(git-messenger)
 " Run :VcsJump diff
 nnoremap <Leader>+ :VcsJump diff<CR>
 " }}}
-" FZF {{{
+" Fuzzy Finder {{{
 " Mapping selecting mappings
 nmap <leader><tab> <plug>(fzf-maps-n)
 xmap <leader><tab> <plug>(fzf-maps-x)
@@ -293,6 +245,32 @@ imap <c-x><c-k> <plug>(fzf-complete-word)
 imap <c-x><c-f> <plug>(fzf-complete-path)
 imap <c-x><c-j> <plug>(fzf-complete-file-ag)
 imap <c-x><c-l> <plug>(fzf-complete-line)
+" }}}
+" Custom Tools {{{
+" Cycle line number modes
+nnoremap <silent> <Leader>r :call CycleLineNumbering()<CR>
+" Toggle virtualedit
+nnoremap <silent> <Leader>v :call ToggleVirtualEdit()<CR>
+" Open project
+nnoremap <silent> <Leader>] :call OpenTerm('tmuxinator-fzf-start.sh', 0.2, 'v')<CR>
+" Switch session
+nnoremap <silent> <Leader>[ :call OpenTerm('tmux-fzf-switch.sh', 0.2, 'v')<CR>
+" Kill session
+nnoremap <silent> <Leader>} :call OpenTerm('tmux-fzf-kill.sh', 0.2, 'v')<CR>
+" Open lazygit
+nnoremap <silent> <Leader>' :call OpenTerm('lazygit', 0.8)<CR>
+" Open lazydocker
+nnoremap <silent> <Leader>; :call OpenTerm('lazydocker', 0.8)<CR>
+" Open harvest
+nnoremap <silent> <Leader>h :call OpenTerm('hstarti', 0.1)<CR>
+" Open calendar + todo
+nnoremap <silent> <Leader>t :call OpenTerm('calcurse', 0.8)<CR>
+" Toggle pomodoro
+nnoremap <silent> <Leader>p :call TogglePomodoro()<CR>
+" Register Vdebug only need to call this when you need to change the roots
+nnoremap <silent> <Leader>~ :call RegisterVdebug()<CR>
+" Calls the custom start function that requests path map to be defined if not already run
+nnoremap <silent> <F5> :call StartVdebug()<CR>
 " }}}
 " }}}
 " Search Configuration {{{
@@ -329,7 +307,7 @@ endfunction
 function! Rg(ignore, args, bang) abort
   let command = RgCommand(a:ignore).' '.shellescape(a:args)
   call fzf#vim#grep(command, 1, Preview(RgPreviewFlags(a:ignore ? 'Grep' : 'Global Grep')), a:bang)
-  call LayoutTerm(0.8, 'h')
+  call AnimateWindow(0.8, 'h')
 endfunction
 
 " Defines search command for :Files
@@ -337,17 +315,17 @@ let $FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --iglob "!.DS_Store" -
 " Opens files search with preview
 function! Files(args, bang) abort
   call fzf#vim#files(a:args, Preview(PreviewFlags('Files')), a:bang)
-  call LayoutTerm(0.4, 'h')
+  call AnimateWindow(0.4, 'h')
 endfunction
 
 function! Lines(args, bang) abort
   call fzf#vim#lines(a:args, a:bang)
-  call LayoutTerm(0.8, 'h')
+  call AnimateWindow(0.8, 'h')
 endfunction
 
 function! Buffers(args, bang) abort
   call fzf#vim#buffers(a:args, a:bang)
-  call LayoutTerm(0.2, 'h')
+  call AnimateWindow(0.2, 'h')
 endfunction
 
 " Default FZF options with bindings to match layout and select all + none
@@ -364,7 +342,8 @@ let g:fzf_action = {
   \ 'ctrl-x': 'split',
   \ 'ctrl-v': 'vsplit' }
 " }}}
-" Coc Configuration {{{
+" Plugin Configuration {{{
+" Conquer of Completion {{{
 " See coc-settings.json for more configuration
 " Some servers have issues with backup files
 set nobackup
@@ -389,33 +368,10 @@ function! s:CheckBackSpace() abort
   return !col || getline('.')[col - 1] =~# '\s'
 endfunction
 " }}}
-" Plugin Configuration {{{
-" Git Messenger {{{
-" Go into popup when gm is triggered
-let g:git_messenger_always_into_popup = 1
-" Better background color
-hi link gitmessengerPopupNormal CursorLine
-" Don't use default mappings
-let g:git_messenger_no_default_mappings = 1
-" }}}
-" Dim Inactive {{{
-" Handle focus lost and gained events
-let g:diminactive_enable_focus = 1
-" Use color column to help with active/inactive
-let g:diminactive_use_colorcolumn = 1
-" }}}
-" Merge {{{
-" 3-way merge
-let g:mergetool_layout = 'bmr'
-let g:mergetool_prefer_revision = 'local'
-" }}}
-" Vimwiki {{{
-let g:vimwiki_list = [{'path': '~/vimwiki/', 'syntax': 'markdown', 'ext': '.md'}]
-let g:vimwiki_global_ext = 0
-" }}}
-" MarkdownPreview {{{
-" Don't start markdown preview automatically, use :MarkdownPreview
-let g:mkdp_auto_start = 0
+" Neoterm {{{
+" Sets default location that neoterm opens
+let g:neoterm_default_mod = 'botright'
+let g:neoterm_autojump = 1
 " }}}
 " Tmuxline {{{
 " Configures tmux line, use :TmuxlineSnapshot ~/.tmux/theme.conf to save
@@ -435,6 +391,21 @@ let g:rooter_patterns = ['docker-compose.yml', '.git/']
 " Change silently
 let g:rooter_silent_chdir = 1
 " }}}
+" Dim Inactive {{{
+" Handle focus lost and gained events
+let g:diminactive_enable_focus = 1
+" Use color column to help with active/inactive
+let g:diminactive_use_colorcolumn = 1
+" }}}
+" Merge Tool {{{
+" 3-way merge
+let g:mergetool_layout = 'bmr'
+let g:mergetool_prefer_revision = 'local'
+" }}}
+" Markdown Preview {{{
+" Don't start markdown preview automatically, use :MarkdownPreview
+let g:mkdp_auto_start = 0
+" }}}
 " Camelcase Motion {{{
 " Sets up within word motions to use ,
 let g:camelcasemotion_key = ','
@@ -445,17 +416,12 @@ let g:startify_lists = [ { 'type': 'dir', 'header': ['   Recent Files'] } ]
 " Don't change directories
 let g:startify_change_to_dir = 0
 " }}}
-" Indent guides {{{
+" Indent Guides {{{
 let g:indent_guides_enable_on_vim_startup = 1
 let g:indent_guides_guide_size = 1
 let g:indent_guides_start_level = 2
 let g:indent_guides_color_change_percent = 1
-" }}}
-" Airline {{{
-let g:airline#extensions#tabline#enabled = 0
-let g:airline#extensions#tabline#formatter = 'unique_tail'
-let g:airline#extensions#tabline#left_sep = ' '
-let g:airline#extensions#tabline#left_alt_sep = '|'
+let g:indent_guides_exclude_filetypes = ['help', 'startify', 'fzf', 'openterm', 'neoterm']
 " }}}
 " Dirvish {{{
 let g:dirvish_git_modified = 'guifg=#ddb26f ctermfg=3'
@@ -469,12 +435,25 @@ silent execute 'hi default DirvishGitIgnored guifg=NONE guibg=NONE gui=NONE cter
 silent execute 'hi default DirvishGitUntracked guifg=NONE guibg=NONE gui=NONE cterm=NONE ctermfg=NONE ctermbg=NONE'
 silent execute 'hi default link DirvishGitUntrackedDir DirvishPathTail'
 " }}}
-" FoldDigest {{{
+" Fold Digest {{{
 let folddigest_options = "nofoldclose,vertical,flexnumwidth"
 let folddigest_size = 40
 " }}}
 " }}}
 " Custom Tools {{{
+" PlugInstall and deletes plugins as needed
+function! ReloadPlugins() abort
+  let required = map(values(g:plugs), {_, plug -> plug.dir})
+  if len(filter(copy(required), {_, dir -> !isdirectory(dir)}))
+    PlugInstall
+  endif
+  let delete = filter(split(glob(g:plug_home.'/*/'), '\n'), {_, dir -> index(required, dir) == -1})
+  if len(delete)
+    call map(copy(delete), {_, dir -> delete(dir, 'rf')})
+    echo 'Deleted plugins: ' . join(map(delete, {_, dir-> fnamemodify(dir[:-2], ':t')}), ', ')
+  endif
+endfunction
+
 " For empty files it attempts to read a template. Not using au BufNewFile as the
 " filetype is being manually set by :New instead of via *.php
 function! NewTemplate() abort
@@ -537,49 +516,27 @@ function! RegisterVdebug() abort
   let g:vdebug_options.path_maps[server_root] = local_root
 endfunction
 
+" Opens FoldDigest with some default visual settings
 function! CustomFoldDigest() abort
   call FoldDigest()
   setlocal listchars= nonumber norelativenumber
 endfunction
 
-function! FoldText() abort
-  return repeat("=", v:foldlevel - 1) . clean_fold#fold_text_minimal()
-endfunction
-" }}}
-" Terminal Handling {{{
-" Sets default location that neoterm opens
-let g:neoterm_default_mod = 'botright'
-let g:neoterm_autojump = 1
-
-" Quit term buffer with ESC
-augroup TermHandling
-  autocmd!
-  " Turn off line numbers, listchars, auto enter insert mode and map esc to
-  " exit insert mode
-  autocmd TermOpen * setlocal listchars= nonumber norelativenumber
-    \ | startinsert
-    \ | IndentGuidesDisable
-    \ | set laststatus=0 noshowmode noruler
-    \ | autocmd BufLeave <buffer> set laststatus=2 showmode ruler
-  autocmd! TermClose * IndentGuidesEnable
-  autocmd! FileType fzf,openterm tnoremap <Esc> <c-c>
-  autocmd! FileType neoterm call LayoutTerm(0.33, 'h')
-augroup END
-
+" Gets the current time as a float in milliseconds
 function! GetTime()
   return str2float(reltimestr(reltime())) * 1000.0
 endfunction
 
-" Size is a percentage of the screen (in a direction), and orien is either 'h'
-" or 'v'
-function! LayoutTerm(size, orien) abort
+" Lays out the current window 
+" size: % of width or height, dir: 'h' for horizontal and 'v' for vertical
+function! AnimateWindow(size, dir) abort
   let timer = {
     \ 'interval': 16,
-    \ 'size': a:orien == 'h' ? &lines * a:size : &columns * a:size,
+    \ 'size': a:dir == 'h' ? &lines * a:size : &columns * a:size,
     \ 'start': GetTime(),
     \ 'total': a:size * 400.0,
-    \ 'resize_cmd': a:orien == 'h' ? 'resize' : 'vertical resize',
-    \ 'get_size': a:orien == 'h' ? {-> winheight(0)} : {-> winwidth(0)}
+    \ 'resize_cmd': a:dir == 'h' ? 'resize' : 'vertical resize',
+    \ 'get_size': a:dir == 'h' ? {-> winheight(0)} : {-> winwidth(0)}
   \}
   execute timer.resize_cmd . ' 1'
   function! timer.step(timer)
@@ -596,7 +553,7 @@ function! LayoutTerm(size, orien) abort
 endfunction
 
 " Handles closing in cases where you would be the last window
-function! OnExit(code) abort
+function! CloseWindowOnSuccess(code) abort
   if a:code == 0
     bd!
     try
@@ -606,29 +563,56 @@ function! OnExit(code) abort
   endif
 endfunction
 
-" Open autoclosing terminal, with optional size and orien
+" Open autoclosing terminal, with optional size and dir
 function! OpenTerm(cmd, ...) abort
-  let orien = get(a:, 2, 'h')
-  if orien == 'h' | new | wincmd J | else | vnew | wincmd L | endif
+  let dir = get(a:, 2, 'h')
+  if dir == 'h' | new | wincmd J | else | vnew | wincmd L | endif
   setf openterm
-  call termopen(a:cmd, {'on_exit': {_,c,__ -> OnExit(c)}})
-  call LayoutTerm(get(a:, 1, 0.5), orien)
+  call termopen(a:cmd, {'on_exit': {_,c,__ -> CloseWindowOnSuccess(c)}})
+  call AnimateWindow(get(a:, 1, 0.5), dir)
 endfunction
 " }}}
-" Custom Commands {{{
-" FZF {{{
+" Commands {{{
+" Create new buffers of a particular filetype
 command! -nargs=1 -complete=filetype New :new +setf\ <args>
+" Opens FZF + Ripgrep for not ignored files
 command! -bang -nargs=*                       Rg      call Rg(v:true, <q-args>, <bang>0)
+" Opens FZF + Ripgrep for all files
 command! -bang -nargs=*                       Rgg     call Rg(v:false, <q-args>, <bang>0)
+" Opens a file searcher
 command! -bang -nargs=? -complete=dir         Files   call Files(<q-args>, <bang>0)
+" Opens search of lines in open buffers
 command! -bang -nargs=*                       Lines   call Lines(<q-args>, <bang>0)
+" Opens buffer search
 command! -bar -bang -nargs=? -complete=buffer Buffers call Buffers(<q-args>, <bang>0)
-" }}}
-" General {{{
-" New works particularly well with neoterm
-autocmd! FileType * call NewTemplate()
-" Sets up comand for prettier
+" Sets up command for prettier
 command! -nargs=0 Prettier :CocCommand prettier.formatFile
 " }}}
+" Auto Commands {{{
+" Uncategorized autocmds
+augroup General
+  autocmd!
+  " Put the quickfix window always at the bottom
+  autocmd! FileType qf if (getwininfo(win_getid())[0].loclist != 1) | wincmd J | endif
+  " Enable spelling
+  autocmd! FileType markdown,txt setlocal spell
+  " sources init.vim on save
+  autocmd! BufWritePost $MYVIMRC source $MYVIMRC | AirlineRefresh | call ReloadPlugins()
+  " New works particularly well with neoterm
+  autocmd! FileType * call NewTemplate()
+augroup END
+
+" Quit term buffer with ESC
+augroup TermHandling
+  autocmd!
+  " Turn off line numbers, listchars, auto enter insert mode and map esc to
+  " exit insert mode
+  autocmd TermOpen * setlocal listchars= nonumber norelativenumber
+    \ | startinsert
+    \ | set laststatus=0 noshowmode noruler
+    \ | autocmd BufLeave <buffer> set laststatus=2 showmode ruler
+  autocmd! FileType fzf,openterm tnoremap <Esc> <c-c>
+  autocmd! FileType neoterm call AnimateWindow(0.33, 'h')
+augroup END
 " }}}
 " vim:fdm=marker
