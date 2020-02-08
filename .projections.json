@@ -1,0 +1,11 @@
+{
+  "files/.bash_profile": {
+    "alternate": "files/.bashrc"
+  },
+  "files/.bashrc": {
+    "alternate": "files/.inputrc"
+  },
+  "files/.inputrc": {
+    "alternate": "files/.bash_profile"
+  }
+}
