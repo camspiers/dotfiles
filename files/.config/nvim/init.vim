@@ -44,6 +44,7 @@ Plug 'vim-airline/vim-airline'         | " Airline
 Plug 'vim-airline/vim-airline-themes'  | " Status line
 Plug 'vim-scripts/folddigest.vim'      | " Visualize folds
 Plug 'wincent/loupe'                   | " Search context improvements
+Plug 'camspiers/animate.vim'           | " Animation plugin
 " }}}
 
 " Editor {{{
@@ -90,6 +91,7 @@ Plug 'tpope/vim-eunuch'                | " UNIX tools
 Plug 'tpope/vim-fugitive'              | " Git tools
 Plug 'tpope/vim-unimpaired'            | " Common mappings for many needs
 Plug 'vim-vdebug/vdebug', { 'on': [] } | " Debugging, loaded manually
+Plug 'antoyo/vim-licenses'             | " Generate Licences
 Plug 'iamcco/markdown-preview.nvim',  { 'do': 'cd app & yarn install'  } | " Markdown preview
 " }}}
 
@@ -217,10 +219,10 @@ nnoremap <silent> <Leader><BS> :bdelete!<CR>
 " Close all buffers
 nnoremap <silent> <Leader>z    :%bdelete<CR>
 " Remap arrows to resize
-nnoremap <Up>    :resize +2<CR>
-nnoremap <Down>  :resize -2<CR>
-nnoremap <Left>  :vertical resize +2<CR>
-nnoremap <Right> :vertical resize -2<CR>
+nnoremap <silent> <Up>    :call animate#window_delta_height(10)<CR>
+nnoremap <silent> <Down>  :call animate#window_delta_height(-10)<CR>
+nnoremap <silent> <Left>  :call animate#window_delta_width(10)<CR>
+nnoremap <silent> <Right> :call animate#window_delta_width(-10)<CR>
 " }}}
 
 " Conquer of Completion {{{
@@ -282,19 +284,19 @@ nnoremap <silent> <Leader>r :call CycleLineNumbering()<CR>
 " Toggle virtualedit
 nnoremap <silent> <Leader>v :call ToggleVirtualEdit()<CR>
 " Open project
-nnoremap <silent> <Leader>] :call OpenTerm('tmuxinator-fzf-start.sh', 0.2, 'v')<CR>
+nnoremap <silent> <Leader>] :call OpenVTerm('tmuxinator-fzf-start.sh', 0.2)<CR>
 " Switch session
-nnoremap <silent> <Leader>[ :call OpenTerm('tmux-fzf-switch.sh', 0.2, 'v')<CR>
+nnoremap <silent> <Leader>[ :call OpenVTerm('tmux-fzf-switch.sh', 0.2)<CR>
 " Kill session
-nnoremap <silent> <Leader>} :call OpenTerm('tmux-fzf-kill.sh', 0.2, 'v')<CR>
+nnoremap <silent> <Leader>} :call OpenVTerm('tmux-fzf-kill.sh', 0.2)<CR>
 " Open lazygit
-nnoremap <silent> <Leader>' :call OpenTerm('lazygit', 0.8)<CR>
+nnoremap <silent> <Leader>' :call OpenHTerm('lazygit', 0.8)<CR>
 " Open lazydocker
-nnoremap <silent> <Leader>; :call OpenTerm('lazydocker', 0.8)<CR>
+nnoremap <silent> <Leader>; :call OpenHTerm('lazydocker', 0.8)<CR>
 " Open harvest
-nnoremap <silent> <Leader>h :call OpenTerm('hstarti', 0.1)<CR>
+nnoremap <silent> <Leader>h :call OpenHTerm('hstarti', 0.1)<CR>
 " Open calendar + todo
-nnoremap <silent> <Leader>t :call OpenTerm('calcurse', 0.8)<CR>
+nnoremap <silent> <Leader>t :call OpenHTerm('calcurse', 0.8)<CR>
 " Toggle pomodoro
 nnoremap <silent> <Leader>p :call TogglePomodoro()<CR>
 " Register Vdebug only need to call this when you need to change the roots
@@ -333,24 +335,23 @@ endfunction
 function! Rg(ignore, args, bang) abort
   let command = RgCommand(a:ignore).' '.shellescape(a:args)
   call fzf#vim#grep(command, 1, Preview(RgPreviewFlags(a:ignore ? 'Grep' : 'Global Grep')), a:bang)
-  call AnimateWindow(0.8, 'h')
+  call animate#window_percent_height(0.8)
 endfunction
 " Defines search command for :Files
 let $FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --iglob "!.DS_Store" --iglob "!.git"'
 " Opens files search with preview
 function! Files(args, bang) abort
   call fzf#vim#files(a:args, Preview(PreviewFlags('Files')), a:bang)
-  call AnimateWindow(0.4, 'h')
 endfunction
 " Opens lines with animation
 function! Lines(args, bang) abort
   call fzf#vim#lines(a:args, a:bang)
-  call AnimateWindow(0.8, 'h')
+  call animate#window_percent_height(0.8)
 endfunction
 " Opens buffers with animation
 function! Buffers(args, bang) abort
   call fzf#vim#buffers(a:args, a:bang)
-  call AnimateWindow(0.2, 'h')
+  call animate#window_percent_height(0.2)
 endfunction
 
 let fzf_bindings = [
@@ -368,7 +369,10 @@ let fzf_opts = [
 " Default FZF options with bindings to match layout and select all + none
 let $FZF_DEFAULT_OPTS = join(fzf_opts, ' ')
 " Default location for FZF
-let g:fzf_layout = { 'down': '~40%' }
+" let g:fzf_layout = { 'window': 'new | wincmd J | resize 1' }
+let g:fzf_layout = {
+ \ 'window': 'new | wincmd J | resize 1 | call animate#window_percent_height(0.5)'
+\ }
 " Ctrl-l populates arglist. Use with :cfdo. Only works in :Files
 let g:fzf_action = {
   \ 'ctrl-l': {l -> execute('args ' . join(map(l, {_, v -> fnameescape(v)}), ' '))},
@@ -490,6 +494,11 @@ let folddigest_size = 40
 let g:rainbow_active = 1
 " }}}
 
+" Licences {{{
+let g:licenses_copyright_holders_name = 'Spiers, Cam <camspiers@gmail.com>'
+let g:licenses_authors_name = 'Spiers, Cam <camspiers@gmail.com>'
+let g:licenses_default_commands = ['mit']
+" }}}
 " }}}
 
 " Custom Tools {{{
@@ -566,38 +575,6 @@ function! CustomFoldDigest() abort
   call FoldDigest()
   setlocal listchars= nonumber norelativenumber
 endfunction
-" Gets the current time as a float in milliseconds
-function! GetTime()
-  return str2float(reltimestr(reltime())) * 1000.0
-endfunction
-" Lays out the current window
-" args:
-" size: % of width or height
-" dir: 'h' for horizontal and 'v' for vertical
-" interval: animation interval (default 16)
-" max_time: animation max time (default 400.0)
-function! AnimateWindow(size, dir, ...) abort
-  let timer = {
-    \ 'interval': get(a:, 3, 16),
-    \ 'size': a:dir == 'h' ? &lines * a:size : &columns * a:size,
-    \ 'start': GetTime(),
-    \ 'total': a:size * get(a:, 4, 400.0),
-    \ 'cmd': a:dir == 'h' ? 'resize' : 'vertical resize',
-    \ 'win_size': a:dir == 'h' ? {-> winheight(0)} : {-> winwidth(0)}
-  \}
-  execute timer.cmd . ' 1'
-  function! timer.step(timer)
-    let time = min([float2nr(self.total), float2nr(GetTime() - self.start)])
-    let size = float2nr(self.size * (time / self.total))
-    if size != self.win_size()
-      execute self.cmd . ' ' . string(size)
-    endif
-    if time < self.total
-      call timer_start(self.interval, self.step)
-    endif
-  endfunction
-  call timer.step(0)
-endfunction
 " Handles closing in cases where you would be the last window
 function! CloseWindowOnSuccess(code) abort
   if a:code == 0
@@ -606,12 +583,21 @@ function! CloseWindowOnSuccess(code) abort
   endif
 endfunction
 " Open autoclosing terminal, with optional size and dir
-function! OpenTerm(cmd, ...) abort
-  let dir = get(a:, 2, 'h')
-  if dir == 'h' | new | wincmd J | else | vnew | wincmd L | endif
+function! OpenTerm(cmd) abort
   setf openterm
   call termopen(a:cmd, {'on_exit': {_,c -> CloseWindowOnSuccess(c)}})
-  call AnimateWindow(get(a:, 1, 0.5), dir)
+endfunction
+" Open split with animation
+function! OpenHTerm(cmd, percent) abort
+  new | wincmd J | resize 1
+  call OpenTerm(a:cmd)
+  call animate#window_percent_height(a:percent)
+endfunction
+" Open vsplit with animation
+function! OpenVTerm(cmd, percent) abort
+  vnew | wincmd L | vertical resize 1
+  call OpenTerm(a:cmd)
+  call animate#window_percent_width(a:percent)
 endfunction
 " }}}
 
@@ -656,7 +642,7 @@ augroup TermHandling
     \ | set laststatus=0 noshowmode noruler
     \ | autocmd BufLeave <buffer> set laststatus=2 showmode ruler
   autocmd! FileType fzf,openterm tnoremap <Esc> <c-c>
-  autocmd! FileType neoterm call AnimateWindow(0.33, 'h')
+  autocmd! FileType neoterm resize 1 | call animate#window_percent_height(0.33)
 augroup END
 " }}}
 
