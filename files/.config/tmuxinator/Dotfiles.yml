@@ -2,4 +2,3 @@ name: Dotfiles
 root: ~/.dotfiles
 windows:
   - Editor: nvim
-  - Git: lazygit

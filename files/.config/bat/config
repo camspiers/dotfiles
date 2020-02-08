@@ -1,1 +1,3 @@
 --theme="base16-chalk"
+--style="changes,numbers"
+--color=always

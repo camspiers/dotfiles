@@ -3,7 +3,6 @@ root: ~/dev/capital-kiwi-content
 attach: false
 windows:
   - Editor: nvim
-  - Git: lazygit
   - Docker:
       - readydocker.sh
       - docker-compose up -d
