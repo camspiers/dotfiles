@@ -150,7 +150,6 @@ let g:airline_theme='base16_chalk'          | " Sets airline theme to chalk
 set termguicolors                           | " Enables 24bit colors
 highlight Comment gui=italic                | " Make comments italic
 set noshowmode                              | " Don't show mode changes
-
 " }}}
 
 " }}}
@@ -202,6 +201,11 @@ nnoremap <silent> <S-Tab> :bprevious<CR>
 nnoremap <silent> <Leader>a :A<CR>
 " Alternate file navigation vertical split
 nnoremap <silent> <Leader>v :AV<CR>
+" Overwride left and right swiching to handle width
+nnoremap <silent> <C-l> :wincmd l <bar> call EnsureWindowWidth()<CR>
+nnoremap <silent> <C-h> :wincmd h <bar> call EnsureWindowWidth()<CR>
+nnoremap <silent> <C-k> :wincmd k <bar> call EnsureWindowHeight()<CR>
+nnoremap <silent> <C-j> :wincmd j <bar> call EnsureWindowHeight()<CR>
 " }}}
 
 " View Management {{{
@@ -604,10 +608,7 @@ endfunction
 function! Vsplit() abort
   vsplit
   let wrap=&wrap
-  let width = winwidth(0)
-  set nowrap
-  vertical resize 1
-  call animate#window_absolute_width(width)
+  call NaturalVerticalDrawer()
   if wrap
     call timer_start(float2nr(g:animate#duration), {t->execute('set wrap')})
   endif
@@ -615,25 +616,38 @@ endfunction
 " Creates a split with animation
 function! Split() abort
   split
+  call NaturalDrawer()
+endfunction
+" Creates a drawer effect that respects the natural height
+function! NaturalDrawer() abort
   let height = winheight(0)
   resize 1
   call animate#window_absolute_height(height)
+endfunction
+" Creates a drawer effect that respects the natural width
+function! NaturalVerticalDrawer() abort
+  let width=winwidth(0)
+  vertical resize 1
+  call animate#window_absolute_width(width)
+endfunction
+" Ensures the window is at least 80 wide
+function! EnsureWindowWidth() abort
+  if winwidth(0) < 80
+    call animate#window_absolute_width(80)
+  endif
+endfunction
+" Ensures the window is at least 25 high
+function! EnsureWindowHeight() abort
+  if winheight(0) < 25
+    call animate#window_absolute_height(25)
+  endif
 endfunction
 " }}}
 
 " Commands {{{
 " Create new buffers of a particular filetype
-command! -nargs=1 -complete=filetype New :new +setf\ <args>
- \ <bar> wincmd J
- \ <bar> let height=winheight(0)
- \ <bar> resize 1
- \ <bar> call animate#window_absolute_height(height)
-
-command! -nargs=1 -complete=filetype Vnew :vnew +setf\ <args>
- \ <bar> wincmd L
- \ <bar> let width=winwidth(0)
- \ <bar> vertical resize 1
- \ <bar> call animate#window_absolute_width(width)
+command! -nargs=1 -complete=filetype New :new +setf\ <args> <bar> call NaturalDrawer()
+command! -nargs=1 -complete=filetype Vnew :vnew +setf\ <args> <bar> call NaturalVerticalDrawer()
 
 " Opens FZF + Ripgrep for not ignored files
 command! -bang -nargs=*                       Rg      call Rg(v:true, <q-args>, <bang>0)
@@ -673,10 +687,7 @@ augroup TermHandling
     \ | set laststatus=0 noshowmode noruler
     \ | autocmd BufLeave <buffer> set laststatus=2 showmode ruler
   autocmd! FileType fzf,openterm tnoremap <Esc> <c-c>
-  autocmd! FileType neoterm wincmd J
-   \ | let height = winheight(0)
-   \ | resize 1
-   \ | call animate#window_absolute_height(height)
+  autocmd! FileType neoterm wincmd J | call NaturalDrawer()
 augroup END
 " }}}
 
