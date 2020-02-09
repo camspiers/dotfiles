@@ -16,7 +16,6 @@ Plug 'christoomey/vim-tmux-navigator' | " Pane navigation
 " }}}
 
 " Search {{{
-Plug '/usr/local/opt/fzf'         | " Brew version of FZF
 Plug 'junegunn/fzf'               | " Main FZF plugin
 Plug 'junegunn/fzf.vim'           | " Fuzzy finding plugin
 Plug 'jesseleite/vim-agriculture' | " Rg options for FZF
@@ -207,9 +206,9 @@ nnoremap <silent> <Leader>v :AV<CR>
 
 " View Management {{{
 " Create vsplit
-nnoremap <silent> <Leader>\| :vsplit<CR>
+nnoremap <silent> <Leader>\| :call Vsplit()<CR>
 " Create hsplit
-nnoremap <silent> <Leader>-  :split<CR>
+nnoremap <silent> <Leader>-  :call Split()<CR>
 " Only window
 nnoremap <silent> <Leader>o  :only<CR>
 " Close the current buffer
@@ -219,10 +218,10 @@ nnoremap <silent> <Leader><BS> :bdelete!<CR>
 " Close all buffers
 nnoremap <silent> <Leader>z    :%bdelete<CR>
 " Remap arrows to resize
-nnoremap <silent> <Up>    :call animate#window_delta_height(10)<CR>
-nnoremap <silent> <Down>  :call animate#window_delta_height(-10)<CR>
-nnoremap <silent> <Left>  :call animate#window_delta_width(10)<CR>
-nnoremap <silent> <Right> :call animate#window_delta_width(-10)<CR>
+nnoremap <silent> <Up>    :call animate#window_delta_height(15)<CR>
+nnoremap <silent> <Down>  :call animate#window_delta_height(-15)<CR>
+nnoremap <silent> <Left>  :call animate#window_delta_width(30)<CR>
+nnoremap <silent> <Right> :call animate#window_delta_width(-30)<CR>
 " }}}
 
 " Conquer of Completion {{{
@@ -499,6 +498,9 @@ let g:licenses_copyright_holders_name = 'Spiers, Cam <camspiers@gmail.com>'
 let g:licenses_authors_name = 'Spiers, Cam <camspiers@gmail.com>'
 let g:licenses_default_commands = ['mit']
 " }}}
+" Animate {{{
+let g:animate#easing_func = 'animate#ease_out_quad'
+" }}}
 " }}}
 
 " Custom Tools {{{
@@ -579,7 +581,6 @@ endfunction
 function! CloseWindowOnSuccess(code) abort
   if a:code == 0
     bdelete!
-    try | close | catch | endtry
   endif
 endfunction
 " Open autoclosing terminal, with optional size and dir
@@ -599,11 +600,41 @@ function! OpenVTerm(cmd, percent) abort
   call OpenTerm(a:cmd)
   call animate#window_percent_width(a:percent)
 endfunction
+" Creates a vsplit in an animated fashion
+function! Vsplit() abort
+  vsplit
+  let wrap=&wrap
+  let width = winwidth(0)
+  set nowrap
+  vertical resize 1
+  call animate#window_absolute_width(width)
+  if wrap
+    call timer_start(float2nr(g:animate#duration), {t->execute('set wrap')})
+  endif
+endfunction
+" Creates a split with animation
+function! Split() abort
+  split
+  let height = winheight(0)
+  resize 1
+  call animate#window_absolute_height(height)
+endfunction
 " }}}
 
 " Commands {{{
 " Create new buffers of a particular filetype
 command! -nargs=1 -complete=filetype New :new +setf\ <args>
+ \ <bar> wincmd J
+ \ <bar> let height=winheight(0)
+ \ <bar> resize 1
+ \ <bar> call animate#window_absolute_height(height)
+
+command! -nargs=1 -complete=filetype Vnew :vnew +setf\ <args>
+ \ <bar> wincmd L
+ \ <bar> let width=winwidth(0)
+ \ <bar> vertical resize 1
+ \ <bar> call animate#window_absolute_width(width)
+
 " Opens FZF + Ripgrep for not ignored files
 command! -bang -nargs=*                       Rg      call Rg(v:true, <q-args>, <bang>0)
 " Opens FZF + Ripgrep for all files
@@ -642,7 +673,10 @@ augroup TermHandling
     \ | set laststatus=0 noshowmode noruler
     \ | autocmd BufLeave <buffer> set laststatus=2 showmode ruler
   autocmd! FileType fzf,openterm tnoremap <Esc> <c-c>
-  autocmd! FileType neoterm resize 1 | call animate#window_percent_height(0.33)
+  autocmd! FileType neoterm wincmd J
+   \ | let height = winheight(0)
+   \ | resize 1
+   \ | call animate#window_absolute_height(height)
 augroup END
 " }}}
 
