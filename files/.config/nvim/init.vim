@@ -202,10 +202,10 @@ nnoremap <silent> <Leader>a :A<CR>
 " Alternate file navigation vertical split
 nnoremap <silent> <Leader>v :AV<CR>
 " Overwride left and right swiching to handle width
-nnoremap <silent> <C-l> :wincmd l <bar> call EnsureWindowWidth()<CR>
-nnoremap <silent> <C-h> :wincmd h <bar> call EnsureWindowWidth()<CR>
-nnoremap <silent> <C-k> :wincmd k <bar> call EnsureWindowHeight()<CR>
-nnoremap <silent> <C-j> :wincmd j <bar> call EnsureWindowHeight()<CR>
+nnoremap <silent> <C-l> :wincmd l <bar> call EnsureWindowSize()<CR>
+nnoremap <silent> <C-h> :wincmd h <bar> call EnsureWindowSize()<CR>
+nnoremap <silent> <C-k> :wincmd k <bar> call EnsureWindowSize()<CR>
+nnoremap <silent> <C-j> :wincmd j <bar> call EnsureWindowSize()<CR>
 " }}}
 
 " View Management {{{
@@ -630,16 +630,18 @@ function! NaturalVerticalDrawer() abort
   vertical resize 1
   call animate#window_absolute_width(width)
 endfunction
-" Ensures the window is at least 80 wide
-function! EnsureWindowWidth() abort
-  if winwidth(0) < 80
-    call animate#window_absolute_width(80)
-  endif
-endfunction
-" Ensures the window is at least 25 high
-function! EnsureWindowHeight() abort
-  if winheight(0) < 25
-    call animate#window_absolute_height(25)
+" Ensures the window is at least 80 wide and 25 high
+function! EnsureWindowSize() abort
+  let min_width = 80
+  let min_height = 25
+  let width = winwidth(0) < min_width
+  let height = winheight(0) < min_height
+  if width && height
+    call animate#window_absolute(min_width, min_height)
+  elseif width
+    call animate#window_absolute_width(min_width)
+  elseif height
+    call animate#window_absolute_height(min_height)
   endif
 endfunction
 " }}}
