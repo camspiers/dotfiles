@@ -6,6 +6,7 @@
 " Plugins {{{
 " Start Vim plug and set the plugin directory
 call plug#begin(expand('~/.config/nvim/plugged'))
+
 " Common command to install from lock file
 let g:from_lock = {'do': 'yarn install --frozen-lockfile'}
 
@@ -496,6 +497,7 @@ let g:licenses_copyright_holders_name = 'Spiers, Cam <camspiers@gmail.com>'
 let g:licenses_authors_name = 'Spiers, Cam <camspiers@gmail.com>'
 let g:licenses_default_commands = ['mit']
 " }}}
+
 " Animate {{{
 let g:animate#easing_func = 'animate#ease_out_quad'
 " }}}
@@ -638,37 +640,53 @@ endfunction
 
 " Preping for plugin
 let g:ensure#animate = 1
-let g:ensure#height_content_minimum = 15
-let g:ensure#width_content_minimum = 80
+" Don't resize beyond 20 lines
+let g:ensure#height_resize_max = 20
+" Don't resize smaller than 5 lines
+let g:ensure#height_resize_min = 5
+" Don't resize larger than 80 cols
+let g:ensure#width_resize_max = 80
+" Don't resize smaller than 20 cols
+let g:ensure#width_resize_min = 20
+
+" Gets the appropriate size to resize to, if any
+function! EnsureGetSize(current, target, resize_min, resize_max) abort
+  if a:current > a:target
+    return a:current
+  endif
+  return max([
+    \ a:current,
+    \ min([
+      \ max([a:target, a:resize_min]),
+      \ a:resize_max,
+    \ ])
+  \ ])
+endfunction
 
 " Ensures the window is at least 80 wide and 25 high
 function! EnsureWindowSize() abort
-  " Don't shink the window, but don't make it bigger than it needs to be
-  " and adhere to threshold values
-  let width = max([
-    \ max([
-      \ winwidth(0),
-      \ g:ensure#width_content_minimum
-    \ ]),
-    \ min([
-      \ max(map(getline(1,'$'), {k,v->len(v)})),
-      \ g:ensure#width_content_minimum
-    \ ]) + &numberwidth,
-  \ ])
+  if g:disable_ensure_size
+    return
+  endif
 
-  let height = max([
-    \ max([
-      \ winheight(0),
-      \ g:ensure#height_content_minimum
-    \ ]),
-    \ min([
-      \ line('$'),
-      \ g:ensure#height_content_minimum
-    \ ])
-  \ ])
+  let width = EnsureGetSize(
+    \ winwidth(0),
+    \ max(map(getline(1,'$'), {k,v->len(v)})) + &numberwidth,
+    \ g:ensure#width_resize_min,
+    \ g:ensure#width_resize_max
+  \)
+
+  let height = EnsureGetSize(
+    \ winheight(0),
+    \ line('$'),
+    \ g:ensure#height_resize_min,
+    \ g:ensure#height_resize_max
+  \)
 
   if g:ensure#animate && exists('g:animate#loaded') && g:animate#loaded
-    call animate#window_absolute(width, height)
+    if ! animate#window_is_animating(winnr())
+      call animate#window_absolute(width, height)
+    endif
   else
     execute 'vertical resize ' . width
     execute 'resize ' . height
@@ -684,15 +702,13 @@ function! OpenQuickFix() abort
 endfunction
 
 " Create a buffer of the specified type
-function! NewFile(filetype) abort
-  new
-  execute 'setf ' . a:filetype
-  call NaturalDrawer()
-endfunction
-
-" Create a buffer of the specified type in a vertical split
-function! Vnewfile(filetype) abort
-  vnew
+function! NewFile(filetype, vertical) abort
+  let filetypes = getcompletion('', 'filetype')
+  if index(filetypes, a:filetype) == -1
+    echo a:filetype . " is not a valid filetype"
+    return
+  endif
+  if a:vertical | vnew | else | new | endif
   execute 'setf ' . a:filetype
   call NaturalVerticalDrawer()
 endfunction
@@ -713,14 +729,13 @@ endfunction
 " Configures an FZF window
 function! NewFZFWindow() abort
   new | wincmd J | resize 1
-  " This is a giant hack
-  call timer_start(10, function('RefreshFZFPreview'))
 endfunction
 
-" This is a giant hack
-function! RefreshFZFPreview(timer) abort
+function! RefreshFZFPreview() abort
   if has('nvim')
-    call chansend(b:terminal_job_id, "\<C-p>\<C-p>")
+    if g:last_open_term_id
+      call timer_start(20, {t->chansend(g:last_open_term_id, "\<C-p>\<C-p>")})
+    endif
   else
     call term_sendkeys(bufnr('%'), "\<C-p>\<C-p>")
   endif
@@ -729,8 +744,8 @@ endfunction
 
 " Commands {{{
 " Create new buffers of a particular filetype
-command! -nargs=1 -complete=filetype New :call NewFile(<f-args>)
-command! -nargs=1 -complete=filetype Vnew :call Vnewfile(<f-args>)
+command! -nargs=1 -complete=filetype New :call NewFile(<f-args>, v:false)
+command! -nargs=1 -complete=filetype Vnew :call NewFile(<f-args>, v:true)
 
 " Opens FZF + Ripgrep for not ignored files
 command! -bang -nargs=*                       Rg      call Rg(v:true, <q-args>, <bang>0)
@@ -761,7 +776,17 @@ augroup General
   " Go to last opened position
   autocmd! BufReadPost * call GoToLastPosition()
   " Ensure windows have resonable sizes
+  " But don't perform at certain times, like term open and new file
+  let g:disable_ensure_size = 0
+  autocmd! WinNew * let g:disable_ensure_size = 1
+  if has('nvim')
+    autocmd! TermOpen * let g:disable_ensure_size = 1
+  endif
   autocmd! WinEnter * call EnsureWindowSize()
+  autocmd! WinNew * let g:disable_ensure_size = 0
+  if has('nvim')
+    autocmd! TermOpen * let g:disable_ensure_size = 0
+  endif
 augroup END
 
 " Quit term buffer with ESC
@@ -774,9 +799,11 @@ augroup TermHandling
       \ | startinsert
       \ | set laststatus=0 noshowmode noruler
       \ | autocmd BufLeave <buffer> set laststatus=2 showmode ruler
+    autocmd TermOpen * let g:last_open_term_id = b:terminal_job_id
   endif
   " Define ESC to be SIGTERM
   autocmd! FileType fzf,openterm tnoremap <Esc> <c-c>
+  autocmd! FileType fzf call RefreshFZFPreview()
   autocmd! FileType neoterm wincmd J | call NaturalDrawer()
 augroup END
 " }}}
