@@ -5,7 +5,7 @@
 
 " Plugins {{{
 " Start Vim plug and set the plugin directory
-call plug#begin(stdpath('config') . '/plugged')
+call plug#begin(expand('~/.config/nvim/plugged'))
 " Common command to install from lock file
 let g:from_lock = {'do': 'yarn install --frozen-lockfile'}
 
@@ -33,7 +33,6 @@ Plug 'arecarn/vim-clean-fold'          | " Provides cleaning function for folds
 Plug 'blueyed/vim-diminactive'         | " Makes determining active window easier
 Plug 'chriskempson/base16-vim'         | " Base16 theme pack
 Plug 'edkolev/tmuxline.vim'            | " Makes tmux use airline colors
-Plug 'luochen1990/rainbow'             | " Parentheses with matching colors
 Plug 'mhinz/vim-signify'               | " Show git info in sidebar
 Plug 'mhinz/vim-startify'              | " Startup screen
 Plug 'nathanaelkane/vim-indent-guides' | " Provides indentation guides
@@ -125,7 +124,9 @@ set hidden                            | " Make buffers hidden then abandoned
 " Search {{{
 set ignorecase       | " Ignores case in search
 set smartcase        | " Overrides ignore when capital exists
-set inccommand=split | " Displays incremental replacement
+if has('nvim')
+  set inccommand=split | " Displays incremental replacement
+endif
 " }}}
 
 " Editor {{{
@@ -201,11 +202,6 @@ nnoremap <silent> <S-Tab> :bprevious<CR>
 nnoremap <silent> <Leader>a :A<CR>
 " Alternate file navigation vertical split
 nnoremap <silent> <Leader>v :AV<CR>
-" Overwride left and right swiching to handle width
-nnoremap <silent> <C-l> :wincmd l <bar> call EnsureWindowSize()<CR>
-nnoremap <silent> <C-h> :wincmd h <bar> call EnsureWindowSize()<CR>
-nnoremap <silent> <C-k> :wincmd k <bar> call EnsureWindowSize()<CR>
-nnoremap <silent> <C-j> :wincmd j <bar> call EnsureWindowSize()<CR>
 " }}}
 
 " View Management {{{
@@ -345,6 +341,7 @@ let $FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --iglob "!.DS_Store" -
 " Opens files search with preview
 function! Files(args, bang) abort
   call fzf#vim#files(a:args, Preview(PreviewFlags('Files')), a:bang)
+  call animate#window_percent_height(0.5)
 endfunction
 " Opens lines with animation
 function! Lines(args, bang) abort
@@ -361,7 +358,8 @@ let fzf_bindings = [
   \ 'ctrl-a:select-all',
   \ 'ctrl-d:deselect-all',
   \ 'tab:toggle+up',
-  \ 'shift-tab:toggle+down'
+  \ 'shift-tab:toggle+down',
+  \ 'ctrl-p:toggle-preview'
 \ ]
 
 let fzf_opts = [
@@ -372,10 +370,10 @@ let fzf_opts = [
 " Default FZF options with bindings to match layout and select all + none
 let $FZF_DEFAULT_OPTS = join(fzf_opts, ' ')
 " Default location for FZF
-" let g:fzf_layout = { 'window': 'new | wincmd J | resize 1' }
 let g:fzf_layout = {
- \ 'window': 'new | wincmd J | resize 1 | call animate#window_percent_height(0.5)'
+ \ 'window': 'call NewFZFWindow()'
 \ }
+
 " Ctrl-l populates arglist. Use with :cfdo. Only works in :Files
 let g:fzf_action = {
   \ 'ctrl-l': {l -> execute('args ' . join(map(l, {_, v -> fnameescape(v)}), ' '))},
@@ -493,10 +491,6 @@ let folddigest_options = "nofoldclose,vertical,flexnumwidth"
 let folddigest_size = 40
 " }}}
 
-" Rainbow Parenthesis {{{
-let g:rainbow_active = 1
-" }}}
-
 " Licences {{{
 let g:licenses_copyright_holders_name = 'Spiers, Cam <camspiers@gmail.com>'
 let g:licenses_authors_name = 'Spiers, Cam <camspiers@gmail.com>'
@@ -589,25 +583,36 @@ function! CloseWindowOnSuccess(code) abort
 endfunction
 " Open autoclosing terminal, with optional size and dir
 function! OpenTerm(cmd) abort
+  if has('nvim')
+    call termopen(a:cmd, {'on_exit': {_,c -> CloseWindowOnSuccess(c)}})
+  else
+    call term_start(a:cmd, {'exit_cb': {_,c -> CloseWindowOnSuccess(c)}})
+  endif
   setf openterm
-  call termopen(a:cmd, {'on_exit': {_,c -> CloseWindowOnSuccess(c)}})
 endfunction
 " Open split with animation
 function! OpenHTerm(cmd, percent) abort
-  new | wincmd J | resize 1
+  if has('nvim')
+    new
+  endif
   call OpenTerm(a:cmd)
+  wincmd J | resize 1
   call animate#window_percent_height(a:percent)
 endfunction
 " Open vsplit with animation
 function! OpenVTerm(cmd, percent) abort
-  vnew | wincmd L | vertical resize 1
+  if has('nvim')
+    vnew
+  endif
   call OpenTerm(a:cmd)
+  wincmd L | vertical resize 1
   call animate#window_percent_width(a:percent)
 endfunction
 " Creates a vsplit in an animated fashion
 function! Vsplit() abort
   vsplit
   let wrap=&wrap
+  set nowrap
   call NaturalVerticalDrawer()
   if wrap
     call timer_start(float2nr(g:animate#duration), {t->execute('set wrap')})
@@ -626,30 +631,106 @@ function! NaturalDrawer() abort
 endfunction
 " Creates a drawer effect that respects the natural width
 function! NaturalVerticalDrawer() abort
-  let width=winwidth(0)
+  let width = winwidth(0)
   vertical resize 1
   call animate#window_absolute_width(width)
 endfunction
+
+" Preping for plugin
+let g:ensure#animate = 1
+let g:ensure#height_content_minimum = 15
+let g:ensure#width_content_minimum = 80
+
 " Ensures the window is at least 80 wide and 25 high
 function! EnsureWindowSize() abort
-  let min_width = 80
-  let min_height = 25
-  let width = winwidth(0) < min_width
-  let height = winheight(0) < min_height
-  if width && height
-    call animate#window_absolute(min_width, min_height)
-  elseif width
-    call animate#window_absolute_width(min_width)
-  elseif height
-    call animate#window_absolute_height(min_height)
+  " Don't shink the window, but don't make it bigger than it needs to be
+  " and adhere to threshold values
+  let width = max([
+    \ max([
+      \ winwidth(0),
+      \ g:ensure#width_content_minimum
+    \ ]),
+    \ min([
+      \ max(map(getline(1,'$'), {k,v->len(v)})),
+      \ g:ensure#width_content_minimum
+    \ ]) + &numberwidth,
+  \ ])
+
+  let height = max([
+    \ max([
+      \ winheight(0),
+      \ g:ensure#height_content_minimum
+    \ ]),
+    \ min([
+      \ line('$'),
+      \ g:ensure#height_content_minimum
+    \ ])
+  \ ])
+
+  if g:ensure#animate && exists('g:animate#loaded') && g:animate#loaded
+    call animate#window_absolute(width, height)
+  else
+    execute 'vertical resize ' . width
+    execute 'resize ' . height
+  endif
+endfunction
+
+" Animate the quickfix and ensure it is at the bottom
+function! OpenQuickFix() abort
+  if getwininfo(win_getid())[0].loclist != 1
+    wincmd J
+  endif
+  call NaturalDrawer()
+endfunction
+
+" Create a buffer of the specified type
+function! NewFile(filetype) abort
+  new
+  execute 'setf ' . a:filetype
+  call NaturalDrawer()
+endfunction
+
+" Create a buffer of the specified type in a vertical split
+function! Vnewfile(filetype) abort
+  vnew
+  execute 'setf ' . a:filetype
+  call NaturalVerticalDrawer()
+endfunction
+
+" Go to the last cusor position
+function! GoToLastPosition() abort
+  if line("'\"") > 1 && line("'\"") <= line("$")
+    normal! g`"
+  endif
+endfunction
+
+" Perform som actions when vim config is written
+function! OnVimConfigWrite() abort
+  AirlineRefresh
+  call ReloadPlugins()
+endfunction
+
+" Configures an FZF window
+function! NewFZFWindow() abort
+  new | wincmd J | resize 1
+  " This is a giant hack
+  call timer_start(10, function('RefreshFZFPreview'))
+endfunction
+
+" This is a giant hack
+function! RefreshFZFPreview(timer) abort
+  if has('nvim')
+    call chansend(b:terminal_job_id, "\<C-p>\<C-p>")
+  else
+    call term_sendkeys(bufnr('%'), "\<C-p>\<C-p>")
   endif
 endfunction
 " }}}
 
 " Commands {{{
 " Create new buffers of a particular filetype
-command! -nargs=1 -complete=filetype New :new +setf\ <args> <bar> call NaturalDrawer()
-command! -nargs=1 -complete=filetype Vnew :vnew +setf\ <args> <bar> call NaturalVerticalDrawer()
+command! -nargs=1 -complete=filetype New :call NewFile(<f-args>)
+command! -nargs=1 -complete=filetype Vnew :call Vnewfile(<f-args>)
 
 " Opens FZF + Ripgrep for not ignored files
 command! -bang -nargs=*                       Rg      call Rg(v:true, <q-args>, <bang>0)
@@ -670,24 +751,31 @@ command! -nargs=0 Prettier :CocCommand prettier.formatFile
 augroup General
   autocmd!
   " Put the quickfix window always at the bottom
-  autocmd! FileType qf if (getwininfo(win_getid())[0].loclist != 1) | wincmd J | endif
+  autocmd! FileType qf call OpenQuickFix()
   " Enable spelling
   autocmd! FileType markdown,txt setlocal spell
-  " sources init.vim on save
-  autocmd! BufWritePost $MYVIMRC source $MYVIMRC | AirlineRefresh | call ReloadPlugins()
-  " New works particularly well with neoterm
+  " Auto sources vim files on save
+  autocmd! BufWritePost *.vim source % | call OnVimConfigWrite()
+  " Reads templates into empty files
   autocmd! FileType * call NewTemplate()
-  autocmd! BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
+  " Go to last opened position
+  autocmd! BufReadPost * call GoToLastPosition()
+  " Ensure windows have resonable sizes
+  autocmd! WinEnter * call EnsureWindowSize()
 augroup END
+
 " Quit term buffer with ESC
 augroup TermHandling
   autocmd!
   " Turn off line numbers, listchars, auto enter insert mode and map esc to
   " exit insert mode
-  autocmd TermOpen * setlocal listchars= nonumber norelativenumber
-    \ | startinsert
-    \ | set laststatus=0 noshowmode noruler
-    \ | autocmd BufLeave <buffer> set laststatus=2 showmode ruler
+  if has('nvim')
+    autocmd TermOpen * setlocal listchars= nonumber norelativenumber
+      \ | startinsert
+      \ | set laststatus=0 noshowmode noruler
+      \ | autocmd BufLeave <buffer> set laststatus=2 showmode ruler
+  endif
+  " Define ESC to be SIGTERM
   autocmd! FileType fzf,openterm tnoremap <Esc> <c-c>
   autocmd! FileType neoterm wincmd J | call NaturalDrawer()
 augroup END
