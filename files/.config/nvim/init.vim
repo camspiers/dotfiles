@@ -140,8 +140,7 @@ set timeoutlen=750 | " Wait less time for mapped sequences
 
 " Visual {{{
 set foldtext=clean_fold#fold_text_minimal() | " Clean folds
-let &colorcolumn=join(range(121,999),",")   | " Add bulk color past 120
-set lazyredraw                              | " Don't redraw while performing a macro
+let &colorcolumn="81,121"                   | " Add indicator for 80 and 120
 set novisualbell                            | " Don't display visual bell
 set showmatch                               | " Show matching braces
 set cursorline                              | " Enable current line indicator
@@ -180,6 +179,8 @@ nnoremap <silent> <Leader>\ :Files<CR>
 nnoremap <silent> <Leader>l :Lines<CR>
 " Open fuzzy buffers with leader b
 nnoremap <silent> <Leader>b :Buffers<CR>
+" Open fuzzy buffers with leader b
+nnoremap <silent> <Leader><Space> :Windows<CR>
 " Open ripgrep
 nnoremap <silent> <Leader>f :Rg<CR>
 " Open global grep
@@ -355,6 +356,12 @@ function! Buffers(args, bang) abort
   call animate#window_percent_height(0.2)
 endfunction
 
+" Opens buffers with animation
+function! Windows(bang) abort
+  call fzf#vim#windows(a:bang)
+  call animate#window_percent_height(0.2)
+endfunction
+
 let fzf_bindings = [
   \ 'ctrl-a:select-all',
   \ 'ctrl-d:deselect-all',
@@ -383,6 +390,14 @@ let g:fzf_action = {
 " }}}
 
 " Plugin Configuration {{{
+
+" Airline {{{
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#left_sep = ' '
+let g:airline#extensions#tabline#left_alt_sep = '|'
+let g:airline#extensions#tabline#formatter = 'unique_tail'
+let g:webdevicons_enable_airline_tabline = 0
+" }}}
 
 " Conquer of Completion {{{
 " See coc-settings.json for more configuration
@@ -414,6 +429,7 @@ endfunction
 " Sets default location that neoterm opens
 let g:neoterm_default_mod = 'botright'
 let g:neoterm_autojump = 1
+let g:neoterm_direct_open_repl = 1
 " }}}
 
 " Tmuxline {{{
@@ -580,7 +596,12 @@ endfunction
 " Handles closing in cases where you would be the last window
 function! CloseWindowOnSuccess(code) abort
   if a:code == 0
+    let current_window = winnr()
     bdelete!
+    " Handles special case where window remains due startify
+    if winnr() == current_window
+      close
+    endif
   endif
 endfunction
 " Open autoclosing terminal, with optional size and dir
@@ -731,9 +752,13 @@ function! NewFZFWindow() abort
   new | wincmd J | resize 1
 endfunction
 
+" There's an issue with animating FZF. The preview sees the terminal as having
+" a small height, and therefore doesn't render the preview with any lines
+" this hack is to toggle the preview on and off, thereby rerendering the
+" preview
 function! RefreshFZFPreview() abort
   if has('nvim')
-    if g:last_open_term_id
+    if exists('g:last_open_term_id') && g:last_open_term_id
       call timer_start(20, {t->chansend(g:last_open_term_id, "\<C-p>\<C-p>")})
     endif
   else
@@ -757,6 +782,8 @@ command! -bang -nargs=? -complete=dir         Files   call Files(<q-args>, <bang
 command! -bang -nargs=*                       Lines   call Lines(<q-args>, <bang>0)
 " Opens buffer search
 command! -bar -bang -nargs=? -complete=buffer Buffers call Buffers(<q-args>, <bang>0)
+" Opens window search
+command! -bar -bang                           Windows call Windows(<bang>0)
 " Sets up command for prettier
 command! -nargs=0 Prettier :CocCommand prettier.formatFile
 " }}}
@@ -787,6 +814,10 @@ augroup General
   if has('nvim')
     autocmd! TermOpen * let g:disable_ensure_size = 0
   endif
+
+  " Neoterm repl setup {{{
+  autocmd FileType sh call neoterm#repl#set('sh')
+  " }}}
 augroup END
 
 " Quit term buffer with ESC
