@@ -30,20 +30,20 @@ Plug 'wincent/vcs-jump'               | " Jump to git things
 " }}}
 
 " Visual {{{
-Plug 'arecarn/vim-clean-fold'          | " Provides cleaning function for folds
-Plug 'blueyed/vim-diminactive'         | " Makes determining active window easier
-Plug 'chriskempson/base16-vim'         | " Base16 theme pack
-Plug 'edkolev/tmuxline.vim'            | " Makes tmux use airline colors
-Plug 'mhinz/vim-signify'               | " Show git info in sidebar
-Plug 'mhinz/vim-startify'              | " Startup screen
-Plug 'nathanaelkane/vim-indent-guides' | " Provides indentation guides
-Plug 'psliwka/vim-smoothie'            | " Nicer scrolling
-Plug 'ryanoasis/vim-devicons'          | " Dev icons
-Plug 'vim-airline/vim-airline'         | " Airline
-Plug 'vim-airline/vim-airline-themes'  | " Status line
-Plug 'vim-scripts/folddigest.vim'      | " Visualize folds
-Plug 'wincent/loupe'                   | " Search context improvements
-Plug 'camspiers/animate.vim'           | " Animation plugin
+Plug 'arecarn/vim-clean-fold'             | " Provides cleaning function for folds
+Plug 'blueyed/vim-diminactive'            | " Makes determining active window easier
+Plug 'chriskempson/base16-vim'            | " Base16 theme pack
+Plug 'edkolev/tmuxline.vim'               | " Makes tmux use airline colors
+Plug 'mhinz/vim-signify'                  | " Show git info in sidebar
+Plug 'mhinz/vim-startify'                 | " Startup screen
+Plug 'nathanaelkane/vim-indent-guides'    | " Provides indentation guides
+Plug 'psliwka/vim-smoothie', { 'on': [] } | " Nicer scrolling
+Plug 'ryanoasis/vim-devicons'             | " Dev icons
+Plug 'vim-airline/vim-airline'            | " Airline
+Plug 'vim-airline/vim-airline-themes'     | " Status line
+Plug 'vim-scripts/folddigest.vim'         | " Visualize folds
+Plug 'wincent/loupe'                      | " Search context improvements
+Plug 'camspiers/animate.vim'              | " Animation plugin
 " }}}
 
 " Editor {{{
@@ -135,7 +135,7 @@ set tabstop=2      | " Number of spaces a <Tab> is
 set shiftwidth=2   | " Number of spaces for indentation
 set expandtab      | " Expand tab to spaces
 set spelllang=en   | " Spell checking
-set timeoutlen=750 | " Wait less time for mapped sequences
+set timeoutlen=500 | " Wait less time for mapped sequences
 " }}}
 
 " Visual {{{
@@ -159,7 +159,11 @@ set noshowmode                              | " Don't show mode changes
 
 " General {{{
 " Save file
-nnoremap <silent> <Leader>w :write<CR>
+nnoremap <silent> <Leader>q :write<CR>
+" Save file
+nnoremap <silent> <Leader><S-q> :x<CR>
+" Save file
+nnoremap <silent> <Leader><S-q> :wq<CR>
 " Easy align in visual mode
 xmap     ga <Plug>(EasyAlign)
 " Easy align in normal mode
@@ -179,20 +183,24 @@ nnoremap <silent> <Leader>\ :Files<CR>
 nnoremap <silent> <Leader>l :Lines<CR>
 " Open fuzzy buffers with leader b
 nnoremap <silent> <Leader>b :Buffers<CR>
-" Open fuzzy buffers with leader b
-nnoremap <silent> <Leader><Space> :Windows<CR>
+" Open fuzzy windows with leader space
+nnoremap <silent> <Leader>w :Windows<CR>
 " Open ripgrep
 nnoremap <silent> <Leader>f :Rg<CR>
-" Open global grep
-nnoremap <silent> <Leader>g :Rgg<CR>
-" Open ripgrep for cursor word
-nnoremap <silent> <Leader>c :Rg <C-R><C-W><CR>
+" Open global ripgrep
+nnoremap <silent> <Leader><S-f> :Rgg<CR>
 " Open ripgrep agriculture
 nmap <Leader>/ <Plug>RgRawSearch
 " Open ripgrep agriculture for visual selection
 vmap <Leader>/ <Plug>RgRawVisualSelection
+" Remap ** to * now that we are using * for other bindings
+nnoremap ** *
 " Open ripgrep agriculture for cursor word
-nmap <Leader>* <Plug>RgRawWordUnderCursor
+nmap */ <Plug>RgRawWordUnderCursor
+" Open ripgrep for cursor word
+nnoremap <silent> *f :Rg <C-R><C-W><CR>
+" Open global ripgrep for cursor word
+nnoremap <silent> *<S-f> :Rgg <C-R><C-W><CR>
 " }}}
 
 " Switching {{{
@@ -203,7 +211,7 @@ nnoremap <silent> <S-Tab> :bprevious<CR>
 " Alternate file navigation
 nnoremap <silent> <Leader>a :A<CR>
 " Alternate file navigation vertical split
-nnoremap <silent> <Leader>v :AV<CR>
+nnoremap <silent> <Leader><S-a> :AV<CR>
 " }}}
 
 " View Management {{{
@@ -214,11 +222,17 @@ nnoremap <silent> <Leader>-  :call Split()<CR>
 " Only window
 nnoremap <silent> <Leader>o  :only<CR>
 " Close the current buffer
-nnoremap <silent> <Leader>x    :close<CR>
+nnoremap <silent> <Leader>c    :close<CR>
+" Close the current buffer
+nnoremap <silent> <Leader><S-c> :%close<CR>
 " Delete the current buffer
-nnoremap <silent> <Leader><BS> :bdelete!<CR>
+nnoremap <silent> <Leader>x :bdelete<CR>
+" Delete the current buffer
+nnoremap <silent> <Leader><S-x> :bdelete!<CR>
 " Close all buffers
-nnoremap <silent> <Leader>z    :%bdelete<CR>
+nnoremap <silent> <Leader>z :%bdelete<CR>
+" Close all buffers
+nnoremap <silent> <Leader><S-z> :%bdelete!<CR>
 " Remap arrows to resize
 nnoremap <silent> <Up>    :call animate#window_delta_height(15)<CR>
 nnoremap <silent> <Down>  :call animate#window_delta_height(-15)<CR>
@@ -284,12 +298,14 @@ imap <c-x><c-l> <plug>(fzf-complete-line)
 nnoremap <silent> <Leader>r :call CycleLineNumbering()<CR>
 " Toggle virtualedit
 nnoremap <silent> <Leader>v :call ToggleVirtualEdit()<CR>
+if ! has('gui_running')
 " Open project
 nnoremap <silent> <Leader>] :call OpenVTerm('tmuxinator-fzf-start.sh', 0.2)<CR>
 " Switch session
 nnoremap <silent> <Leader>[ :call OpenVTerm('tmux-fzf-switch.sh', 0.2)<CR>
 " Kill session
 nnoremap <silent> <Leader>} :call OpenVTerm('tmux-fzf-kill.sh', 0.2)<CR>
+endif
 " Open lazygit
 nnoremap <silent> <Leader>' :call OpenHTerm('lazygit', 0.8)<CR>
 " Open lazydocker
@@ -298,10 +314,10 @@ nnoremap <silent> <Leader>; :call OpenHTerm('lazydocker', 0.8)<CR>
 nnoremap <silent> <Leader>h :call OpenHTerm('hstarti', 0.1)<CR>
 " Open calendar + todo
 nnoremap <silent> <Leader>t :call OpenHTerm('calcurse', 0.8)<CR>
+if ! has('gui_running')
 " Toggle pomodoro
 nnoremap <silent> <Leader>p :call TogglePomodoro()<CR>
-" Register Vdebug only need to call this when you need to change the roots
-nnoremap <silent> <Leader>~ :call RegisterVdebug()<CR>
+endif
 " Calls the custom start function that requests path map to be defined if not already run
 nnoremap <silent> <F5> :call StartVdebug()<CR>
 " }}}
@@ -390,13 +406,19 @@ let g:fzf_action = {
 " }}}
 
 " Plugin Configuration {{{
+"
+" Smoothie {{{
+if ! has('gui_running')
+  call plug#load('vim-smoothie')
+endif
+" }}}
+"
+" Loupe {{{
+let g:LoupeClearHighlightMap = 0
+" }}}
 
 " Airline {{{
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#left_sep = ' '
-let g:airline#extensions#tabline#left_alt_sep = '|'
-let g:airline#extensions#tabline#formatter = 'unique_tail'
-let g:webdevicons_enable_airline_tabline = 0
+let g:airline#extensions#tabline#enabled = 0
 " }}}
 
 " Conquer of Completion {{{
@@ -591,6 +613,8 @@ endfunction
 " Opens FoldDigest with some default visual settings
 function! CustomFoldDigest() abort
   call FoldDigest()
+  vertical resize 1
+  call animate#window_absolute_width(GetBufferMaxCols())
   setlocal listchars= nonumber norelativenumber
 endfunction
 " Handles closing in cases where you would be the last window
@@ -634,12 +658,7 @@ endfunction
 " Creates a vsplit in an animated fashion
 function! Vsplit() abort
   vsplit
-  let wrap=&wrap
-  set nowrap
   call NaturalVerticalDrawer()
-  if wrap
-    call timer_start(float2nr(g:animate#duration), {t->execute('set wrap')})
-  endif
 endfunction
 " Creates a split with animation
 function! Split() abort
@@ -684,6 +703,10 @@ function! EnsureGetSize(current, target, resize_min, resize_max) abort
   \ ])
 endfunction
 
+function! GetBufferMaxCols() abort
+  return max(map(getline(1,'$'), {k,v->len(v)})) + &numberwidth
+endfunction
+
 " Ensures the window is at least 80 wide and 25 high
 function! EnsureWindowSize() abort
   if g:disable_ensure_size
@@ -692,7 +715,7 @@ function! EnsureWindowSize() abort
 
   let width = EnsureGetSize(
     \ winwidth(0),
-    \ max(map(getline(1,'$'), {k,v->len(v)})) + &numberwidth,
+    \ GetBufferMaxCols(),
     \ g:ensure#width_resize_min,
     \ g:ensure#width_resize_max
   \)
