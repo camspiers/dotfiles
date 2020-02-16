@@ -1,4 +1,4 @@
 name: Tmuxinator FZF Start
 root: ~/dev/tmuxinator-fzf-start
 windows:
-  - Editor: nvim
+  - Editor: vimr

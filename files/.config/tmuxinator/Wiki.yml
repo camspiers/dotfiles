@@ -1,4 +1,4 @@
 name: Wiki
 root: ~/vimwiki
 windows:
-  - Editor: nvim index.md
+  - Editor: vimr index.md

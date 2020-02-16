@@ -2,7 +2,7 @@ name: Drive System Hub
 root: ~/dev/system-hub
 attach: false
 windows:
-  - Editor: nvim
+  - Editor: vimr
   - Docker:
       - readydocker.sh
       - docker-compose up -d

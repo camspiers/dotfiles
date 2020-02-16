@@ -2,7 +2,7 @@ name: Drive WWW
 root: ~/dev/drive-website
 attach: false
 windows:
-  - Editor: nvim
+  - Editor: vimr
   - Build:
       - cd app/client
       - yarn start
