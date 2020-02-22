@@ -33,17 +33,16 @@ Plug 'wincent/vcs-jump'               | " Jump to git things
 Plug 'arecarn/vim-clean-fold'             | " Provides cleaning function for folds
 Plug 'blueyed/vim-diminactive'            | " Makes determining active window easier
 Plug 'chriskempson/base16-vim'            | " Base16 theme pack
-Plug 'edkolev/tmuxline.vim'               | " Makes tmux use airline colors
 Plug 'mhinz/vim-signify'                  | " Show git info in sidebar
 Plug 'mhinz/vim-startify'                 | " Startup screen
 Plug 'nathanaelkane/vim-indent-guides'    | " Provides indentation guides
 Plug 'psliwka/vim-smoothie', { 'on': [] } | " Nicer scrolling
 Plug 'ryanoasis/vim-devicons'             | " Dev icons
-Plug 'vim-airline/vim-airline'            | " Airline
-Plug 'vim-airline/vim-airline-themes'     | " Status line
 Plug 'vim-scripts/folddigest.vim'         | " Visualize folds
 Plug 'wincent/loupe'                      | " Search context improvements
 Plug 'camspiers/animate.vim'              | " Animation plugin
+Plug 'camspiers/lens.vim'                 | " Window reszing plugin
+Plug 'rbong/vim-crystalline'
 " }}}
 
 " Editor {{{
@@ -95,15 +94,9 @@ Plug 'iamcco/markdown-preview.nvim',  { 'do': 'cd app & yarn install'  } | " Mar
 " }}}
 
 " Syntax {{{
-Plug 'bfontaine/Brewfile.vim'      | " Brewfile
-Plug 'ekalinin/dockerfile.vim'     | " Dockerfile
-Plug 'jwalton512/vim-blade'        | " blade templates
-Plug 'leafgarland/typescript-vim'  | " typescript
-Plug 'lilyball/vim-swift'          | " swift
-Plug 'peitalin/vim-jsx-typescript' | " typescript jsx, .tsx
-Plug 'phalkunz/vim-ss'             | " SilverStripe templates
-Plug 'StanAngeloff/php.vim'        | " PHP
-Plug 'tmux-plugins/vim-tmux'       | " Tmux conf
+Plug 'sheerun/vim-polyglot'   | " Lang pack
+Plug 'bfontaine/Brewfile.vim' | " Brewfile
+Plug 'phalkunz/vim-ss'        | " SilverStripe templates
 " }}}
 call plug#end()
 " }}}
@@ -147,7 +140,6 @@ set cursorline                              | " Enable current line indicator
 set number relativenumber                   | " Show line numbers
 let base16colorspace=256                    | " Access colors present in 256 colorspace
 colorscheme base16-chalk                    | " Sets theme to chalk
-let g:airline_theme='base16_chalk'          | " Sets airline theme to chalk
 set termguicolors                           | " Enables 24bit colors
 highlight Comment gui=italic                | " Make comments italic
 set noshowmode                              | " Don't show mode changes
@@ -406,7 +398,36 @@ let g:fzf_action = {
 " }}}
 
 " Plugin Configuration {{{
-"
+
+" Statusline {{{
+function! StatusLine(current) abort
+  let l:s = ''
+  if a:current
+    let l:s .= crystalline#mode() . crystalline#right_mode_sep('')
+  else
+    let l:s .= '%#CrystallineInactive#'
+  endif
+  let l:s .= ' %f%h%w%m%r '
+  if a:current
+    let l:s .= crystalline#right_sep('', 'Fill')
+  endif
+  let l:s .= '%='
+  if a:current
+    let l:s .= crystalline#left_mode_sep('')
+  endif
+  let l:s .= ' %{&ft} '
+  if a:current
+    let l:s .= '%{&spell?"[spell] ":""}%l/%L:%c '
+  endif
+  return l:s
+endfunction
+
+let g:crystalline_statusline_fn = 'StatusLine'
+let g:crystalline_theme = 'default'
+
+set laststatus=2
+" }}}
+
 " Smoothie {{{
 if ! has('gui_running')
   call plug#load('vim-smoothie')
@@ -415,10 +436,6 @@ endif
 "
 " Loupe {{{
 let g:LoupeClearHighlightMap = 0
-" }}}
-
-" Airline {{{
-let g:airline#extensions#tabline#enabled = 0
 " }}}
 
 " Conquer of Completion {{{
@@ -678,65 +695,6 @@ function! NaturalVerticalDrawer() abort
   call animate#window_absolute_width(width)
 endfunction
 
-" Preping for plugin
-let g:ensure#animate = 1
-" Don't resize beyond 20 lines
-let g:ensure#height_resize_max = 20
-" Don't resize smaller than 5 lines
-let g:ensure#height_resize_min = 5
-" Don't resize larger than 80 cols
-let g:ensure#width_resize_max = 80
-" Don't resize smaller than 20 cols
-let g:ensure#width_resize_min = 20
-
-" Gets the appropriate size to resize to, if any
-function! EnsureGetSize(current, target, resize_min, resize_max) abort
-  if a:current > a:target
-    return a:current
-  endif
-  return max([
-    \ a:current,
-    \ min([
-      \ max([a:target, a:resize_min]),
-      \ a:resize_max,
-    \ ])
-  \ ])
-endfunction
-
-function! GetBufferMaxCols() abort
-  return max(map(getline(1,'$'), {k,v->len(v)})) + &numberwidth
-endfunction
-
-" Ensures the window is at least 80 wide and 25 high
-function! EnsureWindowSize() abort
-  if g:disable_ensure_size
-    return
-  endif
-
-  let width = EnsureGetSize(
-    \ winwidth(0),
-    \ GetBufferMaxCols(),
-    \ g:ensure#width_resize_min,
-    \ g:ensure#width_resize_max
-  \)
-
-  let height = EnsureGetSize(
-    \ winheight(0),
-    \ line('$'),
-    \ g:ensure#height_resize_min,
-    \ g:ensure#height_resize_max
-  \)
-
-  if g:ensure#animate && exists('g:animate#loaded') && g:animate#loaded
-    if ! animate#window_is_animating(winnr())
-      call animate#window_absolute(width, height)
-    endif
-  else
-    execute 'vertical resize ' . width
-    execute 'resize ' . height
-  endif
-endfunction
-
 " Animate the quickfix and ensure it is at the bottom
 function! OpenQuickFix() abort
   if getwininfo(win_getid())[0].loclist != 1
@@ -766,7 +724,6 @@ endfunction
 
 " Perform som actions when vim config is written
 function! OnVimConfigWrite() abort
-  AirlineRefresh
   call ReloadPlugins()
 endfunction
 
@@ -825,22 +782,6 @@ augroup General
   autocmd! FileType * call NewTemplate()
   " Go to last opened position
   autocmd! BufReadPost * call GoToLastPosition()
-  " Ensure windows have resonable sizes
-  " But don't perform at certain times, like term open and new file
-  let g:disable_ensure_size = 0
-  autocmd! WinNew * let g:disable_ensure_size = 1
-  if has('nvim')
-    autocmd! TermOpen * let g:disable_ensure_size = 1
-  endif
-  autocmd! WinEnter * call EnsureWindowSize()
-  autocmd! WinNew * let g:disable_ensure_size = 0
-  if has('nvim')
-    autocmd! TermOpen * let g:disable_ensure_size = 0
-  endif
-
-  " Neoterm repl setup {{{
-  autocmd FileType sh call neoterm#repl#set('sh')
-  " }}}
 augroup END
 
 " Quit term buffer with ESC
