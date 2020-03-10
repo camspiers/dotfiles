@@ -3,3 +3,5 @@ scripts/activespace
 node_modules
 extra/homebrew/Brewfile.lock.json
 tags
+Session.vim
+files/.bashrc.local

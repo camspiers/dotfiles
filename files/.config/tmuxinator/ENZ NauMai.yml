@@ -2,7 +2,7 @@ name: ENZ NauMai
 root: ~/dev/dsx
 attach: false
 windows:
-  - Editor: vimr
+  - Editor: nvim
   - Build:
       - cd app
       - yarn start

@@ -1,2 +1,11 @@
 --colors=path:fg:0x50,0xfa,0x7b
 --colors=path:fg:0xbd,0x93,0xf9
+
+--type-add
+web:*.{html,css,js,jsx,ts,tsx,less}
+
+--type-add
+js:*.{ts,tsx}
+
+--type-add
+ts:*.{ts,tsx}

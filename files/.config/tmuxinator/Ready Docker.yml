@@ -1,4 +1,4 @@
 name: Ready Docker
 root: ~/dev/readydocker
 windows:
-  - Editor: vimr
+  - Editor: nvim

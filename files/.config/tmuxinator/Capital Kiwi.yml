@@ -2,7 +2,7 @@ name: Capital Kiwi
 root: ~/dev/capital-kiwi
 attach: false
 windows:
-  - Editor: vimr
+  - Editor: nvim
   - Build: yarn start
   - Docker:
       - readydocker.sh

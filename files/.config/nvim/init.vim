@@ -78,7 +78,6 @@ Plug 'dstein64/vim-startuptime'        | " Measure startuptime
 Plug 'duggiefresh/vim-easydir'         | " Create files in dirs that don't exist
 Plug 'inkarkat/vim-ingo-library'       | " Spellcheck dependency
 Plug 'inkarkat/vim-spellcheck'         | " Spelling errors to quickfix list
-Plug 'junegunn/vim-peekaboo'           | " Peak at registers
 Plug 'kassio/neoterm'                  | " REPL integration
 Plug 'prashantjois/vim-slack'          | " Slack integration
 Plug 'samoshkin/vim-mergetool'         | " Merge tool for git
@@ -91,6 +90,7 @@ Plug 'tpope/vim-unimpaired'            | " Common mappings for many needs
 Plug 'vim-vdebug/vdebug', { 'on': [] } | " Debugging, loaded manually
 Plug 'antoyo/vim-licenses'             | " Generate Licences
 Plug 'iamcco/markdown-preview.nvim',  { 'do': 'cd app & yarn install'  } | " Markdown preview
+Plug 'tpope/vim-obsession'
 " }}}
 
 " Syntax {{{
@@ -556,6 +556,11 @@ let g:licenses_default_commands = ['mit']
 " Animate {{{
 let g:animate#easing_func = 'animate#ease_out_quad'
 " }}}
+
+" Lens {{{
+let g:lens#height_resize_min = 15
+" }}}
+
 " }}}
 
 " Custom Tools {{{
@@ -589,10 +594,10 @@ function! CycleLineNumbering() abort
 endfunction
 " Toggle virtualedit
 function! ToggleVirtualEdit() abort
-  if &virtualedit == "all"
-    set virtualedit=
-  else
+  if &virtualedit != "all"
     set virtualedit=all
+  else
+    set virtualedit=
   endif
 endfunction
 " Pomodoro timer, example: "25 5 25 5" will run a timer for 25mins, ding then
@@ -631,7 +636,8 @@ endfunction
 function! CustomFoldDigest() abort
   call FoldDigest()
   vertical resize 1
-  call animate#window_absolute_width(GetBufferMaxCols())
+  call animate#window_absolute_width(lens#get_cols())
+  set winfixwidth
   setlocal listchars= nonumber norelativenumber
 endfunction
 " Handles closing in cases where you would be the last window
@@ -656,18 +662,14 @@ function! OpenTerm(cmd) abort
 endfunction
 " Open split with animation
 function! OpenHTerm(cmd, percent) abort
-  if has('nvim')
-    new
-  endif
+  if has('nvim') | new | endif
   call OpenTerm(a:cmd)
   wincmd J | resize 1
   call animate#window_percent_height(a:percent)
 endfunction
 " Open vsplit with animation
 function! OpenVTerm(cmd, percent) abort
-  if has('nvim')
-    vnew
-  endif
+  if has('nvim') | vnew | endif
   call OpenTerm(a:cmd)
   wincmd L | vertical resize 1
   call animate#window_percent_width(a:percent)
@@ -739,7 +741,7 @@ endfunction
 function! RefreshFZFPreview() abort
   if has('nvim')
     if exists('g:last_open_term_id') && g:last_open_term_id
-      call timer_start(20, {t->chansend(g:last_open_term_id, "\<C-p>\<C-p>")})
+      call timer_start(350, {t->chansend(g:last_open_term_id, "\<C-p>\<C-p>")})
     endif
   else
     call term_sendkeys(bufnr('%'), "\<C-p>\<C-p>")
@@ -782,6 +784,9 @@ augroup General
   autocmd! FileType * call NewTemplate()
   " Go to last opened position
   autocmd! BufReadPost * call GoToLastPosition()
+  " Neoterm repl setup {{{
+  autocmd FileType sh call neoterm#repl#set('sh')
+  " }}}
 augroup END
 
 " Quit term buffer with ESC
@@ -790,10 +795,8 @@ augroup TermHandling
   " Turn off line numbers, listchars, auto enter insert mode and map esc to
   " exit insert mode
   if has('nvim')
-    autocmd TermOpen * setlocal listchars= nonumber norelativenumber
-      \ | startinsert
-      \ | set laststatus=0 noshowmode noruler
-      \ | autocmd BufLeave <buffer> set laststatus=2 showmode ruler
+    autocmd TermOpen * setlocal listchars= nonumber norelativenumber nowrap winfixwidth laststatus=0 noshowmode noruler
+    autocmd TermOpen * startinsert | autocmd BufLeave <buffer> set laststatus=2 showmode ruler
     autocmd TermOpen * let g:last_open_term_id = b:terminal_job_id
   endif
   " Define ESC to be SIGTERM

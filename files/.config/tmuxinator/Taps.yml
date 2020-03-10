@@ -1,4 +1,4 @@
 name: Taps
 root: ~/dev/taps
 windows:
-  - Editor: vimr
+  - Editor: nvim

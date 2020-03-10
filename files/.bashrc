@@ -50,6 +50,7 @@ SYS_PATHS=(
 
 # User paths
 USER_PATHS=(
+  "/opt/metasploit-framework/bin" # Metasploit
   "/usr/local/opt/fzf/bin" # Fzf
   "$HOME/.dotfiles/scripts" # Personal scripts
   "$HOME/.composer/vendor/bin" # Global composer scripts
