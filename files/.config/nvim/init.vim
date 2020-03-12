@@ -141,19 +141,6 @@ highlight Comment gui=italic                | " Make comments italic
 set noshowmode                              | " Don't show mode changes
 " }}}
 
-" Statusline {{{
-set laststatus=2
-set statusline =                  | " Replase statusline
-set statusline +=[%n]             | " Buffer number
-set statusline +=\ %F             | " Full path to file
-set statusline +=\ %1*%m%0*       | " Modified flag
-set statusline +=\ %h             | " [help]
-set statusline +=%r               | " Read only flag
-set statusline +=%w               | " Preview window flag
-set statusline +=%=%-7.(%l,%c%V%) | " Line, column-virtual column
-set statusline +=\ %-5L           | " Lines in the buffer
-" }}}
-
 " }}}
 
 " }}}
@@ -530,14 +517,6 @@ let g:lens#height_resize_min = 15
 " }}}
 
 " Custom Tools {{{
-" For empty files it attempts to read a template. Not using au BufNewFile as the
-" filetype is being manually set by :New instead of via *.php
-function! NewTemplate() abort
-  if line('$') == 1 && col('$') == 1
-    silent! execute ":0r ~/.config/nvim/templates/" . &filetype
-    :$
-  endif
-endfunction
 " Cycle through relativenumber + number, number (only), and no numbering.
 function! CycleLineNumbering() abort
   execute {
@@ -625,18 +604,6 @@ function! OpenQuickFix() abort
   call NaturalDrawer()
 endfunction
 
-" Create a buffer of the specified type
-function! NewFile(filetype, vertical) abort
-  let filetypes = getcompletion('', 'filetype')
-  if index(filetypes, a:filetype) == -1
-    echo a:filetype . " is not a valid filetype"
-    return
-  endif
-  if a:vertical | vnew | else | new | endif
-  execute 'setf ' . a:filetype
-  call NaturalVerticalDrawer()
-endfunction
-
 " Configures an FZF window
 function! NewFZFWindow() abort
   new | wincmd J | resize 1
@@ -658,9 +625,6 @@ endfunction
 " }}}
 
 " Commands {{{
-" Create new buffers of a particular filetype
-command! -nargs=1 -complete=filetype New :call NewFile(<f-args>, v:false)
-command! -nargs=1 -complete=filetype Vnew :call NewFile(<f-args>, v:true)
 
 " Opens FZF + Ripgrep for not ignored files
 command! -bang -nargs=*                       Rg      call Rg(v:true, <q-args>, <bang>0)
@@ -686,8 +650,6 @@ augroup General
   autocmd! FileType qf call OpenQuickFix()
   " Enable spelling
   autocmd! FileType markdown,txt setlocal spell
-  " Reads templates into empty files
-  autocmd! FileType * call NewTemplate()
   " Neoterm repl setup {{{
   autocmd FileType sh call neoterm#repl#set('sh')
   " }}}
