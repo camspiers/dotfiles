@@ -1,0 +1,15 @@
+name: ENZ MediaCentre
+root: ~/dev/media-centre
+attach: false
+windows:
+  - Editor: nvim
+  - Build:
+      - cd app
+      - yarn start
+  - Storybook:
+      - cd app
+      - yarn storybook
+  - Docker:
+      - readydocker.sh
+      - docker-compose up -d
+      - lazydocker
