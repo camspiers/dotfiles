@@ -14,6 +14,7 @@ let g:from_lock = {'do': 'yarn install --frozen-lockfile'}
 Plug 'tpope/vim-sensible'             | " Sensible defaults
 Plug 'wincent/terminus'               | " Terminal integration improvements
 Plug 'christoomey/vim-tmux-navigator' | " Pane navigation
+Plug 'farmergreg/vim-lastplace'       | " Go to last position when opening files
 " }}}
 
 " Search {{{
@@ -300,20 +301,20 @@ nnoremap <silent> <Leader>r :call CycleLineNumbering()<CR>
 nnoremap <silent> <Leader>v :call ToggleVirtualEdit()<CR>
 if ! has('gui_running')
 " Open project
-nnoremap <silent> <Leader>] :call OpenVTerm('tmuxinator-fzf-start.sh', 0.2)<CR>
+nnoremap <silent> <Leader>] :call openterm#vertical('tmuxinator-fzf-start.sh', 0.2)<CR>
 " Switch session
-nnoremap <silent> <Leader>[ :call OpenVTerm('tmux-fzf-switch.sh', 0.2)<CR>
+nnoremap <silent> <Leader>[ :call openterm#vertical('tmux-fzf-switch.sh', 0.2)<CR>
 " Kill session
-nnoremap <silent> <Leader>} :call OpenVTerm('tmux-fzf-kill.sh', 0.2)<CR>
+nnoremap <silent> <Leader>} :call openterm#vertical('tmux-fzf-kill.sh', 0.2)<CR>
 endif
 " Open lazygit
-nnoremap <silent> <Leader>' :call OpenHTerm('lazygit', 0.8)<CR>
+nnoremap <silent> <Leader>' :call openterm#horizontal('lazygit', 0.8)<CR>
 " Open lazydocker
-nnoremap <silent> <Leader>; :call OpenHTerm('lazydocker', 0.8)<CR>
+nnoremap <silent> <Leader>; :call openterm#horizontal('lazydocker', 0.8)<CR>
 " Open harvest
-nnoremap <silent> <Leader>h :call OpenHTerm('hstarti', 0.1)<CR>
+nnoremap <silent> <Leader>h :call openterm#horizontal('hstarti', 0.1)<CR>
 " Open calendar + todo
-nnoremap <silent> <Leader>t :call OpenHTerm('calcurse', 0.8)<CR>
+nnoremap <silent> <Leader>t :call openterm#horizontal('calcurse', 0.8)<CR>
 if ! has('gui_running')
 " Toggle pomodoro
 nnoremap <silent> <Leader>p :call TogglePomodoro()<CR>
@@ -529,18 +530,6 @@ let g:lens#height_resize_min = 15
 " }}}
 
 " Custom Tools {{{
-" PlugInstall and deletes plugins as needed
-function! ReloadPlugins() abort
-  let required = map(values(g:plugs), {_, plug -> plug.dir})
-  if len(filter(copy(required), {_, dir -> !isdirectory(dir)}))
-    PlugInstall
-  endif
-  let delete = filter(split(glob(g:plug_home.'/*/'), '\n'), {_, dir -> index(required, dir) == -1})
-  if len(delete)
-    call map(copy(delete), {_, dir -> delete(dir, 'rf')})
-    echo 'Deleted plugins: ' . join(map(delete, {_, dir-> fnamemodify(dir[:-2], ':t')}), ', ')
-  endif
-endfunction
 " For empty files it attempts to read a template. Not using au BufNewFile as the
 " filetype is being manually set by :New instead of via *.php
 function! NewTemplate() abort
@@ -605,40 +594,6 @@ function! CustomFoldDigest() abort
   set winfixwidth
   setlocal listchars= nonumber norelativenumber
 endfunction
-" Handles closing in cases where you would be the last window
-function! CloseWindowOnSuccess(code) abort
-  if a:code == 0
-    let current_window = winnr()
-    bdelete!
-    " Handles special case where window remains due startify
-    if winnr() == current_window
-      close
-    endif
-  endif
-endfunction
-" Open autoclosing terminal, with optional size and dir
-function! OpenTerm(cmd) abort
-  if has('nvim')
-    call termopen(a:cmd, {'on_exit': {_,c -> CloseWindowOnSuccess(c)}})
-  else
-    call term_start(a:cmd, {'exit_cb': {_,c -> CloseWindowOnSuccess(c)}})
-  endif
-  setf openterm
-endfunction
-" Open split with animation
-function! OpenHTerm(cmd, percent) abort
-  if has('nvim') | new | endif
-  call OpenTerm(a:cmd)
-  wincmd J | resize 1
-  call animate#window_percent_height(a:percent)
-endfunction
-" Open vsplit with animation
-function! OpenVTerm(cmd, percent) abort
-  if has('nvim') | vnew | endif
-  call OpenTerm(a:cmd)
-  wincmd L | vertical resize 1
-  call animate#window_percent_width(a:percent)
-endfunction
 " Creates a vsplit in an animated fashion
 function! Vsplit() abort
   vsplit
@@ -680,18 +635,6 @@ function! NewFile(filetype, vertical) abort
   if a:vertical | vnew | else | new | endif
   execute 'setf ' . a:filetype
   call NaturalVerticalDrawer()
-endfunction
-
-" Go to the last cusor position
-function! GoToLastPosition() abort
-  if line("'\"") > 1 && line("'\"") <= line("$")
-    normal! g`"
-  endif
-endfunction
-
-" Perform som actions when vim config is written
-function! OnVimConfigWrite() abort
-  call ReloadPlugins()
 endfunction
 
 " Configures an FZF window
@@ -743,12 +686,8 @@ augroup General
   autocmd! FileType qf call OpenQuickFix()
   " Enable spelling
   autocmd! FileType markdown,txt setlocal spell
-  " Auto sources vim files on save
-  autocmd! BufWritePost *.vim source % | call OnVimConfigWrite()
   " Reads templates into empty files
   autocmd! FileType * call NewTemplate()
-  " Go to last opened position
-  autocmd! BufReadPost * call GoToLastPosition()
   " Neoterm repl setup {{{
   autocmd FileType sh call neoterm#repl#set('sh')
   " }}}
@@ -765,7 +704,7 @@ augroup TermHandling
     autocmd TermOpen * let g:last_open_term_id = b:terminal_job_id
   endif
   " Define ESC to be SIGTERM
-  autocmd! FileType fzf,openterm tnoremap <Esc> <c-c>
+  autocmd! FileType fzf tnoremap <Esc> <c-c>
   autocmd! FileType fzf call RefreshFZFPreview()
   autocmd! FileType neoterm wincmd J | call NaturalDrawer()
 augroup END
