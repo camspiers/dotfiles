@@ -42,7 +42,6 @@ Plug 'vim-scripts/folddigest.vim'         | " Visualize folds
 Plug 'wincent/loupe'                      | " Search context improvements
 Plug 'camspiers/animate.vim'              | " Animation plugin
 Plug 'camspiers/lens.vim'                 | " Window reszing plugin
-Plug 'rbong/vim-crystalline'
 " }}}
 
 " Editor {{{
@@ -56,7 +55,6 @@ Plug 'neoclide/coc-pairs',    g:from_lock | " Auto-insert language aware pairs
 Plug 'neoclide/coc-snippets', g:from_lock | " Provides snippets
 Plug 'neoclide/coc-tslint',   g:from_lock | " Tslint integration
 Plug 'neoclide/coc-tsserver', g:from_lock | " TypeScript language server
-Plug 'AndrewRadev/splitjoin.vim'          | " Split and join programming lines
 Plug 'bkad/CamelCaseMotion'               | " Motions for inside camel case
 Plug 'junegunn/vim-easy-align'            | " Helps alignment
 Plug 'justinmk/vim-sneak'                 | " Better search motions (s and S, z and Z)
@@ -74,7 +72,6 @@ Plug 'neoclide/coc-prettier', g:from_lock | " Prettier for COC
 
 " Tools {{{
 Plug 'airblade/vim-rooter'             | " Auto-root setting
-Plug 'dstein64/vim-startuptime'        | " Measure startuptime
 Plug 'duggiefresh/vim-easydir'         | " Create files in dirs that don't exist
 Plug 'inkarkat/vim-ingo-library'       | " Spellcheck dependency
 Plug 'inkarkat/vim-spellcheck'         | " Spelling errors to quickfix list
@@ -82,8 +79,6 @@ Plug 'kassio/neoterm'                  | " REPL integration
 Plug 'prashantjois/vim-slack'          | " Slack integration
 Plug 'samoshkin/vim-mergetool'         | " Merge tool for git
 Plug 'shumphrey/fugitive-gitlab.vim'   | " GitLab support
-Plug 'skanehira/docker-compose.vim'    | " Docker compose tools
-Plug 'tpope/vim-dadbod'                | " DB tools
 Plug 'tpope/vim-eunuch'                | " UNIX tools
 Plug 'tpope/vim-fugitive'              | " Git tools
 Plug 'tpope/vim-unimpaired'            | " Common mappings for many needs
@@ -116,8 +111,8 @@ set hidden                            | " Make buffers hidden then abandoned
 " }}}
 
 " Search {{{
-set ignorecase       | " Ignores case in search
-set smartcase        | " Overrides ignore when capital exists
+set ignorecase         | " Ignores case in search
+set smartcase          | " Overrides ignore when capital exists
 if has('nvim')
   set inccommand=split | " Displays incremental replacement
 endif
@@ -145,6 +140,21 @@ highlight Comment gui=italic                | " Make comments italic
 set noshowmode                              | " Don't show mode changes
 " }}}
 
+" Statusline {{{
+set laststatus=2
+set statusline =                  | " Replase statusline
+set statusline +=[%n]             | " Buffer number
+set statusline +=\ %F             | " Full path to file
+set statusline +=\ %1*%m%0*       | " Modified flag
+set statusline +=\ %h             | " [help]
+set statusline +=%r               | " Read only flag
+set statusline +=%w               | " Preview window flag
+set statusline +=%=%-7.(%l,%c%V%) | " Line, column-virtual column
+set statusline +=\ %-5L           | " Lines in the buffer
+" }}}
+
+" }}}
+
 " }}}
 
 " Mappings {{{
@@ -152,10 +162,8 @@ set noshowmode                              | " Don't show mode changes
 " General {{{
 " Save file
 nnoremap <silent> <Leader>q :write<CR>
-" Save file
+" Save and close
 nnoremap <silent> <Leader><S-q> :x<CR>
-" Save file
-nnoremap <silent> <Leader><S-q> :wq<CR>
 " Easy align in visual mode
 xmap     ga <Plug>(EasyAlign)
 " Easy align in normal mode
@@ -210,11 +218,11 @@ nnoremap <silent> <Leader><S-a> :AV<CR>
 " Create vsplit
 nnoremap <silent> <Leader>\| :call Vsplit()<CR>
 " Create hsplit
-nnoremap <silent> <Leader>-  :call Split()<CR>
+nnoremap <silent> <Leader>- :call Split()<CR>
 " Only window
-nnoremap <silent> <Leader>o  :only<CR>
+nnoremap <silent> <Leader>o :only<CR>
 " Close the current buffer
-nnoremap <silent> <Leader>c    :close<CR>
+nnoremap <silent> <Leader>c :close<CR>
 " Close the current buffer
 nnoremap <silent> <Leader><S-c> :%close<CR>
 " Delete the current buffer
@@ -363,7 +371,6 @@ function! Buffers(args, bang) abort
   call fzf#vim#buffers(a:args, a:bang)
   call animate#window_percent_height(0.2)
 endfunction
-
 " Opens buffers with animation
 function! Windows(bang) abort
   call fzf#vim#windows(a:bang)
@@ -398,35 +405,6 @@ let g:fzf_action = {
 " }}}
 
 " Plugin Configuration {{{
-
-" Statusline {{{
-function! StatusLine(current) abort
-  let l:s = ''
-  if a:current
-    let l:s .= crystalline#mode() . crystalline#right_mode_sep('')
-  else
-    let l:s .= '%#CrystallineInactive#'
-  endif
-  let l:s .= ' %f%h%w%m%r '
-  if a:current
-    let l:s .= crystalline#right_sep('', 'Fill')
-  endif
-  let l:s .= '%='
-  if a:current
-    let l:s .= crystalline#left_mode_sep('')
-  endif
-  let l:s .= ' %{&ft} '
-  if a:current
-    let l:s .= '%{&spell?"[spell] ":""}%l/%L:%c '
-  endif
-  return l:s
-endfunction
-
-let g:crystalline_statusline_fn = 'StatusLine'
-let g:crystalline_theme = 'default'
-
-set laststatus=2
-" }}}
 
 " Smoothie {{{
 if ! has('gui_running')
@@ -469,19 +447,6 @@ endfunction
 let g:neoterm_default_mod = 'botright'
 let g:neoterm_autojump = 1
 let g:neoterm_direct_open_repl = 1
-" }}}
-
-" Tmuxline {{{
-" Configures tmux line, use :TmuxlineSnapshot ~/.tmux/theme.conf to save
-let g:tmuxline_preset = {
-  \'a'    : '#[bold]#S',
-  \'b'    : '#(whoami)',
-  \'win'  : '#W',
-  \'cwin' : '#W',
-  \'y'    : ['%R', '%a', '%d/%m/%y'],
-  \'z'    : '#[bold]#(battstat {p} | tr -d " ")'}
-" Don't show powerline separators in tmuxline
-let g:tmuxline_powerline_separators = 0
 " }}}
 
 " Rooter {{{
@@ -580,7 +545,7 @@ endfunction
 " filetype is being manually set by :New instead of via *.php
 function! NewTemplate() abort
   if line('$') == 1 && col('$') == 1
-    silent! execute ":0r ~/.config/nvim/templates/".&ft
+    silent! execute ":0r ~/.config/nvim/templates/" . &filetype
     :$
   endif
 endfunction
