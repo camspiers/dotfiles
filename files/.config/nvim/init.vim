@@ -64,6 +64,7 @@ Plug 'romainl/vim-cool'                   | " Awesome search highlighting
 Plug 'tomtom/tcomment_vim'                | " Better commenting
 Plug 'tpope/vim-repeat'                   | " Improves repeats handling of Vim plugins
 Plug 'tpope/vim-surround'                 | " Surround motions
+Plug 'matze/vim-move'                     | " Move lines
 " }}}
 
 " Formatting {{{
@@ -73,6 +74,7 @@ Plug 'neoclide/coc-prettier', g:from_lock | " Prettier for COC
 
 " Tools {{{
 Plug 'airblade/vim-rooter'             | " Auto-root setting
+Plug 'antoyo/vim-licenses'             | " Generate Licences
 Plug 'duggiefresh/vim-easydir'         | " Create files in dirs that don't exist
 Plug 'inkarkat/vim-ingo-library'       | " Spellcheck dependency
 Plug 'inkarkat/vim-spellcheck'         | " Spelling errors to quickfix list
@@ -84,9 +86,9 @@ Plug 'tpope/vim-eunuch'                | " UNIX tools
 Plug 'tpope/vim-fugitive'              | " Git tools
 Plug 'tpope/vim-unimpaired'            | " Common mappings for many needs
 Plug 'vim-vdebug/vdebug', { 'on': [] } | " Debugging, loaded manually
-Plug 'antoyo/vim-licenses'             | " Generate Licences
 Plug 'iamcco/markdown-preview.nvim',  { 'do': 'cd app & yarn install'  } | " Markdown preview
 Plug 'tpope/vim-obsession'
+Plug 'wellle/tmux-complete.vim'
 " }}}
 
 " Syntax {{{
@@ -399,7 +401,7 @@ if ! has('gui_running')
   call plug#load('vim-smoothie')
 endif
 " }}}
-"
+
 " Loupe {{{
 let g:LoupeClearHighlightMap = 0
 " }}}

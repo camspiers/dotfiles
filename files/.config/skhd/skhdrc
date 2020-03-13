@@ -3,10 +3,10 @@
 ##############################################
 
 # Windows: Alt + [DIR]
-alt - h : yabai -m window --focus west
-alt - j : yabai -m window --focus south
-alt - k : yabai -m window --focus north
-alt - l : yabai -m window --focus east
+shift + alt - h : yabai -m window --focus west
+shift + alt - j : yabai -m window --focus south
+shift + alt - k : yabai -m window --focus north
+shift + alt - l : yabai -m window --focus east
 
 # Spaces:  Alt + [NUM]
 alt - 1 : yabai -m space --focus 1
@@ -17,19 +17,10 @@ alt - 5 : yabai -m space --focus 5
 alt - 6 : yabai -m space --focus 6
 alt - 7 : yabai -m space --focus 7
 alt - 8 : yabai -m space --focus 8
-# Cycle
-alt - x : yabai -m space --focus recent
-alt - z : yabai -m space --focus prev
-alt - c : yabai -m space --focus next
 
 # Monitors: Ctrl + Alt + [NUM]
 ctrl + alt - 1  : yabai -m display --focus 1
 ctrl + alt - 2  : yabai -m display --focus 2
-# Cycle
-ctrl + alt - x  : yabai -m display --focus recent
-ctrl + alt - z  : yabai -m display --focus prev
-ctrl + alt - c  : yabai -m display --focus next
-
 
 ##############################################
 # Moving
@@ -42,13 +33,6 @@ ctrl + alt - j : yabai -m window --swap south
 ctrl + alt - k : yabai -m window --swap north
 ctrl + alt - l : yabai -m window --swap east
 
-# "Warps" with another Window, potentially changing its size
-# Warp: Alt + Cmd + [DIR]
-alt + cmd - h : yabai -m window --warp west
-alt + cmd - j : yabai -m window --warp south
-alt + cmd - k : yabai -m window --warp north
-alt + cmd - l : yabai -m window --warp east
-
 # Sends Window to Space and shifts focus
 # Send: Shift + Cmd + [NUM]
 shift + cmd - 1 : yabai -m window --space  1; yabai -m space --focus 1
@@ -60,18 +44,10 @@ shift + cmd - 6 : yabai -m window --space  6; yabai -m space --focus 6
 shift + cmd - 7 : yabai -m window --space  7; yabai -m space --focus 7
 shift + cmd - 8 : yabai -m window --space  8; yabai -m space --focus 8
 
-shift + cmd - x : yabai -m window --space recent; yabai -m space --focus recent
-shift + cmd - z : yabai -m window --space prev; yabai -m space --focus prev
-shift + cmd - c : yabai -m window --space next; yabai -m space --focus next
-
 # Sends Window to Monitor and shifts focus
 # Send Monitor: Ctrl + Cmd + [NUM]
 ctrl + cmd - 1  : yabai -m window --display 1; yabai -m display --focus 1
 ctrl + cmd - 2  : yabai -m window --display 2; yabai -m display --focus 2
-# Cycle
-ctrl + cmd - x  : yabai -m window --display recent; yabai -m display --focus recent
-ctrl + cmd - z  : yabai -m window --display prev; yabai -m display --focus prev
-ctrl + cmd - c  : yabai -m window --display next; yabai -m display --focus next
 
 # Floating Move
 shift + ctrl - a : yabai -m window --move rel:-20:0
@@ -79,20 +55,8 @@ shift + ctrl - s : yabai -m window --move rel:0:20
 shift + ctrl - w : yabai -m window --move rel:0:-20
 shift + ctrl - d : yabai -m window --move rel:20:0
 
-# Set insertion point in focused container
-ctrl + alt - h : yabai -m window --insert west
-ctrl + alt - j : yabai -m window --insert south
-ctrl + alt - k : yabai -m window --insert north
-ctrl + alt - l : yabai -m window --insert east
-
 # Rotate
 alt - r : yabai -m space --rotate 90
-
-# Mirror y-axis
-alt - y : yabai -m space --mirror y-axis
-
-# Mirror x-axis
-alt - x : yabai -m space --mirror x-axis
 
 ##############################################
 # Sizing: Shift + [Alt/Cmd] + [DIR]
@@ -102,42 +66,21 @@ alt - x : yabai -m space --mirror x-axis
 shift + alt - 0 : yabai -m space --balance
 
 # Increase (no decrease options, just resizing the relevant windows)
-shift + alt - h : yabai -m window --resize left:-40:0
-shift + alt - j : yabai -m window --resize bottom:0:40
-shift + alt - k : yabai -m window --resize top:0:-40
-shift + alt - l : yabai -m window --resize right:40:0
+shift + alt - a : yabai -m window --resize left:-40:0
+shift + alt - s : yabai -m window --resize bottom:0:40
+shift + alt - w : yabai -m window --resize top:0:-40
+shift + alt - d : yabai -m window --resize right:40:0
 
 ##############################################
 # Toggling
 ##############################################
 
-# Gaps (can act as non-native fullscreen when single window is on space)
-alt - a : yabai -m space --toggle padding; yabai -m space --toggle gap
-
 # Fullscreen (still includes gaps)
 alt - f : yabai -m window --toggle zoom-fullscreen
-
-# Native Fullscreen
-shift + alt - f : yabai -m window --toggle native-fullscreen
-
-# Takes up full space of parent node
-alt - d : yabai -m window --toggle zoom-parent
-
-# Split Type (horizontal or vertical)
-alt - e : yabai -m window --toggle split
 
 # Float and center
 alt - t : yabai -m window --toggle float;\
           yabai -m window --grid 4:4:1:1:2:2
-
-# All spaces
-alt - s : yabai -m window --toggle sticky
-
-# BSP Space
-ctrl + alt - a : yabai -m space --layout bsp
-
-# Float Space
-ctrl + alt - d : yabai -m space --layout float
 
 ##############################################
 # Floating
