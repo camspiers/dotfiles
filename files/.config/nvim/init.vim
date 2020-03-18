@@ -310,7 +310,7 @@ nnoremap <silent> <Leader>; :call openterm#horizontal('lazydocker', 0.8)<CR>
 " Open harvest
 nnoremap <silent> <Leader>h :call openterm#horizontal('hstarti', 0.1)<CR>
 " Open calendar + todo
-nnoremap <silent> <Leader>t :Calendar<CR>
+nnoremap <silent> <Leader>t :call OpenCalendar()<CR>
 if ! has('gui_running')
 " Toggle pomodoro
 nnoremap <silent> <Leader>p :call TogglePomodoro()<CR>
@@ -534,6 +534,14 @@ let g:lens#height_resize_min = 15
 " }}}
 
 " Custom Tools {{{
+
+" Opens calendar with animation
+function! OpenCalendar() abort
+  new | wincmd J | resize 1
+  call animate#window_percent_height(0.8)
+  call timer_start(300, {id -> execute('Calendar -position=here')})
+endfunction
+
 " Cycle through relativenumber + number, number (only), and no numbering.
 function! CycleLineNumbering() abort
   execute {
