@@ -1,0 +1,4 @@
+name: Stopmotion
+root: ~/dev/stopmotion
+windows:
+  - Editor: nvim -S Session.vim

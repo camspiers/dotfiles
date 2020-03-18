@@ -16,7 +16,13 @@ yabai -m config focus_follows_mouse             off
 yabai -m config window_placement                second_child
 yabai -m config window_topmost                  off
 yabai -m config window_shadow                   off
-yabai -m config window_border                   off
+yabai -m config window_border                   on
+yabai -m config window_border_placement         inset
+yabai -m config window_border_width             1
+yabai -m config window_border_radius            3
+yabai -m config active_window_border_color      0xff202020
+yabai -m config normal_window_border_color      0xff202020
+yabai -m config insert_window_border_color      0xff202020
 yabai -m config window_opacity                  off
 yabai -m config split_ratio                     0.50
 yabai -m config auto_balance                    on
@@ -57,6 +63,7 @@ yabai -m rule --add app="ScreenFlow 9"          manage=off border=off
 yabai -m rule --add app="Brave Browser"         space=8
 yabai -m rule --add app="kitty"                 space=1
 yabai -m rule --add app="VimR"                  space=1
+yabai -m rule --add app="Simulator"             space=1
 
 # Communication
 yabai -m rule --add app="Slack"                 space=2
@@ -73,6 +80,7 @@ yabai -m rule --add app="Sourcetree"            space=3
 yabai -m rule --add app="Activity Monitor"      space=3
 yabai -m rule --add app="App Store"             space=3
 yabai -m rule --add app="WebTorrent"            space=3
+yabai -m rule --add app="Terminal"              space=3
 
 # Media
 yabai -m rule --add app="Music"                 space=4

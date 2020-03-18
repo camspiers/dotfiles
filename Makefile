@@ -18,6 +18,7 @@ neovim:
 	nvim +CocInstall coc-stylelint +qall
 	nvim +CocInstall coc-yaml +qall
 	nvim +CocInstall coc-sh +qall
+	nvim +CocInstall coc-reason +qall
 
 vim:
 	ln -s ${DOTFILES}/files/.config/nvim ~/.vim

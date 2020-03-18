@@ -42,11 +42,11 @@ Plug 'ryanoasis/vim-devicons'             | " Dev icons
 Plug 'vim-scripts/folddigest.vim'         | " Visualize folds
 Plug 'wincent/loupe'                      | " Search context improvements
 Plug 'camspiers/animate.vim'              | " Animation plugin
-Plug 'camspiers/lens.vim'                 | " Window reszing plugin
+Plug 'camspiers/lens.vim'                 | " Window resizing plugin
 " }}}
 
 " Editor {{{
-Plug 'neoclide/coc.nvim',     { 'do': { -> coc#util#install()}}
+Plug 'neoclide/coc.nvim',     { 'do': { -> coc#util#install()} }
 Plug 'neoclide/coc-css',      g:from_lock | " CSS language server
 Plug 'neoclide/coc-eslint',   g:from_lock | " Eslint integration
 Plug 'neoclide/coc-html',     g:from_lock | " Html language server
@@ -65,6 +65,8 @@ Plug 'tomtom/tcomment_vim'                | " Better commenting
 Plug 'tpope/vim-repeat'                   | " Improves repeats handling of Vim plugins
 Plug 'tpope/vim-surround'                 | " Surround motions
 Plug 'matze/vim-move'                     | " Move lines
+Plug 'sedm0784/vim-you-autocorrect'       | " Automatic autocorrect
+Plug 'wellle/targets.vim'                 | " Move text objects
 " }}}
 
 " Formatting {{{
@@ -73,28 +75,33 @@ Plug 'neoclide/coc-prettier', g:from_lock | " Prettier for COC
 " }}}
 
 " Tools {{{
-Plug 'airblade/vim-rooter'             | " Auto-root setting
-Plug 'antoyo/vim-licenses'             | " Generate Licences
-Plug 'duggiefresh/vim-easydir'         | " Create files in dirs that don't exist
-Plug 'inkarkat/vim-ingo-library'       | " Spellcheck dependency
-Plug 'inkarkat/vim-spellcheck'         | " Spelling errors to quickfix list
-Plug 'kassio/neoterm'                  | " REPL integration
-Plug 'prashantjois/vim-slack'          | " Slack integration
-Plug 'samoshkin/vim-mergetool'         | " Merge tool for git
-Plug 'shumphrey/fugitive-gitlab.vim'   | " GitLab support
-Plug 'tpope/vim-eunuch'                | " UNIX tools
-Plug 'tpope/vim-fugitive'              | " Git tools
-Plug 'tpope/vim-unimpaired'            | " Common mappings for many needs
-Plug 'vim-vdebug/vdebug', { 'on': [] } | " Debugging, loaded manually
+Plug 'airblade/vim-rooter'                                               | " Auto-root setting
+Plug 'antoyo/vim-licenses'                                               | " Generate Licences
+Plug 'dhruvasagar/vim-table-mode'                                        | " Better handling for tables in markdown
+Plug 'duggiefresh/vim-easydir'                                           | " Create files in dirs that don't exist
+Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }        | " Enables nvim in browser
 Plug 'iamcco/markdown-preview.nvim',  { 'do': 'cd app & yarn install'  } | " Markdown preview
-Plug 'tpope/vim-obsession'
-Plug 'wellle/tmux-complete.vim'
+Plug 'inkarkat/vim-ingo-library'                                         | " Spellcheck dependency
+Plug 'inkarkat/vim-spellcheck'                                           | " Spelling errors to quickfix list
+Plug 'itchyny/calendar.vim'                                              | " Nice calendar app
+Plug 'kassio/neoterm'                                                    | " REPL integration
+Plug 'prashantjois/vim-slack'                                            | " Slack integration
+Plug 'samoshkin/vim-mergetool'                                           | " Merge tool for git
+Plug 'shumphrey/fugitive-gitlab.vim'                                     | " GitLab support
+Plug 'tpope/vim-eunuch'                                                  | " UNIX tools
+Plug 'tpope/vim-fugitive'                                                | " Git tools
+Plug 'tpope/vim-obsession'                                               | " Save sessions automatically
+Plug 'tpope/vim-speeddating'                                             | " Tools for working with dates
+Plug 'tpope/vim-unimpaired'                                              | " Common mappings for many needs
+Plug 'vim-vdebug/vdebug', { 'on': [] }                                   | " Debugging, loaded manually
+Plug 'wellle/tmux-complete.vim'                                          | " Completion for content in tmux
 " }}}
 
 " Syntax {{{
-Plug 'sheerun/vim-polyglot'   | " Lang pack
-Plug 'bfontaine/Brewfile.vim' | " Brewfile
-Plug 'phalkunz/vim-ss'        | " SilverStripe templates
+Plug 'sheerun/vim-polyglot'            | " Lang pack
+Plug 'bfontaine/Brewfile.vim'          | " Brewfile
+Plug 'phalkunz/vim-ss'                 | " SilverStripe templates
+Plug 'reasonml-editor/vim-reason-plus' | " Reason support
 " }}}
 call plug#end()
 " }}}
@@ -303,7 +310,7 @@ nnoremap <silent> <Leader>; :call openterm#horizontal('lazydocker', 0.8)<CR>
 " Open harvest
 nnoremap <silent> <Leader>h :call openterm#horizontal('hstarti', 0.1)<CR>
 " Open calendar + todo
-nnoremap <silent> <Leader>t :call openterm#horizontal('calcurse', 0.8)<CR>
+nnoremap <silent> <Leader>t :Calendar<CR>
 if ! has('gui_running')
 " Toggle pomodoro
 nnoremap <silent> <Leader>p :call TogglePomodoro()<CR>
@@ -396,6 +403,14 @@ let g:fzf_action = {
 
 " Plugin Configuration {{{
 
+" Table Mode {{{
+let g:table_mode_corner = '|'
+" }}}
+
+" Firenvim {{{
+let g:firenvim_config = { 'localSettings': { '.*': { 'takeover': 'never', } } }
+" }}}
+
 " Smoothie {{{
 if ! has('gui_running')
   call plug#load('vim-smoothie')
@@ -481,7 +496,7 @@ let g:indent_guides_enable_on_vim_startup = 1
 let g:indent_guides_guide_size = 1
 let g:indent_guides_start_level = 2
 let g:indent_guides_color_change_percent = 1
-let g:indent_guides_exclude_filetypes = ['help', 'startify', 'fzf', 'openterm', 'neoterm']
+let g:indent_guides_exclude_filetypes = ['help', 'startify', 'fzf', 'openterm', 'neoterm', 'calendar']
 " }}}
 
 " Dirvish {{{
@@ -628,6 +643,8 @@ endfunction
 
 " Commands {{{
 
+" CoC Format
+command! -nargs=0 Format :call CocAction('format')
 " Opens FZF + Ripgrep for not ignored files
 command! -bang -nargs=*                       Rg      call Rg(v:true, <q-args>, <bang>0)
 " Opens FZF + Ripgrep for all files
@@ -652,6 +669,8 @@ augroup General
   autocmd! FileType qf call OpenQuickFix()
   " Enable spelling
   autocmd! FileType markdown,txt setlocal spell
+  autocmd! FileType markdown,txt EnableAutocorrect
+  autocmd! FileType markdown,txt silent TableModeEnable
   " Neoterm repl setup {{{
   autocmd FileType sh call neoterm#repl#set('sh')
   " }}}
