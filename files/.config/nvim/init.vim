@@ -95,6 +95,7 @@ Plug 'tpope/vim-speeddating'                                             | " Too
 Plug 'tpope/vim-unimpaired'                                              | " Common mappings for many needs
 Plug 'vim-vdebug/vdebug', { 'on': [] }                                   | " Debugging, loaded manually
 Plug 'wellle/tmux-complete.vim'                                          | " Completion for content in tmux
+Plug 'alok/notational-fzf-vim'                                           | " Note taking
 " }}}
 
 " Syntax {{{
@@ -148,8 +149,6 @@ colorscheme base16-chalk                    | " Sets theme to chalk
 set termguicolors                           | " Enables 24bit colors
 highlight Comment gui=italic                | " Make comments italic
 set noshowmode                              | " Don't show mode changes
-" }}}
-
 " }}}
 
 " }}}
@@ -291,18 +290,20 @@ imap <c-x><c-l> <plug>(fzf-complete-line)
 " }}}
 
 " Custom Tools {{{
+if ! has('gui_running')
+  " Open project
+  nnoremap <silent> <Leader>] :call openterm#vertical('tmuxinator-fzf-start.sh', 0.2)<CR>
+  " Switch session
+  nnoremap <silent> <Leader>[ :call openterm#vertical('tmux-fzf-switch.sh', 0.2)<CR>
+  " Kill session
+  nnoremap <silent> <Leader>} :call openterm#vertical('tmux-fzf-kill.sh', 0.2)<CR>
+  " Toggle pomodoro
+  nnoremap <silent> <Leader>p :call TogglePomodoro()<CR>
+endif
 " Cycle line number modes
 nnoremap <silent> <Leader>r :call CycleLineNumbering()<CR>
 " Toggle virtualedit
 nnoremap <silent> <Leader>v :call ToggleVirtualEdit()<CR>
-if ! has('gui_running')
-" Open project
-nnoremap <silent> <Leader>] :call openterm#vertical('tmuxinator-fzf-start.sh', 0.2)<CR>
-" Switch session
-nnoremap <silent> <Leader>[ :call openterm#vertical('tmux-fzf-switch.sh', 0.2)<CR>
-" Kill session
-nnoremap <silent> <Leader>} :call openterm#vertical('tmux-fzf-kill.sh', 0.2)<CR>
-endif
 " Open lazygit
 nnoremap <silent> <Leader>' :call openterm#horizontal('lazygit', 0.8)<CR>
 " Open lazydocker
@@ -311,10 +312,8 @@ nnoremap <silent> <Leader>; :call openterm#horizontal('lazydocker', 0.8)<CR>
 nnoremap <silent> <Leader>h :call openterm#horizontal('hstarti', 0.1)<CR>
 " Open calendar + todo
 nnoremap <silent> <Leader>t :call OpenCalendar()<CR>
-if ! has('gui_running')
-" Toggle pomodoro
-nnoremap <silent> <Leader>p :call TogglePomodoro()<CR>
-endif
+" Open notes search
+nnoremap <silent> <Leader>n :call OpenNotes()<CR>
 " Calls the custom start function that requests path map to be defined if not already run
 nnoremap <silent> <F5> :call StartVdebug()<CR>
 " }}}
@@ -402,6 +401,10 @@ let g:fzf_action = {
 " }}}
 
 " Plugin Configuration {{{
+
+" Notational {{{
+let g:nv_search_paths = ['~/dev/notes']
+" }}}
 
 " Table Mode {{{
 let g:table_mode_corner = '|'
@@ -535,13 +538,24 @@ let g:lens#height_resize_min = 15
 
 " Custom Tools {{{
 
+" Enabled appropriate options for text files
+function EnableTextFileSettings() abort
+  setlocal spell
+  EnableAutocorrect
+  silent TableModeEnable
+endfunction
 " Opens calendar with animation
 function! OpenCalendar() abort
   new | wincmd J | resize 1
   call animate#window_percent_height(0.8)
   call timer_start(300, {id -> execute('Calendar -position=here')})
 endfunction
-
+" Opens notes search
+function! OpenNotes() abort
+  NV
+  wincmd J | resize 1
+  call animate#window_percent_height(0.5)
+endfunction
 " Cycle through relativenumber + number, number (only), and no numbering.
 function! CycleLineNumbering() abort
   execute {
@@ -572,11 +586,13 @@ function! TogglePomodoro() abort
     call system("nohup vim-timer " . time . " &")
   endif
 endfunction
+
 " Start Vdebug and request pathmap if not yet set
 let g:register_vdebug = 0
 function! StartVdebug() abort
   if g:register_vdebug == 0
-    call RegisterVdebug() | let g:register_vdebug = 1
+    call RegisterVdebug()
+    let g:register_vdebug = 1
   endif
   python3 debugger.run()
 endfunction
@@ -593,10 +609,10 @@ endfunction
 " Opens FoldDigest with some default visual settings
 function! CustomFoldDigest() abort
   call FoldDigest()
+  call EnableCleanUI()
   vertical resize 1
   call animate#window_absolute_width(lens#get_cols())
   set winfixwidth
-  setlocal listchars= nonumber norelativenumber
 endfunction
 " Creates a vsplit in an animated fashion
 function! Vsplit() abort
@@ -632,6 +648,20 @@ endfunction
 " Configures an FZF window
 function! NewFZFWindow() abort
   new | wincmd J | resize 1
+endfunction
+
+" Enables UI styles suitable for terminals etc
+function! EnableCleanUI() abort
+  setlocal listchars=
+    \ nonumber 
+    \ norelativenumber
+    \ nowrap
+    \ winfixwidth
+    \ laststatus=0
+    \ noshowmode
+    \ noruler
+    \ scl=no
+  autocmd BufLeave <buffer> set laststatus=2 showmode ruler
 endfunction
 
 " There's an issue with animating FZF. The preview sees the terminal as having
@@ -675,10 +705,8 @@ augroup General
   autocmd!
   " Put the quickfix window always at the bottom
   autocmd! FileType qf call OpenQuickFix()
-  " Enable spelling
-  autocmd! FileType markdown,txt setlocal spell
-  autocmd! FileType markdown,txt EnableAutocorrect
-  autocmd! FileType markdown,txt silent TableModeEnable
+  " Enable text file settings
+  autocmd! FileType markdown,txt call EnableTextFileSettings()
   " Neoterm repl setup {{{
   autocmd FileType sh call neoterm#repl#set('sh')
   " }}}
@@ -690,8 +718,8 @@ augroup TermHandling
   " Turn off line numbers, listchars, auto enter insert mode and map esc to
   " exit insert mode
   if has('nvim')
-    autocmd TermOpen * setlocal listchars= nonumber norelativenumber nowrap winfixwidth laststatus=0 noshowmode noruler
-    autocmd TermOpen * startinsert | autocmd BufLeave <buffer> set laststatus=2 showmode ruler
+    autocmd TermOpen * call EnableCleanUI()
+    autocmd TermOpen * startinsert
     autocmd TermOpen * let g:last_open_term_id = b:terminal_job_id
   endif
   " Define ESC to be SIGTERM
