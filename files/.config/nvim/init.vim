@@ -11,16 +11,16 @@ call plug#begin(expand('~/.config/nvim/plugged'))
 let g:from_lock = {'do': 'yarn install --frozen-lockfile'}
 
 " Defaults {{{
-Plug 'tpope/vim-sensible'             | " Sensible defaults
-Plug 'wincent/terminus'               | " Terminal integration improvements
 Plug 'christoomey/vim-tmux-navigator' | " Pane navigation
 Plug 'farmergreg/vim-lastplace'       | " Go to last position when opening files
+Plug 'tpope/vim-sensible'             | " Sensible defaults
+Plug 'wincent/terminus'               | " Terminal integration improvements
 " }}}
 
 " Search {{{
+Plug 'jesseleite/vim-agriculture' | " Rg options for FZF
 Plug 'junegunn/fzf'               | " Main FZF plugin
 Plug 'junegunn/fzf.vim'           | " Fuzzy finding plugin
-Plug 'jesseleite/vim-agriculture' | " Rg options for FZF
 " }}}
 
 " Navigation {{{
@@ -31,21 +31,24 @@ Plug 'wincent/vcs-jump'               | " Jump to git things
 " }}}
 
 " Visual {{{
-Plug 'arecarn/vim-clean-fold'             | " Provides cleaning function for folds
+Plug 'arecarn/vim-clean-fold'             | " Provides function for folds
 Plug 'blueyed/vim-diminactive'            | " Makes determining active window easier
+Plug 'camspiers/animate.vim'              | " Animation plugin
+Plug 'camspiers/lens.vim'                 | " Window resizing plugin
 Plug 'chriskempson/base16-vim'            | " Base16 theme pack
-Plug 'mhinz/vim-signify'                  | " Show git info in sidebar
 Plug 'mhinz/vim-startify'                 | " Startup screen
 Plug 'nathanaelkane/vim-indent-guides'    | " Provides indentation guides
 Plug 'psliwka/vim-smoothie', { 'on': [] } | " Nicer scrolling
 Plug 'ryanoasis/vim-devicons'             | " Dev icons
 Plug 'vim-scripts/folddigest.vim'         | " Visualize folds
 Plug 'wincent/loupe'                      | " Search context improvements
-Plug 'camspiers/animate.vim'              | " Animation plugin
-Plug 'camspiers/lens.vim'                 | " Window resizing plugin
 " }}}
 
 " Editor {{{
+Plug 'bkad/CamelCaseMotion'               | " Motions for inside camel case
+Plug 'junegunn/vim-easy-align'            | " Helps alignment
+Plug 'kkoomen/vim-doge'                   | " Docblock generator
+Plug 'matze/vim-move'                     | " Move lines
 Plug 'neoclide/coc.nvim',     { 'do': { -> coc#util#install()} }
 Plug 'neoclide/coc-css',      g:from_lock | " CSS language server
 Plug 'neoclide/coc-eslint',   g:from_lock | " Eslint integration
@@ -56,16 +59,12 @@ Plug 'neoclide/coc-pairs',    g:from_lock | " Auto-insert language aware pairs
 Plug 'neoclide/coc-snippets', g:from_lock | " Provides snippets
 Plug 'neoclide/coc-tslint',   g:from_lock | " Tslint integration
 Plug 'neoclide/coc-tsserver', g:from_lock | " TypeScript language server
-Plug 'bkad/CamelCaseMotion'               | " Motions for inside camel case
-Plug 'junegunn/vim-easy-align'            | " Helps alignment
-Plug 'justinmk/vim-sneak'                 | " Better search motions (s and S, z and Z)
-Plug 'kkoomen/vim-doge'                   | " Docblock generator
+Plug 'neoclide/coc-git',      g:from_lock | " Git info
 Plug 'romainl/vim-cool'                   | " Awesome search highlighting
-Plug 'tomtom/tcomment_vim'                | " Better commenting
-Plug 'tpope/vim-repeat'                   | " Improves repeats handling of Vim plugins
-Plug 'tpope/vim-surround'                 | " Surround motions
-Plug 'matze/vim-move'                     | " Move lines
 Plug 'sedm0784/vim-you-autocorrect'       | " Automatic autocorrect
+Plug 'tomtom/tcomment_vim'                | " Better commenting
+Plug 'tpope/vim-repeat'                   | " Improves repeat handling
+Plug 'tpope/vim-surround'                 | " Surround motions
 Plug 'wellle/targets.vim'                 | " Move text objects
 " }}}
 
@@ -76,6 +75,7 @@ Plug 'neoclide/coc-prettier', g:from_lock | " Prettier for COC
 
 " Tools {{{
 Plug 'airblade/vim-rooter'                                               | " Auto-root setting
+Plug 'alok/notational-fzf-vim'                                           | " Note taking
 Plug 'antoyo/vim-licenses'                                               | " Generate Licences
 Plug 'dhruvasagar/vim-table-mode'                                        | " Better handling for tables in markdown
 Plug 'duggiefresh/vim-easydir'                                           | " Create files in dirs that don't exist
@@ -95,14 +95,13 @@ Plug 'tpope/vim-speeddating'                                             | " Too
 Plug 'tpope/vim-unimpaired'                                              | " Common mappings for many needs
 Plug 'vim-vdebug/vdebug', { 'on': [] }                                   | " Debugging, loaded manually
 Plug 'wellle/tmux-complete.vim'                                          | " Completion for content in tmux
-Plug 'alok/notational-fzf-vim'                                           | " Note taking
 " }}}
 
 " Syntax {{{
-Plug 'sheerun/vim-polyglot'            | " Lang pack
 Plug 'bfontaine/Brewfile.vim'          | " Brewfile
 Plug 'phalkunz/vim-ss'                 | " SilverStripe templates
 Plug 'reasonml-editor/vim-reason-plus' | " Reason support
+Plug 'sheerun/vim-polyglot'            | " Lang pack
 " }}}
 call plug#end()
 " }}}
@@ -271,8 +270,6 @@ xmap gx <Plug>(neoterm-repl-send)
 " }}}
 
 " Git {{{
-" Git commit messages
-nmap <silent> gm <Plug>(git-messenger)
 " Run :VcsJump diff
 nnoremap <Leader>+ :VcsJump diff<CR>
 " }}}
@@ -435,6 +432,10 @@ set shortmess+=c
 set signcolumn=yes
 " You will have bad experience for diagnostic messages when it's default 4000.
 set updatetime=300
+
+" CoC Colors {{{
+highlight CocCodeLens gui=italic guifg=#505050
+" }}}
 
 " Use tab for trigger completion
 inoremap <silent><expr> <TAB>
@@ -721,6 +722,9 @@ augroup TermHandling
     autocmd TermOpen * call EnableCleanUI()
     autocmd TermOpen * startinsert
     autocmd TermOpen * let g:last_open_term_id = b:terminal_job_id
+    " Help with nvim terminal display
+    autocmd TermEnter * setlocal scrolloff=0
+    autocmd TermLeave * setlocal scrolloff=1
   endif
   " Define ESC to be SIGTERM
   autocmd! FileType fzf tnoremap <Esc> <c-c>

@@ -9,5 +9,7 @@
     "typescriptreact",
     "json",
     "typescript.tsx"
-  ]
+  ],
+  "git.addGBlameToVirtualText": true,
+  "git.virtualTextPrefix": "  <<<>>> "
 }

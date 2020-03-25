@@ -14,6 +14,7 @@ tap "Schniz/tap"
 tap "rlue/utils"
 
 # Homebrew essentials
+brew "azure-cli"
 brew "bash"
 brew "bash-completion"
 brew "bat"
