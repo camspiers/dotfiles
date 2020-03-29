@@ -18,7 +18,7 @@ Plug 'wincent/terminus'               | " Terminal integration improvements
 " }}}
 
 " Search {{{
-Plug 'jesseleite/vim-agriculture' | " Rg options for FZF
+Plug 'jesseleite/vim-agriculture' | " Ripgrep options for FZF
 Plug 'junegunn/fzf'               | " Main FZF plugin
 Plug 'junegunn/fzf.vim'           | " Fuzzy finding plugin
 " }}}
@@ -32,62 +32,64 @@ Plug 'wincent/vcs-jump'               | " Jump to git things
 
 " Visual {{{
 Plug 'arecarn/vim-clean-fold'             | " Provides function for folds
-Plug 'blueyed/vim-diminactive'            | " Makes determining active window easier
+Plug 'blueyed/vim-diminactive'            | " Helps identifying active window
 Plug 'camspiers/animate.vim'              | " Animation plugin
 Plug 'camspiers/lens.vim'                 | " Window resizing plugin
 Plug 'chriskempson/base16-vim'            | " Base16 theme pack
 Plug 'mhinz/vim-startify'                 | " Startup screen
 Plug 'nathanaelkane/vim-indent-guides'    | " Provides indentation guides
-Plug 'psliwka/vim-smoothie', { 'on': [] } | " Nicer scrolling
 Plug 'ryanoasis/vim-devicons'             | " Dev icons
 Plug 'vim-scripts/folddigest.vim'         | " Visualize folds
 Plug 'wincent/loupe'                      | " Search context improvements
 " }}}
 
-" Editor {{{
-Plug 'bkad/CamelCaseMotion'               | " Motions for inside camel case
-Plug 'junegunn/vim-easy-align'            | " Helps alignment
-Plug 'kkoomen/vim-doge'                   | " Docblock generator
-Plug 'matze/vim-move'                     | " Move lines
+" Conquer of Completion {{{
 Plug 'neoclide/coc.nvim',     { 'do': { -> coc#util#install()} }
 Plug 'neoclide/coc-css',      g:from_lock | " CSS language server
 Plug 'neoclide/coc-eslint',   g:from_lock | " Eslint integration
+Plug 'neoclide/coc-git',      g:from_lock | " Git info
 Plug 'neoclide/coc-html',     g:from_lock | " Html language server
 Plug 'neoclide/coc-json',     g:from_lock | " JSON language server
 Plug 'neoclide/coc-lists',    g:from_lock | " Arbitrary lists
 Plug 'neoclide/coc-pairs',    g:from_lock | " Auto-insert language aware pairs
+Plug 'neoclide/coc-prettier', g:from_lock | " Prettier for COC
 Plug 'neoclide/coc-snippets', g:from_lock | " Provides snippets
 Plug 'neoclide/coc-tslint',   g:from_lock | " Tslint integration
 Plug 'neoclide/coc-tsserver', g:from_lock | " TypeScript language server
-Plug 'neoclide/coc-git',      g:from_lock | " Git info
+" }}}
+
+" Editor {{{
+Plug 'bkad/CamelCaseMotion'               | " Motions for inside camel case
+Plug 'editorconfig/editorconfig-vim'      | " Import tabs etc from editorconfig
+Plug 'junegunn/vim-easy-align'            | " Helps alignment
+Plug 'kkoomen/vim-doge'                   | " Docblock generator
+Plug 'lervag/vimtex'                      | " Support for vimtex
+Plug 'matze/vim-move'                     | " Move lines
+Plug 'reedes/vim-pencil'                  | " Auto hard breaks for text files
 Plug 'romainl/vim-cool'                   | " Awesome search highlighting
-Plug 'sedm0784/vim-you-autocorrect'       | " Automatic autocorrect
 Plug 'tomtom/tcomment_vim'                | " Better commenting
 Plug 'tpope/vim-repeat'                   | " Improves repeat handling
 Plug 'tpope/vim-surround'                 | " Surround motions
 Plug 'wellle/targets.vim'                 | " Move text objects
 " }}}
 
-" Formatting {{{
-Plug 'editorconfig/editorconfig-vim'      | " Import tabs etc from editorconfig
-Plug 'neoclide/coc-prettier', g:from_lock | " Prettier for COC
-" }}}
-
 " Tools {{{
+Plug 'glacambre/firenvim', has('nvim') ? { 'do': { _ -> firenvim#install(0) } } : {'on': []} | " Enables nvim in browser
 Plug 'airblade/vim-rooter'                                               | " Auto-root setting
-Plug 'alok/notational-fzf-vim'                                           | " Note taking
-Plug 'antoyo/vim-licenses'                                               | " Generate Licences
 Plug 'dhruvasagar/vim-table-mode'                                        | " Better handling for tables in markdown
 Plug 'duggiefresh/vim-easydir'                                           | " Create files in dirs that don't exist
-Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }        | " Enables nvim in browser
-Plug 'iamcco/markdown-preview.nvim',  { 'do': 'cd app & yarn install'  } | " Markdown preview
+Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  }  | " Markdown preview
 Plug 'inkarkat/vim-ingo-library'                                         | " Spellcheck dependency
 Plug 'inkarkat/vim-spellcheck'                                           | " Spelling errors to quickfix list
 Plug 'itchyny/calendar.vim'                                              | " Nice calendar app
 Plug 'kassio/neoterm'                                                    | " REPL integration
+Plug 'kristijanhusak/vim-dadbod-ui'                                      | " DB UI support
+Plug 'mbbill/undotree'                                                   | " Undo history visualizer
 Plug 'prashantjois/vim-slack'                                            | " Slack integration
 Plug 'samoshkin/vim-mergetool'                                           | " Merge tool for git
+Plug 'sedm0784/vim-you-autocorrect'                                      | " Automatic autocorrect
 Plug 'shumphrey/fugitive-gitlab.vim'                                     | " GitLab support
+Plug 'tpope/vim-dadbod'                                                  | " DB support
 Plug 'tpope/vim-eunuch'                                                  | " UNIX tools
 Plug 'tpope/vim-fugitive'                                                | " Git tools
 Plug 'tpope/vim-obsession'                                               | " Save sessions automatically
@@ -141,13 +143,14 @@ set foldtext=clean_fold#fold_text_minimal() | " Clean folds
 let &colorcolumn="81,121"                   | " Add indicator for 80 and 120
 set novisualbell                            | " Don't display visual bell
 set showmatch                               | " Show matching braces
-set cursorline                              | " Enable current line indicator
 set number relativenumber                   | " Show line numbers
 let base16colorspace=256                    | " Access colors present in 256 colorspace
 colorscheme base16-chalk                    | " Sets theme to chalk
 set termguicolors                           | " Enables 24bit colors
-highlight Comment gui=italic                | " Make comments italic
 set noshowmode                              | " Don't show mode changes
+" Highlight Customizations {{{
+highlight Comment gui=italic,bold           | " Make comments italic
+" }}}
 " }}}
 
 " }}}
@@ -307,10 +310,10 @@ nnoremap <silent> <Leader>' :call openterm#horizontal('lazygit', 0.8)<CR>
 nnoremap <silent> <Leader>; :call openterm#horizontal('lazydocker', 0.8)<CR>
 " Open harvest
 nnoremap <silent> <Leader>h :call openterm#horizontal('hstarti', 0.1)<CR>
+" Open scratch pad
+nnoremap <silent> <Leader>sc :call openterm#horizontal('bash', 0.2)<CR>
 " Open calendar + todo
 nnoremap <silent> <Leader>t :call OpenCalendar()<CR>
-" Open notes search
-nnoremap <silent> <Leader>n :call OpenNotes()<CR>
 " Calls the custom start function that requests path map to be defined if not already run
 nnoremap <silent> <F5> :call StartVdebug()<CR>
 " }}}
@@ -394,13 +397,24 @@ let g:fzf_layout = {
 let g:fzf_action = {
   \ 'ctrl-l': {l -> execute('args ' . join(map(l, {_, v -> fnameescape(v)}), ' '))},
   \ 'ctrl-x': 'split',
-  \ 'ctrl-v': 'vsplit' }
+  \ 'ctrl-v': 'vsplit'
+\ }
 " }}}
 
 " Plugin Configuration {{{
 
-" Notational {{{
-let g:nv_search_paths = ['~/dev/notes']
+" Vimtex {{{
+let g:vimtex_view_method = 'skim'
+" }}}
+
+" Pencil {{{
+let g:pencil#autoformat = 1
+let g:pencil#textwidth = 80
+let g:pencil#conceallevel = 0
+" }}}
+
+" Polyglot {{{
+let g:polyglot_disabled = ['latex']
 " }}}
 
 " Table Mode {{{
@@ -409,12 +423,6 @@ let g:table_mode_corner = '|'
 
 " Firenvim {{{
 let g:firenvim_config = { 'localSettings': { '.*': { 'takeover': 'never', } } }
-" }}}
-
-" Smoothie {{{
-if ! has('gui_running')
-  call plug#load('vim-smoothie')
-endif
 " }}}
 
 " Loupe {{{
@@ -434,7 +442,7 @@ set signcolumn=yes
 set updatetime=300
 
 " CoC Colors {{{
-highlight CocCodeLens gui=italic guifg=#505050
+highlight CocCodeLens gui=italic,bold guifg=#505050
 " }}}
 
 " Use tab for trigger completion
@@ -507,13 +515,13 @@ let g:indent_guides_exclude_filetypes = ['help', 'startify', 'fzf', 'openterm', 
 let g:dirvish_git_modified = 'guifg=#ddb26f ctermfg=3'
 let g:dirvish_git_added = 'guifg=#acc267 ctermfg=2'
 let g:dirvish_git_unmerged = 'guifg=#fb9fb1 ctermfg=1'
-silent execute 'hi default DirvishGitModified '.g:dirvish_git_modified
-silent execute 'hi default DirvishGitStaged '.g:dirvish_git_added
-silent execute 'hi default DirvishGitRenamed '.g:dirvish_git_modified
-silent execute 'hi default DirvishGitUnmerged '.g:dirvish_git_unmerged
-silent execute 'hi default DirvishGitIgnored guifg=NONE guibg=NONE gui=NONE cterm=NONE ctermfg=NONE ctermbg=NONE'
-silent execute 'hi default DirvishGitUntracked guifg=NONE guibg=NONE gui=NONE cterm=NONE ctermfg=NONE ctermbg=NONE'
-silent execute 'hi default link DirvishGitUntrackedDir DirvishPathTail'
+silent execute 'highlight default DirvishGitModified '.g:dirvish_git_modified
+silent execute 'highlight default DirvishGitStaged '.g:dirvish_git_added
+silent execute 'highlight default DirvishGitRenamed '.g:dirvish_git_modified
+silent execute 'highlight default DirvishGitUnmerged '.g:dirvish_git_unmerged
+highlight default DirvishGitIgnored guifg=NONE guibg=NONE gui=NONE cterm=NONE ctermfg=NONE ctermbg=NONE
+highlight default DirvishGitUntracked guifg=NONE guibg=NONE gui=NONE cterm=NONE ctermfg=NONE ctermbg=NONE
+highlight default link DirvishGitUntrackedDir DirvishPathTail
 " }}}
 
 " Fold Digest {{{
@@ -521,14 +529,8 @@ let folddigest_options = "nofoldclose,vertical,flexnumwidth"
 let folddigest_size = 40
 " }}}
 
-" Licences {{{
-let g:licenses_copyright_holders_name = 'Spiers, Cam <camspiers@gmail.com>'
-let g:licenses_authors_name = 'Spiers, Cam <camspiers@gmail.com>'
-let g:licenses_default_commands = ['mit']
-" }}}
-
 " Animate {{{
-let g:animate#easing_func = 'animate#ease_out_quad'
+let g:animate#easing_func = 'animate#ease_in_out_sine'
 " }}}
 
 " Lens {{{
@@ -540,22 +542,17 @@ let g:lens#height_resize_min = 15
 " Custom Tools {{{
 
 " Enabled appropriate options for text files
-function EnableTextFileSettings() abort
+function! EnableTextFileSettings() abort
   setlocal spell
   EnableAutocorrect
   silent TableModeEnable
+  call pencil#init({'wrap': 'hard'})
 endfunction
 " Opens calendar with animation
 function! OpenCalendar() abort
   new | wincmd J | resize 1
   call animate#window_percent_height(0.8)
   call timer_start(300, {id -> execute('Calendar -position=here')})
-endfunction
-" Opens notes search
-function! OpenNotes() abort
-  NV
-  wincmd J | resize 1
-  call animate#window_percent_height(0.5)
 endfunction
 " Cycle through relativenumber + number, number (only), and no numbering.
 function! CycleLineNumbering() abort
@@ -685,46 +682,38 @@ endfunction
 " CoC Format
 command! -nargs=0 Format :call CocAction('format')
 " Opens FZF + Ripgrep for not ignored files
-command! -bang -nargs=*                       Rg      call Rg(v:true, <q-args>, <bang>0)
+command! -bang -nargs=* Rg call Rg(v:true, <q-args>, <bang>0)
 " Opens FZF + Ripgrep for all files
-command! -bang -nargs=*                       Rgg     call Rg(v:false, <q-args>, <bang>0)
+command! -bang -nargs=* Rgg call Rg(v:false, <q-args>, <bang>0)
 " Opens a file searcher
-command! -bang -nargs=? -complete=dir         Files   call Files(<q-args>, <bang>0)
+command! -bang -nargs=? -complete=dir Files call Files(<q-args>, <bang>0)
 " Opens search of lines in open buffers
-command! -bang -nargs=*                       Lines   call Lines(<q-args>, <bang>0)
+command! -bang -nargs=* Lines call Lines(<q-args>, <bang>0)
 " Opens buffer search
 command! -bar -bang -nargs=? -complete=buffer Buffers call Buffers(<q-args>, <bang>0)
 " Opens window search
-command! -bar -bang                           Windows call Windows(<bang>0)
+command! -bar -bang Windows call Windows(<bang>0)
 " Sets up command for prettier
 command! -nargs=0 Prettier :CocCommand prettier.formatFile
 " }}}
 
 " Auto Commands {{{
-" Uncategorized autocmds
 augroup General
   autocmd!
   " Put the quickfix window always at the bottom
   autocmd! FileType qf call OpenQuickFix()
   " Enable text file settings
-  autocmd! FileType markdown,txt call EnableTextFileSettings()
-  " Neoterm repl setup {{{
+  autocmd! FileType markdown,txt,tex call EnableTextFileSettings()
+  " Neoterm REPL setup
   autocmd FileType sh call neoterm#repl#set('sh')
-  " }}}
 augroup END
 
-" Quit term buffer with ESC
 augroup TermHandling
   autocmd!
-  " Turn off line numbers, listchars, auto enter insert mode and map esc to
-  " exit insert mode
   if has('nvim')
     autocmd TermOpen * call EnableCleanUI()
     autocmd TermOpen * startinsert
     autocmd TermOpen * let g:last_open_term_id = b:terminal_job_id
-    " Help with nvim terminal display
-    autocmd TermEnter * setlocal scrolloff=0
-    autocmd TermLeave * setlocal scrolloff=1
   endif
   " Define ESC to be SIGTERM
   autocmd! FileType fzf tnoremap <Esc> <c-c>

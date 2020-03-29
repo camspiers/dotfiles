@@ -7,3 +7,6 @@ discharging_symbol = "💀"
 
 [time]
 disabled = false
+
+[aws]
+disabled = true

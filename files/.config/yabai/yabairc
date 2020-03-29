@@ -55,15 +55,16 @@ yabai -m config --space 6 layout float
 
 # Unmanaged
 yabai -m rule --add app="^System Preferences$"  manage=off border=off
-yabai -m rule --add app="Preview"               manage=off border=off
 yabai -m rule --add app="Harvest"               manage=off border=off
 yabai -m rule --add app="ScreenFlow 9"          manage=off border=off
 
 # Primary
 yabai -m rule --add app="Brave Browser"         space=8
 yabai -m rule --add app="kitty"                 space=1
+yabai -m rule --add app="Preview"               space=1
 yabai -m rule --add app="VimR"                  space=1
 yabai -m rule --add app="Simulator"             space=1
+yabai -m rule --add app="Skim"                  space=1
 
 # Communication
 yabai -m rule --add app="Slack"                 space=2

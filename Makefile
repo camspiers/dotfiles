@@ -8,6 +8,7 @@ install:
 
 brew:
 	brew bundle --file="$(DOTFILES)/extra/homebrew/Brewfile"
+	sudo tlmgr install latexmk
 
 neovim:
 	python3 -m pip install --upgrade pynvim
@@ -19,6 +20,7 @@ neovim:
 	nvim +CocInstall coc-yaml +qall
 	nvim +CocInstall coc-sh +qall
 	nvim +CocInstall coc-reason +qall
+	nvim +CocInstall coc-vimtex +qall
 
 vim:
 	ln -s ${DOTFILES}/files/.config/nvim ~/.vim
