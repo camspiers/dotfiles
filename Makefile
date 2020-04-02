@@ -12,15 +12,7 @@ brew:
 
 neovim:
 	python3 -m pip install --upgrade pynvim
-	curl -fLo ${DOTFILES}/files/.config/nvim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 	nvim +PlugInstall +qall
-	nvim +CocInstall coc-phpls +qall
-	nvim +CocInstall coc-vimlsp +qall
-	nvim +CocInstall coc-stylelint +qall
-	nvim +CocInstall coc-yaml +qall
-	nvim +CocInstall coc-sh +qall
-	nvim +CocInstall coc-reason +qall
-	nvim +CocInstall coc-vimtex +qall
 
 vim:
 	ln -s ${DOTFILES}/files/.config/nvim ~/.vim

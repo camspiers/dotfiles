@@ -3,7 +3,154 @@
 "###############################################################################
 " See README.md for more information
 
-source $HOME/.config/nvim/configs/plugins.vim
+" Install vim-plug if not already installed
+if empty(glob('~/.config/nvim/autoload/plug.vim'))
+  silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs
+        \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+endif
+
+" Custom Vim Plug {{{
+" Allows options to be added for each plugin, this enables simpler plugin
+" registration in particular not having to add lengthy content affecting the
+" ability to add documentation
+let g:vim_plug_opts = {
+  \ 'neoclide/coc.nvim':                { 'do': { -> coc#util#install()} },
+  \ 'neoclide/coc-css':                 { 'do': 'yarn install --frozen-lockfile' },
+  \ 'neoclide/coc-eslint':              { 'do': 'yarn install --frozen-lockfile' },
+  \ 'neoclide/coc-git':                 { 'do': 'yarn install --frozen-lockfile' },
+  \ 'neoclide/coc-html':                { 'do': 'yarn install --frozen-lockfile' },
+  \ 'neoclide/coc-json':                { 'do': 'yarn install --frozen-lockfile' },
+  \ 'neoclide/coc-lists':               { 'do': 'yarn install --frozen-lockfile' },
+  \ 'neoclide/coc-pairs':               { 'do': 'yarn install --frozen-lockfile' },
+  \ 'neoclide/coc-prettier':            { 'do': 'yarn install --frozen-lockfile' },
+  \ 'neoclide/coc-snippets':            { 'do': 'yarn install --frozen-lockfile' },
+  \ 'neoclide/coc-tslint':              { 'do': 'yarn install --frozen-lockfile' },
+  \ 'neoclide/coc-tsserver':            { 'do': 'yarn install --frozen-lockfile' },
+  \ 'glacambre/firenvim': has('nvim') ? { 'do': { _ -> firenvim#install(0) } } : {'on': []},
+  \ 'iamcco/markdown-preview.nvim':     { 'do': 'cd app & yarn install'  },
+  \ 'vim-vdebug/vdebug':                { 'on': [] },
+\ }
+
+" Check options for plugin
+function! VimPlugOptions(plugin) abort
+  return has_key(g:vim_plug_opts, a:plugin) ? g:vim_plug_opts[a:plugin] : {}
+endfunction
+
+" Register plugin with options
+function! VimPlugRegister(plugin) abort
+  let plugin = substitute(a:plugin, "'", '', 'g')
+  call plug#(plugin, VimPlugOptions(plugin))
+endfunction
+
+" Custom command for registering plugins
+command! -nargs=1 -bar PlugReg call VimPlugRegister(<f-args>)
+" }}}
+
+" Plugins {{{
+" Begin vim plug
+call plug#begin(expand('~/.config/nvim/plugged'))
+
+" Defaults {{{
+PlugReg 'christoomey/vim-tmux-navigator' | " Pane navigation
+PlugReg 'farmergreg/vim-lastplace'       | " Go to last position when opening files
+PlugReg 'tpope/vim-sensible'             | " Sensible defaults
+PlugReg 'wincent/terminus'               | " Terminal integration improvements
+" }}}
+
+" Search {{{
+PlugReg 'jesseleite/vim-agriculture' | " Ripgrep options for FZF
+PlugReg 'junegunn/fzf'               | " Main FZF plugin
+PlugReg 'junegunn/fzf.vim'           | " Fuzzy finding plugin
+" }}}
+
+" Navigation {{{
+PlugReg 'justinmk/vim-dirvish'           | " Replacement for netrw
+PlugReg 'kristijanhusak/vim-dirvish-git' | " Git statuses in dirvish
+PlugReg 'tpope/vim-projectionist'        | " Navigation of related files
+PlugReg 'wincent/vcs-jump'               | " Jump to git things
+PlugReg 'ap/vim-buftabline'              | " Minimal plugin for displaying buffers
+" }}}
+
+" Visual {{{
+PlugReg 'arecarn/vim-clean-fold'          | " Provides function for folds
+PlugReg 'blueyed/vim-diminactive'         | " Helps identifying active window
+PlugReg 'camspiers/animate.vim'           | " Animation plugin
+PlugReg 'camspiers/lens.vim'              | " Window resizing plugin
+PlugReg 'chriskempson/base16-vim'         | " Base16 theme pack
+PlugReg 'mhinz/vim-startify'              | " Startup screen
+PlugReg 'nathanaelkane/vim-indent-guides' | " Provides indentation guides
+PlugReg 'ryanoasis/vim-devicons'          | " Dev icons
+PlugReg 'vim-scripts/folddigest.vim'      | " Visualize folds
+PlugReg 'wincent/loupe'                   | " Search context improvements
+" }}}
+
+" Conquer of Completion {{{
+PlugReg 'neoclide/coc.nvim'     | " Completion provider
+PlugReg 'neoclide/coc-css'      | " CSS language server
+PlugReg 'neoclide/coc-eslint'   | " Eslint integration
+PlugReg 'neoclide/coc-git'      | " Git info
+PlugReg 'neoclide/coc-html'     | " Html language server
+PlugReg 'neoclide/coc-json'     | " JSON language server
+PlugReg 'neoclide/coc-lists'    | " Arbitrary lists
+PlugReg 'neoclide/coc-pairs'    | " Auto-insert language aware pairs
+PlugReg 'neoclide/coc-prettier' | " Prettier for COC
+PlugReg 'neoclide/coc-snippets' | " Provides snippets
+PlugReg 'neoclide/coc-tslint'   | " Tslint integration
+PlugReg 'neoclide/coc-tsserver' | " TypeScript language server
+" }}}
+
+" Editor {{{
+PlugReg 'bkad/CamelCaseMotion'          | " Motions for inside camel case
+PlugReg 'editorconfig/editorconfig-vim' | " Import tabs etc from editorconfig
+PlugReg 'junegunn/vim-easy-align'       | " Helps alignment
+PlugReg 'kkoomen/vim-doge'              | " Docblock generator
+PlugReg 'lervag/vimtex'                 | " Support for vimtex
+PlugReg 'matze/vim-move'                | " Move lines
+PlugReg 'reedes/vim-pencil'             | " Auto hard breaks for text files
+PlugReg 'romainl/vim-cool'              | " Awesome search highlighting
+PlugReg 'tomtom/tcomment_vim'           | " Better commenting
+PlugReg 'tpope/vim-repeat'              | " Improves repeat handling
+PlugReg 'tpope/vim-surround'            | " Surround motions
+PlugReg 'wellle/targets.vim'            | " Move text objects
+PlugReg 'terryma/vim-multiple-cursors'  | " Multiple cursor support like Sublime
+" }}}
+
+" Tools {{{
+PlugReg 'glacambre/firenvim'            | " Enables nvim in browser
+PlugReg 'airblade/vim-rooter'           | " Auto-root setting
+PlugReg 'dhruvasagar/vim-table-mode'    | " Better handling for tables in markdown
+PlugReg 'duggiefresh/vim-easydir'       | " Create files in dirs that don't exist
+PlugReg 'iamcco/markdown-preview.nvim'  | " Markdown preview
+PlugReg 'inkarkat/vim-ingo-library'     | " Spellcheck dependency
+PlugReg 'inkarkat/vim-spellcheck'       | " Spelling errors to quickfix list
+PlugReg 'itchyny/calendar.vim'          | " Nice calendar app
+PlugReg 'kassio/neoterm'                | " REPL integration
+PlugReg 'kristijanhusak/vim-dadbod-ui'  | " DB UI support
+PlugReg 'mbbill/undotree'               | " Undo history visualizer
+PlugReg 'prashantjois/vim-slack'        | " Slack integration
+PlugReg 'samoshkin/vim-mergetool'       | " Merge tool for git
+PlugReg 'sedm0784/vim-you-autocorrect'  | " Automatic autocorrect
+PlugReg 'shumphrey/fugitive-gitlab.vim' | " GitLab support
+PlugReg 'tpope/vim-dadbod'              | " DB support
+PlugReg 'tpope/vim-eunuch'              | " UNIX tools
+PlugReg 'tpope/vim-fugitive'            | " Git tools
+PlugReg 'tpope/vim-obsession'           | " Save sessions automatically
+PlugReg 'tpope/vim-speeddating'         | " Tools for working with dates
+PlugReg 'tpope/vim-unimpaired'          | " Common mappings for many needs
+PlugReg 'vim-vdebug/vdebug'             | " Debugging, loaded manually
+PlugReg 'wellle/tmux-complete.vim'      | " Completion for content in tmux
+" }}}
+
+" Syntax {{{
+PlugReg 'bfontaine/Brewfile.vim'          | " Brewfile
+PlugReg 'phalkunz/vim-ss'                 | " SilverStripe templates
+PlugReg 'reasonml-editor/vim-reason-plus' | " Reason support
+PlugReg 'sheerun/vim-polyglot'            | " Lang pack
+" }}}
+
+" End the plugin registration
+call plug#end()
+" }}}
 
 " Settings {{{
 
@@ -46,8 +193,8 @@ colorscheme base16-chalk                    | " Sets theme to chalk
 set termguicolors                           | " Enables 24bit colors
 set noshowmode                              | " Don't show mode changes
 " Highlight Customizations {{{
-highlight Comment gui=italic,bold           | " Make comments italic
-highlight Folded gui=italic,bold           | " Make folds italic
+highlight Comment gui=italic,bold | " Make comments italic
+highlight Folded gui=italic,bold  | " Make folds italic
 " }}}
 " }}}
 
@@ -336,6 +483,20 @@ let g:LoupeClearHighlightMap = 0
 " }}}
 
 " Conquer of Completion {{{
+
+" Plugins {{{
+let g:coc_global_extensions = [
+  \ 'coc-phpls',
+  \ 'coc-vimlsp',
+  \ 'coc-stylelint',
+  \ 'coc-yaml',
+  \ 'coc-sh',
+  \ 'coc-reason',
+  \ 'coc-vimtex',
+\ ]
+" }}}
+
+" CoC Related Settings {{{
 " See coc-settings.json for more configuration
 " Some servers have issues with backup files
 set nobackup
@@ -346,6 +507,7 @@ set shortmess+=c
 set signcolumn=yes
 " You will have bad experience for diagnostic messages when it's default 4000.
 set updatetime=300
+" }}}
 
 " CoC Colors {{{
 highlight CocCodeLens gui=italic,bold guifg=#505050
@@ -433,10 +595,6 @@ highlight default link DirvishGitUntrackedDir DirvishPathTail
 " Fold Digest {{{
 let folddigest_options = "nofoldclose,vertical,flexnumwidth"
 let folddigest_size = 40
-" }}}
-
-" Animate {{{
-let g:animate#easing_func = 'animate#ease_in_out_sine'
 " }}}
 
 " Lens {{{
