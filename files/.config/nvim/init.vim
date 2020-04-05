@@ -155,15 +155,19 @@ call plug#end()
 " Settings {{{
 
 " General {{{
-set encoding=UTF-8                    | " Default file encoding
-set undofile                          | " Enable undo persistence across sessions
-set splitbelow splitright             | " Split defaults
-set noautochdir                       | " Don't change dirs automatically
-set clipboard=unnamed                 | " System clipboard
-set wildignore+=.git/,.DS_Store       | " Ignore patterns
-set noerrorbells                      | " No sound
-set dictionary=/usr/share/dict/words  | " Set up a dictionary
-set hidden                            | " Make buffers hidden then abandoned
+set encoding=UTF-8                   | " Default file encoding
+set undofile                         | " Enable undo persistence across sessions
+set splitbelow splitright            | " Split defaults
+set noautochdir                      | " Don't change dirs automatically
+set clipboard=unnamed                | " System clipboard
+set wildignore+=.git,.hg             | " Version control files
+set wildignore+=.DS_Store            | " OSX files
+set wildignore+=*.aux,*.out,*.toc    | " LaTeX
+set wildignore+=*.sw?                | " Vim swap files
+set wildignore+=*.orig               | " Merge files
+set noerrorbells                     | " No sound
+set dictionary=/usr/share/dict/words | " Set up a dictionary
+set hidden                           | " Make buffers hidden then abandoned
 " }}}
 
 " Search {{{

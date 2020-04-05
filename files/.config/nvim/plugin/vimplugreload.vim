@@ -4,10 +4,22 @@ function! vimplugreload#run() abort
   if len(filter(copy(required), {_, dir -> !isdirectory(dir)}))
     PlugInstall
   endif
-  let delete = filter(split(glob(g:plug_home.'/*/'), '\n'), {_, dir -> index(required, dir) == -1})
+  let delete = filter(
+    \ split(
+      \ glob(g:plug_home.'/*/'),
+      \ '\n'
+    \ ),
+    \ {_, dir -> index(required, dir) == -1}
+  \ )
   if len(delete)
     call map(copy(delete), {_, dir -> delete(dir, 'rf')})
-    echo 'Deleted plugins: ' . join(map(delete, {_, dir-> fnamemodify(dir[:-2], ':t')}), ', ')
+    echo 'Deleted plugins: ' . join(
+      \ map(
+        \ delete,
+        \ {_, dir-> fnamemodify(dir[:-2], ':t')}
+      \ ),
+      \ ', '
+    \ )
   endif
 endfunction
 
