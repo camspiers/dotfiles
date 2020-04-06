@@ -1,11 +1,11 @@
 " Open autoclosing terminal, with optional size and dir
 function! openterm#run(cmd) abort
+  setf openterm
   if has('nvim')
     call termopen(a:cmd, {'on_exit': {_,c -> openterm#close(c)}})
   else
     call term_start(a:cmd, {'exit_cb': {_,c -> openterm#close(c)}})
   endif
-  setf openterm
 endfunction
 
 " Open split with animation
@@ -40,7 +40,13 @@ function! openterm#close(code) abort
   endif
 endfunction
 
+function! openterm#open() abort
+  call EnableCleanUI()
+  tnoremap <Esc> <c-c>
+  startinsert
+endfunction
+
 augroup openterm
   autocmd!
-  autocmd! FileType openterm tnoremap <Esc> <c-c>
+  autocmd! FileType openterm call openterm#open()
 augroup END

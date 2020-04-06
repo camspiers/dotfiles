@@ -161,6 +161,7 @@ set wildignore+=*.orig               | " Merge files
 set noerrorbells                     | " No sound
 set dictionary=/usr/share/dict/words | " Set up a dictionary
 set hidden                           | " Make buffers hidden then abandoned
+set signcolumn=yes                   | " Show signcolumns
 " }}}
 
 " Search {{{
@@ -508,8 +509,6 @@ set nobackup
 set nowritebackup
 " Remove messages from in-completion menus
 set shortmess+=c
-" always show signcolumns
-set signcolumn=yes
 " You will have bad experience for diagnostic messages when it's default 4000.
 set updatetime=300
 " }}}
@@ -754,6 +753,19 @@ command! -bar -bang Windows call Windows(<bang>0)
 command! -nargs=0 Prettier :CocCommand prettier.formatFile
 " }}}
 
+function! OnFZFOpen() abort
+  call EnableCleanUI()
+  call RefreshFZFPreview()
+  tnoremap <Esc> <c-c>
+  startinsert
+endfunction
+
+function! OnNeoTermOpen() abort
+  call EnableCleanUI()
+  wincmd J
+  call NaturalDrawer()
+endfunction
+
 " Auto Commands {{{
 augroup General
   autocmd!
@@ -761,22 +773,19 @@ augroup General
   autocmd! FileType qf call OpenQuickFix()
   " Enable text file settings
   autocmd! FileType markdown,txt,tex call EnableTextFileSettings()
-  " Neoterm REPL setup
-  autocmd FileType sh call neoterm#repl#set('sh')
+  autocmd! FileType sh call neoterm#repl#set('sh')
+  autocmd! FileType fern call EnableCleanUI() 
+  autocmd! FileType neoterm call OnNeoTermOpen()
+  autocmd! FileType fzf call OnFZFOpen()
 augroup END
 
 augroup TermHandling
   autocmd!
   if has('nvim')
-    autocmd TermOpen * call EnableCleanUI()
-    autocmd TermOpen * startinsert
-    autocmd TermOpen * let g:last_open_term_id = b:terminal_job_id
+    autocmd! TermOpen * let g:last_open_term_id = b:terminal_job_id
   endif
-  autocmd FileType fern call EnableCleanUI() " Define ESC to be SIGTERM
-  autocmd! FileType fzf tnoremap <Esc> <c-c>
-  autocmd! FileType fzf call RefreshFZFPreview()
-  autocmd! FileType neoterm wincmd J | call NaturalDrawer()
 augroup END
+
 " }}}
 
 " vim:fdm=marker
