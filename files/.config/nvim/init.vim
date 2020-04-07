@@ -190,6 +190,7 @@ let base16colorspace=256                    | " Access colors present in 256 col
 colorscheme base16-chalk                    | " Sets theme to chalk
 set termguicolors                           | " Enables 24bit colors
 set noshowmode                              | " Don't show mode changes
+set nowrap                                  | " Don't wrap lines
 " Highlight Customizations {{{
 highlight Comment gui=italic,bold | " Make comments italic
 highlight Folded gui=italic,bold  | " Make folds italic
