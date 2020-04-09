@@ -28,7 +28,9 @@ let g:vim_plug_opts = {
   \ 'neoclide/coc-tsserver':        {'do': 'yarn install --frozen-lockfile'},
   \ 'neoclide/coc.nvim':            {'do': { -> coc#util#install()} },
   \ 'vim-vdebug/vdebug':            {'on': []},
+  \ 'dracula/vim':                  {'as': 'dracula'},
 \ }
+
 " Register plugin with options
 function! Plug(plugin) abort
   let plugin = substitute(a:plugin, "'", '', 'g')
@@ -69,12 +71,12 @@ Plug 'arecarn/vim-clean-fold'          | " Provides function for folds
 Plug 'blueyed/vim-diminactive'         | " Helps identifying active window
 Plug 'camspiers/animate.vim'           | " Animation plugin
 Plug 'camspiers/lens.vim'              | " Window resizing plugin
-Plug 'chriskempson/base16-vim'         | " Base16 theme pack
 Plug 'mhinz/vim-startify'              | " Startup screen
 Plug 'nathanaelkane/vim-indent-guides' | " Provides indentation guides
 Plug 'ryanoasis/vim-devicons'          | " Dev icons
 Plug 'vim-scripts/folddigest.vim'      | " Visualize folds
 Plug 'wincent/loupe'                   | " Search context improvements
+Plug 'dracula/vim'
 " }}}
 
 " Conquer of Completion {{{
@@ -148,20 +150,20 @@ call plug#end()
 " Settings {{{
 
 " General {{{
-set encoding=UTF-8                   | " Default file encoding
-set undofile                         | " Enable undo persistence across sessions
-set splitbelow splitright            | " Split defaults
-set noautochdir                      | " Don't change dirs automatically
 set clipboard=unnamed                | " System clipboard
-set wildignore+=.git,.hg             | " Version control files
-set wildignore+=.DS_Store            | " OSX files
-set wildignore+=*.aux,*.out,*.toc    | " LaTeX
-set wildignore+=*.sw?                | " Vim swap files
-set wildignore+=*.orig               | " Merge files
-set noerrorbells                     | " No sound
 set dictionary=/usr/share/dict/words | " Set up a dictionary
+set encoding=UTF-8                   | " Default file encoding
 set hidden                           | " Make buffers hidden then abandoned
+set noautochdir                      | " Don't change dirs automatically
+set noerrorbells                     | " No sound
 set signcolumn=yes                   | " Show signcolumns
+set splitbelow splitright            | " Split defaults
+set undofile                         | " Enable undo persistence across sessions
+set wildignore+=*.aux,*.out,*.toc    | " LaTeX
+set wildignore+=*.orig               | " Merge files
+set wildignore+=*.sw?                | " Vim swap files
+set wildignore+=.DS_Store            | " OSX files
+set wildignore+=.git,.hg             | " Version control files
 " }}}
 
 " Search {{{
@@ -173,24 +175,24 @@ endif
 " }}}
 
 " Editor {{{
-set tabstop=2      | " Number of spaces a <Tab> is
-set shiftwidth=2   | " Number of spaces for indentation
 set expandtab      | " Expand tab to spaces
+set shiftwidth=2   | " Number of spaces for indentation
 set spelllang=en   | " Spell checking
+set tabstop=2      | " Number of spaces a <Tab> is
 set timeoutlen=500 | " Wait less time for mapped sequences
 " }}}
 
 " Visual {{{
-set foldtext=clean_fold#fold_text_minimal() | " Clean folds
+colorscheme dracula                         | " Sets theme to dracula
 let &colorcolumn="81,121"                   | " Add indicator for 80 and 120
-set novisualbell                            | " Don't display visual bell
-set showmatch                               | " Show matching braces
-set number relativenumber                   | " Show line numbers
 let base16colorspace=256                    | " Access colors present in 256 colorspace
-colorscheme base16-chalk                    | " Sets theme to chalk
-set termguicolors                           | " Enables 24bit colors
+set foldtext=clean_fold#fold_text_minimal() | " Clean folds
 set noshowmode                              | " Don't show mode changes
+set novisualbell                            | " Don't display visual bell
 set nowrap                                  | " Don't wrap lines
+set number relativenumber                   | " Show line numbers
+set showmatch                               | " Show matching braces
+set termguicolors                           | " Enables 24bit colors
 " Highlight Customizations {{{
 highlight Comment gui=italic,bold | " Make comments italic
 highlight Folded gui=italic,bold  | " Make folds italic
@@ -457,10 +459,10 @@ let g:fern#renderer = "devicons"
 
 " Buftabline {{{
 let g:buftabline_indicators = 1
-highlight BufTabLineCurrent guifg=#E0E0E0 guibg=#303030
-highlight BufTabLineHidden guibg=#202020
-highlight BufTabLineActive guibg=#202020
-highlight BufTabLineFill guibg=#202020
+highlight BufTabLineCurrent guifg=#44475a guibg=#f8f8f2
+highlight BufTabLineHidden guibg=#282a36
+highlight BufTabLineActive guibg=#282a36
+highlight BufTabLineFill guibg=#282a36
 " }}}
 
 " Vimtex {{{
