@@ -92,6 +92,7 @@ Plug 'neoclide/coc-prettier' | " Prettier for COC
 Plug 'neoclide/coc-snippets' | " Provides snippets
 Plug 'neoclide/coc-tslint'   | " Tslint integration
 Plug 'neoclide/coc-tsserver' | " TypeScript language server
+Plug 'honza/vim-snippets'
 " }}}
 
 " Editor {{{
@@ -134,6 +135,7 @@ Plug 'tpope/vim-speeddating'         | " Tools for working with dates
 Plug 'tpope/vim-unimpaired'          | " Common mappings for many needs
 Plug 'vim-vdebug/vdebug'             | " Debugging, loaded manually
 Plug 'wellle/tmux-complete.vim'      | " Completion for content in tmux
+Plug 'rbong/vim-flog'                | " Commit viewer
 " }}}
 
 " Syntax {{{
@@ -522,15 +524,19 @@ highlight CocCodeLens gui=italic,bold guifg=#505050
 
 " Use tab for trigger completion
 inoremap <silent><expr> <TAB>
-  \ pumvisible() ? "\<C-n>" :
-  \ <SID>CheckBackSpace() ? "\<TAB>" :
-  \ coc#refresh()
+      \ pumvisible() ? "\<C-n>" :
+      \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
-function! s:CheckBackSpace() abort
+function! s:check_back_space() abort
   let col = col('.') - 1
-  return !col || getline('.')[col - 1] =~# '\s'
+  return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
+
+let g:coc_snippet_next = '<tab>'
 " }}}
 
 " Neoterm {{{
@@ -777,7 +783,7 @@ augroup General
   " Enable text file settings
   autocmd! FileType markdown,txt,tex call EnableTextFileSettings()
   autocmd! FileType sh call neoterm#repl#set('sh')
-  autocmd! FileType fern call EnableCleanUI() 
+  autocmd! FileType fern,floggraph call EnableCleanUI()
   autocmd! FileType neoterm call OnNeoTermOpen()
   autocmd! FileType fzf call OnFZFOpen()
 augroup END
