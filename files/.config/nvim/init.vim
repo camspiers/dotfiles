@@ -92,7 +92,7 @@ Plug 'neoclide/coc-prettier' | " Prettier for COC
 Plug 'neoclide/coc-snippets' | " Provides snippets
 Plug 'neoclide/coc-tslint'   | " Tslint integration
 Plug 'neoclide/coc-tsserver' | " TypeScript language server
-Plug 'honza/vim-snippets'
+Plug 'honza/vim-snippets'    | " A set of common snippets
 " }}}
 
 " Editor {{{
@@ -197,7 +197,6 @@ set showmatch                               | " Show matching braces
 set termguicolors                           | " Enables 24bit colors
 " Highlight Customizations {{{
 highlight Comment gui=italic,bold | " Make comments italic
-highlight Folded gui=italic,bold  | " Make folds italic
 " }}}
 " }}}
 
@@ -457,6 +456,7 @@ let g:fzf_action = {
 
 " Fern {{{
 let g:fern#renderer = "devicons"
+let g:fern#default_hidden = 1
 " }}}
 
 " Buftabline {{{
