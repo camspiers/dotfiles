@@ -610,24 +610,36 @@ endfunction
 let g:distraction_free = 0
 function! ToggleDistractionFreeSettings() abort
   if g:distraction_free
-    let g:distraction_free = 0
-    let g:lens#disabled = 0
-    call goyo#execute(0, 0)
-    Limelight!
-    set showtabline=1
-    let g:buftabline_show = 2
-    call buftabline#update(0)
-    silent !tmux set status on
+    call DisableDistractionFreeSettings()
   else
-    let g:distraction_free = 1
-    let g:lens#disabled = 1
-    call goyo#execute(0, 0)
-    Limelight
-    let g:buftabline_show = 0
-    call buftabline#update(0)
-    set showtabline=0
-    silent !tmux set status off
+    call EnableDistractionFreeSettings()
   endif
+endfunction
+function! EnableDistractionFreeSettings() abort
+  if g:distraction_free
+    return
+  endif
+  let g:distraction_free = 1
+  let g:lens#disabled = 1
+  call goyo#execute(0, 0)
+  Limelight
+  let g:buftabline_show = 0
+  call buftabline#update(0)
+  set showtabline=0
+  silent !tmux set status off
+endfunction
+function! DisableDistractionFreeSettings() abort
+  if ! g:distraction_free
+    return
+  endif
+  let g:distraction_free = 0
+  let g:lens#disabled = 0
+  call goyo#execute(0, 0)
+  Limelight!
+  set showtabline=1
+  let g:buftabline_show = 2
+  call buftabline#update(0)
+  silent !tmux set status on
 endfunction
 " Opens calendar with animation
 function! OpenCalendar() abort
@@ -805,10 +817,7 @@ augroup General
   autocmd! FileType fern,floggraph call EnableCleanUI()
   autocmd! FileType neoterm call OnNeoTermOpen()
   autocmd! FileType fzf call OnFZFOpen()
-  autocmd! VimLeavePre *
-    \ if g:distraction_free
-      \ call ToggleDistractionFreeSettings()
-    \ endif
+  autocmd! VimLeavePre * call DisableDistractionFreeSettings()
 augroup END
 
 augroup TermHandling
