@@ -77,6 +77,9 @@ Plug 'ryanoasis/vim-devicons'          | " Dev icons
 Plug 'vim-scripts/folddigest.vim'      | " Visualize folds
 Plug 'wincent/loupe'                   | " Search context improvements
 Plug 'dracula/vim'
+
+Plug 'junegunn/goyo.vim'
+Plug 'junegunn/limelight.vim'
 " }}}
 
 " Conquer of Completion {{{
@@ -285,6 +288,8 @@ nnoremap <silent> <Up>    :call animate#window_delta_height(15)<CR>
 nnoremap <silent> <Down>  :call animate#window_delta_height(-15)<CR>
 nnoremap <silent> <Left>  :call animate#window_delta_width(30)<CR>
 nnoremap <silent> <Right> :call animate#window_delta_width(-30)<CR>
+" Toggle clean
+nnoremap <silent> <F1> :Clean<CR>
 " }}}
 
 " Conquer of Completion {{{
@@ -457,6 +462,7 @@ let g:fzf_action = {
 " Fern {{{
 let g:fern#renderer = "devicons"
 let g:fern#default_hidden = 1
+let g:fern#default_exclude = &wildignore
 " }}}
 
 " Buftabline {{{
@@ -612,6 +618,29 @@ function! EnableTextFileSettings() abort
   silent TableModeEnable
   call pencil#init({'wrap': 'hard'})
 endfunction
+
+let g:distraction_free = 0
+function! ToggleDistractionFreeSettings() abort
+  if g:distraction_free
+    let g:distraction_free = 0
+    let g:lens#disabled = 0
+    call goyo#execute(0, 0)
+    Limelight!
+    set showtabline=1
+    let g:buftabline_show = 2
+    call buftabline#update(0)
+    silent !tmux set status on
+  else
+    let g:distraction_free = 1
+    let g:lens#disabled = 1
+    call goyo#execute(0, 0)
+    Limelight
+    let g:buftabline_show = 0
+    call buftabline#update(0)
+    set showtabline=0
+    silent !tmux set status off
+  endif
+endfunction
 " Opens calendar with animation
 function! OpenCalendar() abort
   new | wincmd J | resize 1
@@ -760,6 +789,8 @@ command! -bar -bang -nargs=? -complete=buffer Buffers call Buffers(<q-args>, <ba
 command! -bar -bang Windows call Windows(<bang>0)
 " Sets up command for prettier
 command! -nargs=0 Prettier :CocCommand prettier.formatFile
+" Custom Goyo
+command! -nargs=0 Clean call ToggleDistractionFreeSettings()
 " }}}
 
 function! OnFZFOpen() abort
@@ -786,6 +817,10 @@ augroup General
   autocmd! FileType fern,floggraph call EnableCleanUI()
   autocmd! FileType neoterm call OnNeoTermOpen()
   autocmd! FileType fzf call OnFZFOpen()
+  autocmd! VimLeavePre *
+    \ if g:distraction_free
+      \ call ToggleDistractionFreeSettings()
+    \ endif
 augroup END
 
 augroup TermHandling
