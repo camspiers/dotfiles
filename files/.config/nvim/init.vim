@@ -15,17 +15,6 @@ let g:vim_plug_opts = {
   \ 'glacambre/firenvim': has('nvim') ? {'do': { _ -> firenvim#install(0) } } : {'on': []},
   \ 'iamcco/markdown-preview.nvim': {'do': 'cd app & yarn install'},
   \ 'mbbill/undotree':              {'on': 'UndotreeToggle' },
-  \ 'neoclide/coc-css':             {'do': 'yarn install --frozen-lockfile'},
-  \ 'neoclide/coc-eslint':          {'do': 'yarn install --frozen-lockfile'},
-  \ 'neoclide/coc-git':             {'do': 'yarn install --frozen-lockfile'},
-  \ 'neoclide/coc-html':            {'do': 'yarn install --frozen-lockfile'},
-  \ 'neoclide/coc-json':            {'do': 'yarn install --frozen-lockfile'},
-  \ 'neoclide/coc-lists':           {'do': 'yarn install --frozen-lockfile'},
-  \ 'neoclide/coc-pairs':           {'do': 'yarn install --frozen-lockfile'},
-  \ 'neoclide/coc-prettier':        {'do': 'yarn install --frozen-lockfile'},
-  \ 'neoclide/coc-snippets':        {'do': 'yarn install --frozen-lockfile'},
-  \ 'neoclide/coc-tslint':          {'do': 'yarn install --frozen-lockfile'},
-  \ 'neoclide/coc-tsserver':        {'do': 'yarn install --frozen-lockfile'},
   \ 'neoclide/coc.nvim':            {'do': { -> coc#util#install()} },
   \ 'vim-vdebug/vdebug':            {'on': []},
   \ 'dracula/vim':                  {'as': 'dracula'},
@@ -71,47 +60,35 @@ Plug 'arecarn/vim-clean-fold'          | " Provides function for folds
 Plug 'blueyed/vim-diminactive'         | " Helps identifying active window
 Plug 'camspiers/animate.vim'           | " Animation plugin
 Plug 'camspiers/lens.vim'              | " Window resizing plugin
+Plug 'dracula/vim'                     | " Dracula theme
+Plug 'junegunn/goyo.vim'               | " Distraction free writing mode
+Plug 'junegunn/limelight.vim'          | " Only syntax highlight current paragraph
 Plug 'mhinz/vim-startify'              | " Startup screen
 Plug 'nathanaelkane/vim-indent-guides' | " Provides indentation guides
 Plug 'ryanoasis/vim-devicons'          | " Dev icons
 Plug 'vim-scripts/folddigest.vim'      | " Visualize folds
 Plug 'wincent/loupe'                   | " Search context improvements
-Plug 'dracula/vim'
-
-Plug 'junegunn/goyo.vim'
-Plug 'junegunn/limelight.vim'
 " }}}
 
 " Conquer of Completion {{{
-Plug 'neoclide/coc.nvim'     | " Completion provider
-Plug 'neoclide/coc-css'      | " CSS language server
-Plug 'neoclide/coc-eslint'   | " Eslint integration
-Plug 'neoclide/coc-git'      | " Git info
-Plug 'neoclide/coc-html'     | " Html language server
-Plug 'neoclide/coc-json'     | " JSON language server
-Plug 'neoclide/coc-lists'    | " Arbitrary lists
-Plug 'neoclide/coc-pairs'    | " Auto-insert language aware pairs
-Plug 'neoclide/coc-prettier' | " Prettier for COC
-Plug 'neoclide/coc-snippets' | " Provides snippets
-Plug 'neoclide/coc-tslint'   | " Tslint integration
-Plug 'neoclide/coc-tsserver' | " TypeScript language server
-Plug 'honza/vim-snippets'    | " A set of common snippets
+Plug 'neoclide/coc.nvim' | " Completion provider
 " }}}
 
 " Editor {{{
 Plug 'bkad/CamelCaseMotion'          | " Motions for inside camel case
 Plug 'editorconfig/editorconfig-vim' | " Import tabs etc from editorconfig
+Plug 'honza/vim-snippets'            | " A set of common snippets
 Plug 'junegunn/vim-easy-align'       | " Helps alignment
 Plug 'kkoomen/vim-doge'              | " Docblock generator
 Plug 'lervag/vimtex'                 | " Support for vimtex
 Plug 'matze/vim-move'                | " Move lines
 Plug 'reedes/vim-pencil'             | " Auto hard breaks for text files
 Plug 'romainl/vim-cool'              | " Awesome search highlighting
+Plug 'terryma/vim-multiple-cursors'  | " Multiple cursor support like Sublime
 Plug 'tomtom/tcomment_vim'           | " Better commenting
 Plug 'tpope/vim-repeat'              | " Improves repeat handling
 Plug 'tpope/vim-surround'            | " Surround motions
 Plug 'wellle/targets.vim'            | " Move text objects
-Plug 'terryma/vim-multiple-cursors'  | " Multiple cursor support like Sublime
 " }}}
 
 " Tools {{{
@@ -503,13 +480,24 @@ let g:LoupeClearHighlightMap = 0
 
 " Plugins {{{
 let g:coc_global_extensions = [
+  \ 'coc-css',
+  \ 'coc-eslint',
+  \ 'coc-git',
+  \ 'coc-html',
+  \ 'coc-json',
+  \ 'coc-lists',
+  \ 'coc-pairs',
   \ 'coc-phpls',
-  \ 'coc-vimlsp',
-  \ 'coc-stylelint',
-  \ 'coc-yaml',
-  \ 'coc-sh',
+  \ 'coc-prettier',
   \ 'coc-reason',
+  \ 'coc-sh',
+  \ 'coc-snippets',
+  \ 'coc-stylelint',
+  \ 'coc-tslint',
+  \ 'coc-tsserver',
+  \ 'coc-vimlsp',
   \ 'coc-vimtex',
+  \ 'coc-yaml',
 \ ]
 " }}}
 
