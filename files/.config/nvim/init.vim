@@ -35,7 +35,8 @@ call plug#begin(expand('~/.config/nvim/plugged'))
 command! -nargs=1 -bar Plug call Plug(<f-args>)
 
 " Defaults {{{
-Plug 'christoomey/vim-tmux-navigator' | " Pane navigation
+" Plug 'christoomey/vim-tmux-navigator' | " Pane navigation
+Plug 'knubie/vim-kitty-navigator'
 Plug 'farmergreg/vim-lastplace'       | " Go to last position when opening files
 Plug 'tpope/vim-sensible'             | " Sensible defaults
 Plug 'wincent/terminus'               | " Terminal integration improvements
@@ -68,6 +69,7 @@ Plug 'nathanaelkane/vim-indent-guides' | " Provides indentation guides
 Plug 'ryanoasis/vim-devicons'          | " Dev icons
 Plug 'vim-scripts/folddigest.vim'      | " Visualize folds
 Plug 'wincent/loupe'                   | " Search context improvements
+Plug 'vim-airline/vim-airline'
 " }}}
 
 " Conquer of Completion {{{
@@ -82,7 +84,6 @@ Plug 'junegunn/vim-easy-align'       | " Helps alignment
 Plug 'kkoomen/vim-doge'              | " Docblock generator
 Plug 'lervag/vimtex'                 | " Support for vimtex
 Plug 'matze/vim-move'                | " Move lines
-Plug 'reedes/vim-pencil'             | " Auto hard breaks for text files
 Plug 'romainl/vim-cool'              | " Awesome search highlighting
 Plug 'terryma/vim-multiple-cursors'  | " Multiple cursor support like Sublime
 Plug 'tomtom/tcomment_vim'           | " Better commenting
@@ -92,10 +93,10 @@ Plug 'wellle/targets.vim'            | " Move text objects
 " }}}
 
 " Tools {{{
-Plug 'glacambre/firenvim'            | " Enables nvim in browser
 Plug 'airblade/vim-rooter'           | " Auto-root setting
 Plug 'dhruvasagar/vim-table-mode'    | " Better handling for tables in markdown
 Plug 'duggiefresh/vim-easydir'       | " Create files in dirs that don't exist
+Plug 'glacambre/firenvim'            | " Enables nvim in browser
 Plug 'iamcco/markdown-preview.nvim'  | " Markdown preview
 Plug 'inkarkat/vim-ingo-library'     | " Spellcheck dependency
 Plug 'inkarkat/vim-spellcheck'       | " Spelling errors to quickfix list
@@ -104,6 +105,8 @@ Plug 'kassio/neoterm'                | " REPL integration
 Plug 'kristijanhusak/vim-dadbod-ui'  | " DB UI support
 Plug 'mbbill/undotree'               | " Undo history visualizer
 Plug 'prashantjois/vim-slack'        | " Slack integration
+Plug 'rbong/vim-flog'                | " Commit viewer
+Plug 'reedes/vim-wordy'              | " Identify poor language use
 Plug 'samoshkin/vim-mergetool'       | " Merge tool for git
 Plug 'sedm0784/vim-you-autocorrect'  | " Automatic autocorrect
 Plug 'shumphrey/fugitive-gitlab.vim' | " GitLab support
@@ -115,7 +118,6 @@ Plug 'tpope/vim-speeddating'         | " Tools for working with dates
 Plug 'tpope/vim-unimpaired'          | " Common mappings for many needs
 Plug 'vim-vdebug/vdebug'             | " Debugging, loaded manually
 Plug 'wellle/tmux-complete.vim'      | " Completion for content in tmux
-Plug 'rbong/vim-flog'                | " Commit viewer
 " }}}
 
 " Syntax {{{
@@ -166,6 +168,7 @@ set timeoutlen=500 | " Wait less time for mapped sequences
 
 " Visual {{{
 colorscheme dracula                         | " Sets theme to dracula
+let g:airline_theme='dracula'
 let &colorcolumn="81,121"                   | " Add indicator for 80 and 120
 let base16colorspace=256                    | " Access colors present in 256 colorspace
 set foldtext=clean_fold#fold_text_minimal() | " Clean folds
@@ -436,6 +439,10 @@ let g:fzf_action = {
 
 " Plugin Configuration {{{
 
+" Goyo {{{
+let g:goyo_width = 81
+" }}}
+
 " Fern {{{
 let g:fern#renderer = "devicons"
 let g:fern#default_hidden = 1
@@ -448,10 +455,6 @@ highlight BufTabLineCurrent guifg=#44475a guibg=#f8f8f2
 highlight BufTabLineHidden guibg=#282a36
 highlight BufTabLineActive guibg=#282a36
 highlight BufTabLineFill guibg=#282a36
-" }}}
-
-" Vimtex {{{
-let g:vimtex_view_method = 'skim'
 " }}}
 
 " Pencil {{{
@@ -489,6 +492,7 @@ let g:coc_global_extensions = [
   \ 'coc-pairs',
   \ 'coc-phpls',
   \ 'coc-prettier',
+  \ 'coc-python',
   \ 'coc-reason',
   \ 'coc-sh',
   \ 'coc-snippets',
@@ -595,7 +599,35 @@ let folddigest_size = 40
 let g:lens#height_resize_min = 15
 " }}}
 
+" Lens {{{
+let g:animate#duration = 150.0
 " }}}
+
+" }}}
+
+" Vimtex {{{
+let g:vimtex_view_method = 'general'
+let g:vimtex_view_general_callback = 'TermPDF'
+let g:vimtex_view_automatic = 0
+
+function! TermPDF(status) abort
+  if a:status
+    call system('kitty @ kitten termpdf.py ' .  b:vimtex.root . '/' . b:vimtex.name . '.pdf')
+  endif
+endfunction
+
+function TermPDFClose() abort
+  call system('kitty @ close-window --match title:termpdf')
+endfunction
+
+augroup VimtexTest
+  autocmd!
+  autocmd FileType tex :VimtexCompile
+  autocmd FileType tex :Clean
+  autocmd! User VimtexEventCompileStopped call TermPDFClose()
+augroup end
+" }}}
+
 
 " Custom Tools {{{
 
@@ -604,7 +636,6 @@ function! EnableTextFileSettings() abort
   setlocal spell
   EnableAutocorrect
   silent TableModeEnable
-  call pencil#init({'wrap': 'hard'})
 endfunction
 
 let g:distraction_free = 0
@@ -744,7 +775,7 @@ endfunction
 " Enables UI styles suitable for terminals etc
 function! EnableCleanUI() abort
   setlocal listchars=
-    \ nonumber 
+    \ nonumber
     \ norelativenumber
     \ nowrap
     \ winfixwidth
