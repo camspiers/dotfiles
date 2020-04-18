@@ -70,6 +70,7 @@ Plug 'ryanoasis/vim-devicons'          | " Dev icons
 Plug 'vim-scripts/folddigest.vim'      | " Visualize folds
 Plug 'wincent/loupe'                   | " Search context improvements
 Plug 'vim-airline/vim-airline'
+Plug 'morhetz/gruvbox'
 " }}}
 
 " Conquer of Completion {{{
@@ -167,8 +168,9 @@ set timeoutlen=500 | " Wait less time for mapped sequences
 " }}}
 
 " Visual {{{
-colorscheme dracula                         | " Sets theme to dracula
-let g:airline_theme='dracula'
+colorscheme gruvbox                         | " Sets theme to gruvbox
+let g:airline_theme='gruvbox'
+set background=dark
 let &colorcolumn="81,121"                   | " Add indicator for 80 and 120
 let base16colorspace=256                    | " Access colors present in 256 colorspace
 set foldtext=clean_fold#fold_text_minimal() | " Clean folds
@@ -435,6 +437,21 @@ let g:fzf_action = {
   \ 'ctrl-x': 'split',
   \ 'ctrl-v': 'vsplit'
 \ }
+
+let g:fzf_colors =
+\ { 'fg':      ['fg', 'Normal'],
+  \ 'bg':      ['bg', 'Normal'],
+  \ 'hl':      ['fg', 'Comment'],
+  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+  \ 'hl+':     ['fg', 'Statement'],
+  \ 'info':    ['fg', 'PreProc'],
+  \ 'border':  ['fg', 'Ignore'],
+  \ 'prompt':  ['fg', 'Conditional'],
+  \ 'pointer': ['fg', 'Exception'],
+  \ 'marker':  ['fg', 'Keyword'],
+  \ 'spinner': ['fg', 'Label'],
+  \ 'header':  ['fg', 'Comment'] }
 " }}}
 
 " Plugin Configuration {{{
@@ -451,10 +468,6 @@ let g:fern#default_exclude = &wildignore
 
 " Buftabline {{{
 let g:buftabline_indicators = 1
-highlight BufTabLineCurrent guifg=#44475a guibg=#f8f8f2
-highlight BufTabLineHidden guibg=#282a36
-highlight BufTabLineActive guibg=#282a36
-highlight BufTabLineFill guibg=#282a36
 " }}}
 
 " Pencil {{{
@@ -599,35 +612,43 @@ let folddigest_size = 40
 let g:lens#height_resize_min = 15
 " }}}
 
-" Lens {{{
+" Animate {{{
 let g:animate#duration = 150.0
 " }}}
 
+" Airline {{{
+let g:airline_powerline_fonts = 1
 " }}}
 
 " Vimtex {{{
-let g:vimtex_view_method = 'general'
 let g:vimtex_view_general_callback = 'TermPDF'
 let g:vimtex_view_automatic = 0
-
+let g:vimtex_lastcalled = 0
 function! TermPDF(status) abort
   if a:status
-    call system('kitty @ kitten termpdf.py ' .  b:vimtex.root . '/' . b:vimtex.name . '.pdf')
+    " Implement some basic throttling
+    let time = str2float(reltimestr(reltime())) * 1000.0
+    if (time - g:vimtex_lastcalled) > 1000
+      call system('kitty @ set-background-opacity 1.0')
+      call system('kitty @ kitten termpdf.py ' . b:vimtex.out())
+      let g:vimtex_lastcalled = time
+    endif
   endif
 endfunction
 
-function TermPDFClose() abort
+function! TermPDFClose() abort
   call system('kitty @ close-window --match title:termpdf')
+  call system('kitty @ set-background-opacity 0.97')
 endfunction
 
 augroup VimtexTest
   autocmd!
-  autocmd FileType tex :VimtexCompile
-  autocmd FileType tex :Clean
   autocmd! User VimtexEventCompileStopped call TermPDFClose()
+  autocmd FileType tex autocmd BufDelete <buffer> call TermPDFClose()
 augroup end
 " }}}
 
+" }}}
 
 " Custom Tools {{{
 

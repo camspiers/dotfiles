@@ -1,0 +1,21 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{braket}
+\usepackage{hyperref}
+\setlength{\parskip}{1em}
+
+\title{TODO}
+\date{TODO}
+\author{Cam Spiers}
+
+\begin{document}
+
+\maketitle
+
+TODO
+
+\begin{thebibliography}{9}
+
+\end{thebibliography}
+
+\end{document}

@@ -26,5 +26,5 @@ endfunction
 augroup vimplugreload
   autocmd!
   " Auto sources vim files on save
-  autocmd! BufWritePost *.vim source % | call vimplugreload#run()
+  autocmd! BufWritePost *.vim source % | call vimplugreload#run() | AirlineRefresh
 augroup END

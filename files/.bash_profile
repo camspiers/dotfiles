@@ -64,6 +64,8 @@ source "/usr/local/opt/fzf/shell/key-bindings.bash"
 # Environment Managers #########################################################
 ################################################################################
 
+source <(kitty + complete setup bash)
+
 # rbenv
 eval "$(rbenv init -)"
 
