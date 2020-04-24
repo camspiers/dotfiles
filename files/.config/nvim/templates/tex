@@ -1,4 +1,5 @@
 \documentclass[12pt]{article}
+\usepackage{xcolor} \pagecolor[rgb]{0.157,0.157,0.157} \color[rgb]{0.922,0.859,0.698}
 \usepackage[utf8]{inputenc}
 \usepackage{braket}
 \usepackage{hyperref}

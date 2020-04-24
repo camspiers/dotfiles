@@ -17,7 +17,6 @@ let g:vim_plug_opts = {
   \ 'mbbill/undotree':              {'on': 'UndotreeToggle' },
   \ 'neoclide/coc.nvim':            {'do': { -> coc#util#install()} },
   \ 'vim-vdebug/vdebug':            {'on': []},
-  \ 'dracula/vim':                  {'as': 'dracula'},
 \ }
 
 " Register plugin with options
@@ -61,16 +60,15 @@ Plug 'arecarn/vim-clean-fold'          | " Provides function for folds
 Plug 'blueyed/vim-diminactive'         | " Helps identifying active window
 Plug 'camspiers/animate.vim'           | " Animation plugin
 Plug 'camspiers/lens.vim'              | " Window resizing plugin
-Plug 'dracula/vim'                     | " Dracula theme
 Plug 'junegunn/goyo.vim'               | " Distraction free writing mode
 Plug 'junegunn/limelight.vim'          | " Only syntax highlight current paragraph
 Plug 'mhinz/vim-startify'              | " Startup screen
+Plug 'morhetz/gruvbox'                 | " Nice theme
 Plug 'nathanaelkane/vim-indent-guides' | " Provides indentation guides
 Plug 'ryanoasis/vim-devicons'          | " Dev icons
+Plug 'vim-airline/vim-airline'         | " Statusline
 Plug 'vim-scripts/folddigest.vim'      | " Visualize folds
 Plug 'wincent/loupe'                   | " Search context improvements
-Plug 'vim-airline/vim-airline'
-Plug 'morhetz/gruvbox'
 " }}}
 
 " Conquer of Completion {{{
@@ -628,7 +626,7 @@ function! TermPDF(status) abort
   if a:status
     " Implement some basic throttling
     let time = str2float(reltimestr(reltime())) * 1000.0
-    if (time - g:vimtex_lastcalled) > 1000
+    if time - g:vimtex_lastcalled > 1000
       call system('kitty @ set-background-opacity 1.0')
       call system('kitty @ kitten termpdf.py ' . b:vimtex.out())
       let g:vimtex_lastcalled = time
