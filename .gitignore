@@ -5,3 +5,4 @@ extra/homebrew/Brewfile.lock.json
 tags
 Session.vim
 files/.bashrc.local
+*.pdf

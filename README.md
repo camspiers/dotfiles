@@ -1,10 +1,12 @@
-# Dotfiles
+# Dotfiles - Cam Spiers
 
 macOS environment managed by git and GNU Stow.
 
-![img](assets/screenshot.png)
+![Environment Screenshot](assets/screenshot.png)
 
 ## Overview
+
+The following are the major components of the dotfiles project.
 
 - [Homebrew Defaults](extra/homebrew/Brewfile)
 - [Neovim Config](files/.config/nvim/init.vim)
@@ -18,26 +20,26 @@ macOS environment managed by git and GNU Stow.
 
 ## Usage
 
-There are two general approaches you can take to using these dotfiles:
+I don't really recommend others use the following installation method, instead
+I encourage you to copy what you like manually and curate your own dotfiles,
+project, but for those not of the faint of heart:
 
-1. Clone or git submodule and symlink what you want (recommended)
-2. Use the installer (not recommended)
-
-I don't recommend others to use the installer as it is preferable to curate your own environment according to your
-needs and preferences. It's unlikely you need the precise set of tools that I do, and that you want to have them
-configured in the same manner I do, however there is likely to be content in here you find useful.
+### Install Homebrew
 
 ```
-# Install Homebrew
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+```
 
-# Clone repo
+### Clone repo
+
+```
 git clone git@github.com:camspiers/dotfiles.git ~/.dotfiles
+```
 
+### Install
+
+```
 cd ~/.dotfiles
-
 make all
 make install
 ```
-
-

@@ -13,7 +13,6 @@ endif
 " Options for each plugin, helps improve readability of plugin registration
 let g:vim_plug_opts = {
   \ 'glacambre/firenvim': has('nvim') ? {'do': { _ -> firenvim#install(0) } } : {'on': []},
-  \ 'iamcco/markdown-preview.nvim': {'do': 'cd app & yarn install'},
   \ 'mbbill/undotree':              {'on': 'UndotreeToggle' },
   \ 'neoclide/coc.nvim':            {'do': { -> coc#util#install()} },
   \ 'vim-vdebug/vdebug':            {'on': []},
@@ -61,7 +60,7 @@ Plug 'blueyed/vim-diminactive'         | " Helps identifying active window
 Plug 'camspiers/animate.vim'           | " Animation plugin
 Plug 'camspiers/lens.vim'              | " Window resizing plugin
 Plug 'junegunn/goyo.vim'               | " Distraction free writing mode
-Plug 'junegunn/limelight.vim'          | " Only syntax highlight current paragraph
+Plug 'junegunn/limelight.vim'          | " Only highlight current paragraph
 Plug 'mhinz/vim-startify'              | " Startup screen
 Plug 'morhetz/gruvbox'                 | " Nice theme
 Plug 'nathanaelkane/vim-indent-guides' | " Provides indentation guides
@@ -96,7 +95,6 @@ Plug 'airblade/vim-rooter'           | " Auto-root setting
 Plug 'dhruvasagar/vim-table-mode'    | " Better handling for tables in markdown
 Plug 'duggiefresh/vim-easydir'       | " Create files in dirs that don't exist
 Plug 'glacambre/firenvim'            | " Enables nvim in browser
-Plug 'iamcco/markdown-preview.nvim'  | " Markdown preview
 Plug 'inkarkat/vim-ingo-library'     | " Spellcheck dependency
 Plug 'inkarkat/vim-spellcheck'       | " Spelling errors to quickfix list
 Plug 'itchyny/calendar.vim'          | " Nice calendar app
@@ -105,6 +103,7 @@ Plug 'kristijanhusak/vim-dadbod-ui'  | " DB UI support
 Plug 'mbbill/undotree'               | " Undo history visualizer
 Plug 'prashantjois/vim-slack'        | " Slack integration
 Plug 'rbong/vim-flog'                | " Commit viewer
+Plug 'reedes/vim-pencil'             | " Auto hard breaks for text files
 Plug 'reedes/vim-wordy'              | " Identify poor language use
 Plug 'samoshkin/vim-mergetool'       | " Merge tool for git
 Plug 'sedm0784/vim-you-autocorrect'  | " Automatic autocorrect
@@ -116,7 +115,7 @@ Plug 'tpope/vim-obsession'           | " Save sessions automatically
 Plug 'tpope/vim-speeddating'         | " Tools for working with dates
 Plug 'tpope/vim-unimpaired'          | " Common mappings for many needs
 Plug 'vim-vdebug/vdebug'             | " Debugging, loaded manually
-Plug 'wellle/tmux-complete.vim'      | " Completion for content in tmux
+" Plug 'wellle/tmux-complete.vim'      | " Completion for content in tmux
 " }}}
 
 " Syntax {{{
@@ -576,11 +575,6 @@ let g:mergetool_layout = 'bmr'
 let g:mergetool_prefer_revision = 'local'
 " }}}
 
-" Markdown Preview {{{
-" Don't start markdown preview automatically, use :MarkdownPreview
-let g:mkdp_auto_start = 0
-" }}}
-
 " Camelcase Motion {{{
 " Sets up within word motions to use ,
 let g:camelcasemotion_key = ','
@@ -618,25 +612,44 @@ let g:animate#duration = 150.0
 let g:airline_powerline_fonts = 1
 " }}}
 
-" Vimtex {{{
-let g:vimtex_view_general_callback = 'TermPDF'
-let g:vimtex_view_automatic = 0
-let g:vimtex_lastcalled = 0
-function! TermPDF(status) abort
-  if a:status
-    " Implement some basic throttling
-    let time = str2float(reltimestr(reltime())) * 1000.0
-    if time - g:vimtex_lastcalled > 1000
-      call system('kitty @ set-background-opacity 1.0')
-      call system('kitty @ kitten termpdf.py ' . b:vimtex.out())
-      let g:vimtex_lastcalled = time
-    endif
+function! CompileMarkdown() abort
+  :only
+  let md_file = expand('%:p')
+  let pdf_file = expand('%:p:r') . '.pdf'
+  call system('pandoc -s -o ' . pdf_file . ' ' . md_file)
+  call TermPDF(pdf_file)
+endfunction
+
+augroup Markdown
+  autocmd!
+  autocmd FileType markdown autocmd BufWritePost <buffer> call CompileMarkdown()
+  autocmd FileType markdown autocmd BufDelete <buffer> call TermPDFClose()
+augroup end
+
+let g:termpdf_lastcalled = 0
+function! TermPDF(file) abort
+  " Implement some basic throttling
+  let time = str2float(reltimestr(reltime())) * 1000.0
+  if time - g:termpdf_lastcalled > 1000
+    call system('kitty @ set-background-opacity 1.0')
+    call system('kitty @ kitten termpdf.py ' . a:file)
+    let g:termpdf_lastcalled = time
   endif
 endfunction
 
 function! TermPDFClose() abort
   call system('kitty @ close-window --match title:termpdf')
   call system('kitty @ set-background-opacity 0.97')
+endfunction
+
+" Vimtex {{{
+let g:vimtex_view_general_callback = 'VimtexCallback'
+let g:vimtex_view_automatic = 0
+
+function! VimtexCallback(status) abort
+  if a:status
+    call TermPDF(b:vimtex.out())
+  endif
 endfunction
 
 augroup VimtexTest
@@ -655,6 +668,7 @@ function! EnableTextFileSettings() abort
   setlocal spell
   EnableAutocorrect
   silent TableModeEnable
+  call pencil#init({'wrap': 'hard'})
 endfunction
 
 let g:distraction_free = 0
