@@ -12,10 +12,11 @@ endif
 " Custom Vim Plug {{{
 " Options for each plugin, helps improve readability of plugin registration
 let g:vim_plug_opts = {
-  \ 'glacambre/firenvim': has('nvim') ? {'do': { _ -> firenvim#install(0) } } : {'on': []},
   \ 'mbbill/undotree':              {'on': 'UndotreeToggle' },
   \ 'neoclide/coc.nvim':            {'do': { -> coc#util#install()} },
   \ 'vim-vdebug/vdebug':            {'on': []},
+  \ 'lambdalisue/fern.vim':         {'on': 'Fern' },
+  \ 'lambdalisue/fern-renderer-devicons.vim': {'on': 'Fern' },
 \ }
 
 " Register plugin with options
@@ -33,11 +34,10 @@ call plug#begin(expand('~/.config/nvim/plugged'))
 command! -nargs=1 -bar Plug call Plug(<f-args>)
 
 " Defaults {{{
-" Plug 'christoomey/vim-tmux-navigator' | " Pane navigation
-Plug 'knubie/vim-kitty-navigator'
-Plug 'farmergreg/vim-lastplace'       | " Go to last position when opening files
-Plug 'tpope/vim-sensible'             | " Sensible defaults
-Plug 'wincent/terminus'               | " Terminal integration improvements
+Plug 'farmergreg/vim-lastplace'   | " Go to last position when opening files
+Plug 'knubie/vim-kitty-navigator' | " Navigate kitty like vim
+Plug 'tpope/vim-sensible'         | " Sensible defaults
+Plug 'wincent/terminus'           | " Mouse support
 " }}}
 
 " Search {{{
@@ -47,31 +47,24 @@ Plug 'junegunn/fzf.vim'           | " Fuzzy finding plugin
 " }}}
 
 " Navigation {{{
-Plug 'lambdalisue/fern.vim'                   | " Replacement for netrw
-Plug 'lambdalisue/fern-renderer-devicons.vim' | " Dev icons for fern
-Plug 'tpope/vim-projectionist'                | " Navigation of related files
-Plug 'wincent/vcs-jump'                       | " Jump to git things
-Plug 'ap/vim-buftabline'                      | " Displays buffers
+Plug 'lambdalisue/fern.vim'    | " Replacement for netrw
+Plug 'tpope/vim-projectionist' | " Navigation of related files
 " }}}
 
 " Visual {{{
-Plug 'arecarn/vim-clean-fold'          | " Provides function for folds
-Plug 'blueyed/vim-diminactive'         | " Helps identifying active window
-Plug 'camspiers/animate.vim'           | " Animation plugin
-Plug 'camspiers/lens.vim'              | " Window resizing plugin
-Plug 'junegunn/goyo.vim'               | " Distraction free writing mode
-Plug 'junegunn/limelight.vim'          | " Only highlight current paragraph
-Plug 'mhinz/vim-startify'              | " Startup screen
-Plug 'morhetz/gruvbox'                 | " Nice theme
-Plug 'nathanaelkane/vim-indent-guides' | " Provides indentation guides
-Plug 'ryanoasis/vim-devicons'          | " Dev icons
-Plug 'vim-airline/vim-airline'         | " Statusline
-Plug 'vim-scripts/folddigest.vim'      | " Visualize folds
-Plug 'wincent/loupe'                   | " Search context improvements
-" }}}
-
-" Conquer of Completion {{{
-Plug 'neoclide/coc.nvim' | " Completion provider
+Plug 'arecarn/vim-clean-fold'                 | " Provides function for folds
+Plug 'blueyed/vim-diminactive'                | " Helps identifying active window
+Plug 'camspiers/animate.vim'                  | " Animation plugin
+Plug 'camspiers/lens.vim'                     | " Window resizing plugin
+Plug 'junegunn/goyo.vim'                      | " Distraction free writing mode
+Plug 'junegunn/limelight.vim'                 | " Only highlight current paragraph
+Plug 'lambdalisue/fern-renderer-devicons.vim' | " Dev icons for fern
+Plug 'lifepillar/vim-gruvbox8'                | " Faster version of gruvbox
+Plug 'nathanaelkane/vim-indent-guides'        | " Provides indentation guides
+Plug 'ryanoasis/vim-devicons'                 | " Dev icons
+Plug 'vim-airline/vim-airline'                | " Statusline
+Plug 'vim-scripts/folddigest.vim'             | " Visualize folds
+Plug 'wincent/loupe'                          | " Search context improvements
 " }}}
 
 " Editor {{{
@@ -82,8 +75,8 @@ Plug 'junegunn/vim-easy-align'       | " Helps alignment
 Plug 'kkoomen/vim-doge'              | " Docblock generator
 Plug 'lervag/vimtex'                 | " Support for vimtex
 Plug 'matze/vim-move'                | " Move lines
+Plug 'neoclide/coc.nvim'             | " Completion provider
 Plug 'romainl/vim-cool'              | " Awesome search highlighting
-Plug 'terryma/vim-multiple-cursors'  | " Multiple cursor support like Sublime
 Plug 'tomtom/tcomment_vim'           | " Better commenting
 Plug 'tpope/vim-repeat'              | " Improves repeat handling
 Plug 'tpope/vim-surround'            | " Surround motions
@@ -91,15 +84,9 @@ Plug 'wellle/targets.vim'            | " Move text objects
 " }}}
 
 " Tools {{{
-Plug 'airblade/vim-rooter'           | " Auto-root setting
 Plug 'dhruvasagar/vim-table-mode'    | " Better handling for tables in markdown
-Plug 'duggiefresh/vim-easydir'       | " Create files in dirs that don't exist
-Plug 'glacambre/firenvim'            | " Enables nvim in browser
-Plug 'inkarkat/vim-ingo-library'     | " Spellcheck dependency
-Plug 'inkarkat/vim-spellcheck'       | " Spelling errors to quickfix list
 Plug 'itchyny/calendar.vim'          | " Nice calendar app
 Plug 'kassio/neoterm'                | " REPL integration
-Plug 'kristijanhusak/vim-dadbod-ui'  | " DB UI support
 Plug 'mbbill/undotree'               | " Undo history visualizer
 Plug 'prashantjois/vim-slack'        | " Slack integration
 Plug 'rbong/vim-flog'                | " Commit viewer
@@ -107,21 +94,15 @@ Plug 'reedes/vim-pencil'             | " Auto hard breaks for text files
 Plug 'reedes/vim-wordy'              | " Identify poor language use
 Plug 'samoshkin/vim-mergetool'       | " Merge tool for git
 Plug 'sedm0784/vim-you-autocorrect'  | " Automatic autocorrect
-Plug 'shumphrey/fugitive-gitlab.vim' | " GitLab support
-Plug 'tpope/vim-dadbod'              | " DB support
-Plug 'tpope/vim-eunuch'              | " UNIX tools
 Plug 'tpope/vim-fugitive'            | " Git tools
 Plug 'tpope/vim-obsession'           | " Save sessions automatically
 Plug 'tpope/vim-speeddating'         | " Tools for working with dates
 Plug 'tpope/vim-unimpaired'          | " Common mappings for many needs
 Plug 'vim-vdebug/vdebug'             | " Debugging, loaded manually
-" Plug 'wellle/tmux-complete.vim'      | " Completion for content in tmux
 " }}}
 
 " Syntax {{{
-Plug 'bfontaine/Brewfile.vim'          | " Brewfile
 Plug 'phalkunz/vim-ss'                 | " SilverStripe templates
-Plug 'reasonml-editor/vim-reason-plus' | " Reason support
 Plug 'sheerun/vim-polyglot'            | " Lang pack
 " }}}
 
@@ -165,20 +146,20 @@ set timeoutlen=500 | " Wait less time for mapped sequences
 " }}}
 
 " Visual {{{
-colorscheme gruvbox                         | " Sets theme to gruvbox
-let g:airline_theme='gruvbox'
 set background=dark
-let &colorcolumn="81,121"                   | " Add indicator for 80 and 120
 let base16colorspace=256                    | " Access colors present in 256 colorspace
+set termguicolors                           | " Enables 24bit colors
+colorscheme gruvbox8                        | " Sets theme to gruvbox
+let &colorcolumn="81,121"                   | " Add indicator for 80 and 120
 set foldtext=clean_fold#fold_text_minimal() | " Clean folds
 set noshowmode                              | " Don't show mode changes
 set novisualbell                            | " Don't display visual bell
 set nowrap                                  | " Don't wrap lines
-set number relativenumber                   | " Show line numbers
+set number                                  | " Show line numbers
+set relativenumber                          | " Make line numbers relative
 set showmatch                               | " Show matching braces
-set termguicolors                           | " Enables 24bit colors
 " Highlight Customizations {{{
-highlight Comment gui=italic,bold | " Make comments italic
+highlight Comment gui=italic,bold           | " Make comments italic
 " }}}
 " }}}
 
@@ -188,15 +169,13 @@ highlight Comment gui=italic,bold | " Make comments italic
 
 " General {{{
 " Save file
-nnoremap <silent> <Leader>q :write<CR>
+nnoremap <silent> <Leader>w :write<CR>
 " Save and close
-nnoremap <silent> <Leader><S-q> :x<CR>
+nnoremap <silent> <Leader><S-w> :x<CR>
 " Easy align in visual mode
 xmap     ga <Plug>(EasyAlign)
 " Easy align in normal mode
 nmap     ga <Plug>(EasyAlign)
-" Open startify with leader s
-nnoremap <silent> <Leader>s :Startify<CR>
 " Open custom digest for folds
 nnoremap <silent> <Leader>= :call CustomFoldDigest()<CR>
 " Make BS/DEL work as expected in visual modes (i.e. delete the selected text)...
@@ -210,8 +189,6 @@ nnoremap <silent> <Leader>\ :Files<CR>
 nnoremap <silent> <Leader>l :Lines<CR>
 " Open fuzzy buffers with leader b
 nnoremap <silent> <Leader>b :Buffers<CR>
-" Open fuzzy windows with leader space
-nnoremap <silent> <Leader>w :Windows<CR>
 " Open ripgrep
 nnoremap <silent> <Leader>f :Rg<CR>
 " Open global ripgrep
@@ -243,7 +220,7 @@ nnoremap <silent> <Leader><S-a> :AV<CR>
 
 " View Management {{{
 " Open current file in fern
-nnoremap <silent> - :Fern . -reveal=%<CR>
+nnoremap <silent> <leader>n :Fern . -reveal=%<CR>
 " Create vsplit
 nnoremap <silent> <leader>\| :call Vsplit()<CR>
 " Create hsplit
@@ -258,7 +235,7 @@ nnoremap <silent> <Leader><S-c> :%close<CR>
 nnoremap <silent> <Leader>x :bdelete<CR>
 " Delete the current buffer
 nnoremap <silent> <Leader><S-x> :bdelete!<CR>
-" Close all buffers
+" Force close all buffers
 nnoremap <silent> <Leader>z :%bdelete<CR>
 " Close all buffers
 nnoremap <silent> <Leader><S-z> :%bdelete!<CR>
@@ -305,11 +282,6 @@ nmap gx <Plug>(neoterm-repl-send)
 xmap gx <Plug>(neoterm-repl-send)
 " }}}
 
-" Git {{{
-" Run :VcsJump diff
-nnoremap <Leader>+ :VcsJump diff<CR>
-" }}}
-
 " Fuzzy Finder {{{
 " Mapping selecting mappings
 nmap <leader><tab> <plug>(fzf-maps-n)
@@ -324,12 +296,6 @@ imap <c-x><c-l> <plug>(fzf-complete-line)
 
 " Custom Tools {{{
 if ! has('gui_running')
-  " Open project
-  nnoremap <silent> <Leader>] :call openterm#vertical('tmuxinator-fzf-start.sh', 0.2)<CR>
-  " Switch session
-  nnoremap <silent> <Leader>[ :call openterm#vertical('tmux-fzf-switch.sh', 0.2)<CR>
-  " Kill session
-  nnoremap <silent> <Leader>} :call openterm#vertical('tmux-fzf-kill.sh', 0.2)<CR>
   " Toggle pomodoro
   nnoremap <silent> <Leader>p :call TogglePomodoro()<CR>
 endif
@@ -383,8 +349,6 @@ function! Rg(ignore, args, bang) abort
   call fzf#vim#grep(command, 1, Preview(RgPreviewFlags(a:ignore ? 'Grep' : 'Global Grep')), a:bang)
   call animate#window_percent_height(0.8)
 endfunction
-" Defines search command for :Files
-let $FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --iglob "!.DS_Store" --iglob "!.git"'
 " Opens files search with preview
 function! Files(args, bang) abort
   call fzf#vim#files(a:args, Preview(PreviewFlags('Files')), a:bang)
@@ -398,11 +362,6 @@ endfunction
 " Opens buffers with animation
 function! Buffers(args, bang) abort
   call fzf#vim#buffers(a:args, a:bang)
-  call animate#window_percent_height(0.2)
-endfunction
-" Opens buffers with animation
-function! Windows(bang) abort
-  call fzf#vim#windows(a:bang)
   call animate#window_percent_height(0.2)
 endfunction
 " Default FZF options with bindings to match layout and select all + none
@@ -463,10 +422,6 @@ let g:fern#default_hidden = 1
 let g:fern#default_exclude = &wildignore
 " }}}
 
-" Buftabline {{{
-let g:buftabline_indicators = 1
-" }}}
-
 " Pencil {{{
 let g:pencil#autoformat = 0
 let g:pencil#textwidth = 80
@@ -481,10 +436,6 @@ let g:polyglot_disabled = ['latex']
 let g:table_mode_corner = '|'
 " }}}
 
-" Firenvim {{{
-let g:firenvim_config = { 'localSettings': { '.*': { 'takeover': 'never', } } }
-" }}}
-
 " Loupe {{{
 let g:LoupeClearHighlightMap = 0
 " }}}
@@ -492,12 +443,15 @@ let g:LoupeClearHighlightMap = 0
 " Conquer of Completion {{{
 
 " Plugins {{{
+" coc-git is causing start screen not to show
+" \ 'coc-git',
 let g:coc_global_extensions = [
   \ 'coc-css',
   \ 'coc-eslint',
-  \ 'coc-git',
   \ 'coc-html',
   \ 'coc-json',
+  \ 'coc-snippets',
+  \ 'coc-yaml',
   \ 'coc-lists',
   \ 'coc-pairs',
   \ 'coc-phpls',
@@ -505,13 +459,11 @@ let g:coc_global_extensions = [
   \ 'coc-python',
   \ 'coc-reason',
   \ 'coc-sh',
-  \ 'coc-snippets',
   \ 'coc-stylelint',
   \ 'coc-tslint',
   \ 'coc-tsserver',
   \ 'coc-vimlsp',
   \ 'coc-vimtex',
-  \ 'coc-yaml',
 \ ]
 " }}}
 
@@ -555,13 +507,6 @@ let g:neoterm_autojump = 1
 let g:neoterm_direct_open_repl = 1
 " }}}
 
-" Rooter {{{
-" Use docker files and git
-let g:rooter_patterns = ['docker-compose.yml', '.git/']
-" Change silently
-let g:rooter_silent_chdir = 1
-" }}}
-
 " Dim Inactive {{{
 " Handle focus lost and gained events
 let g:diminactive_enable_focus = 1
@@ -580,19 +525,12 @@ let g:mergetool_prefer_revision = 'local'
 let g:camelcasemotion_key = ','
 " }}}
 
-" Startify {{{
-" Changes startify to have a different heading and only dirs
-let g:startify_lists = [ { 'type': 'dir', 'header': ['   Recent Files'] } ]
-" Don't change directories
-let g:startify_change_to_dir = 0
-" }}}
-
 " Indent Guides {{{
 let g:indent_guides_enable_on_vim_startup = 1
 let g:indent_guides_guide_size = 1
 let g:indent_guides_start_level = 2
 let g:indent_guides_color_change_percent = 1
-let g:indent_guides_exclude_filetypes = ['help', 'startify', 'fzf', 'openterm', 'neoterm', 'calendar']
+let g:indent_guides_exclude_filetypes = ['help', 'fzf', 'openterm', 'neoterm', 'calendar']
 " }}}
 
 " Fold Digest {{{
@@ -610,6 +548,7 @@ let g:animate#duration = 150.0
 
 " Airline {{{
 let g:airline_powerline_fonts = 1
+let g:airline#extensions#tabline#enabled = 1
 " }}}
 
 function! CompileMarkdown() abort
@@ -687,10 +626,7 @@ function! EnableDistractionFreeSettings() abort
   let g:lens#disabled = 1
   call goyo#execute(0, 0)
   Limelight
-  let g:buftabline_show = 0
-  call buftabline#update(0)
   set showtabline=0
-  silent !tmux set status off
 endfunction
 function! DisableDistractionFreeSettings() abort
   if ! g:distraction_free
@@ -701,9 +637,6 @@ function! DisableDistractionFreeSettings() abort
   call goyo#execute(0, 0)
   Limelight!
   set showtabline=1
-  let g:buftabline_show = 2
-  call buftabline#update(0)
-  silent !tmux set status on
 endfunction
 " Opens calendar with animation
 function! OpenCalendar() abort
@@ -849,8 +782,6 @@ command! -bang -nargs=? -complete=dir Files call Files(<q-args>, <bang>0)
 command! -bang -nargs=* Lines call Lines(<q-args>, <bang>0)
 " Opens buffer search
 command! -bar -bang -nargs=? -complete=buffer Buffers call Buffers(<q-args>, <bang>0)
-" Opens window search
-command! -bar -bang Windows call Windows(<bang>0)
 " Sets up command for prettier
 command! -nargs=0 Prettier :CocCommand prettier.formatFile
 " Custom Goyo

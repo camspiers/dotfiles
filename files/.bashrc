@@ -75,6 +75,7 @@ alias sf='rg --files --hidden --no-ignore | fzf -m'
 alias ssh='TERM=xterm-256color ssh'
 alias t='tmux'
 alias v='nvim'
+alias vs='nvim -S Session.vim'
 
 ################################################################################
 # Bindings #####################################################################
