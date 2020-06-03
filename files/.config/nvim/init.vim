@@ -27,7 +27,6 @@ endfunction
 " }}}
 
 " Plugins {{{
-" Begin vim plug
 call plug#begin(expand('~/.config/nvim/plugged'))
 
 " Custom command for registering plugins, must follow plug#begin
@@ -95,6 +94,7 @@ Plug 'reedes/vim-wordy'              | " Identify poor language use
 Plug 'samoshkin/vim-mergetool'       | " Merge tool for git
 Plug 'sedm0784/vim-you-autocorrect'  | " Automatic autocorrect
 Plug 'tpope/vim-fugitive'            | " Git tools
+Plug 'shumphrey/fugitive-gitlab.vim' | " Gitlab integration
 Plug 'tpope/vim-obsession'           | " Save sessions automatically
 Plug 'tpope/vim-speeddating'         | " Tools for working with dates
 Plug 'tpope/vim-unimpaired'          | " Common mappings for many needs
@@ -106,7 +106,6 @@ Plug 'phalkunz/vim-ss'                 | " SilverStripe templates
 Plug 'sheerun/vim-polyglot'            | " Lang pack
 " }}}
 
-" End the plugin registration
 call plug#end()
 " }}}
 
@@ -162,7 +161,6 @@ set showmatch                               | " Show matching braces
 highlight Comment gui=italic,bold           | " Make comments italic
 " }}}
 " }}}
-
 " }}}
 
 " Mappings {{{
@@ -178,8 +176,6 @@ xmap     ga <Plug>(EasyAlign)
 nmap     ga <Plug>(EasyAlign)
 " Open custom digest for folds
 nnoremap <silent> <Leader>= :call CustomFoldDigest()<CR>
-" Make BS/DEL work as expected in visual modes (i.e. delete the selected text)...
-xmap <BS> x
 " }}}
 
 " Search {{{
@@ -296,6 +292,12 @@ imap <c-x><c-l> <plug>(fzf-complete-line)
 
 " Custom Tools {{{
 if ! has('gui_running')
+  " Open project
+  nnoremap <silent> <Leader>] :call openterm#vertical('tmuxinator-fzf-start.sh', 0.2)<CR>
+  " Switch session
+  nnoremap <silent> <Leader>[ :call openterm#vertical('tmux-fzf-switch.sh', 0.2)<CR>
+  " Kill session
+  nnoremap <silent> <Leader>} :call openterm#vertical('tmux-fzf-kill.sh', 0.2)<CR>
   " Toggle pomodoro
   nnoremap <silent> <Leader>p :call TogglePomodoro()<CR>
 endif
@@ -316,7 +318,6 @@ nnoremap <silent> <Leader>t :call OpenCalendar()<CR>
 " Calls the custom start function that requests path map to be defined if not already run
 nnoremap <silent> <F5> :call StartVdebug()<CR>
 " }}}
-
 " }}}
 
 " Search Configuration {{{
@@ -325,8 +326,7 @@ let g:agriculture#rg_options = '--no-ignore --hidden'
 " Some ripgrep searching defaults
 function! RgCommand(ignore) abort
   return join([
-    \ 'rg',
-    \ '--hidden', '--color ansi', '--column',
+    \ 'rg', '--hidden', '--color ansi', '--column',
     \ '--line-number', '--no-heading', '--smart-case',
     \ (a:ignore == 1 ? '--ignore' : '--no-ignore')
   \], ' ')
@@ -367,14 +367,11 @@ endfunction
 " Default FZF options with bindings to match layout and select all + none
 let $FZF_DEFAULT_OPTS = join(
   \ [
-    \ '--layout=default',
-    \ '--info inline',
+    \ '--layout=default', '--info inline',
     \ '--bind ' . join(
       \ [
-        \ 'ctrl-a:select-all',
-        \ 'ctrl-d:deselect-all',
-        \ 'tab:toggle+up',
-        \ 'shift-tab:toggle+down',
+        \ 'ctrl-a:select-all', 'ctrl-d:deselect-all',
+        \ 'tab:toggle+up', 'shift-tab:toggle+down',
         \ 'ctrl-p:toggle-preview'
       \ ],
       \ ',',
@@ -446,24 +443,10 @@ let g:LoupeClearHighlightMap = 0
 " coc-git is causing start screen not to show
 " \ 'coc-git',
 let g:coc_global_extensions = [
-  \ 'coc-css',
-  \ 'coc-eslint',
-  \ 'coc-html',
-  \ 'coc-json',
-  \ 'coc-snippets',
-  \ 'coc-yaml',
-  \ 'coc-lists',
-  \ 'coc-pairs',
-  \ 'coc-phpls',
-  \ 'coc-prettier',
-  \ 'coc-python',
-  \ 'coc-reason',
-  \ 'coc-sh',
-  \ 'coc-stylelint',
-  \ 'coc-tslint',
-  \ 'coc-tsserver',
-  \ 'coc-vimlsp',
-  \ 'coc-vimtex',
+  \ 'coc-css', 'coc-eslint', 'coc-html', 'coc-json', 'coc-snippets', 'coc-yaml',
+  \ 'coc-lists', 'coc-pairs', 'coc-phpls', 'coc-prettier', 'coc-python',
+  \ 'coc-reason', 'coc-sh', 'coc-stylelint', 'coc-tslint', 'coc-tsserver',
+  \ 'coc-vimlsp', 'coc-vimtex',
 \ ]
 " }}}
 
@@ -500,7 +483,6 @@ let g:coc_snippet_next = '<tab>'
 " }}}
 
 " Neoterm {{{
-
 " Sets default location that neoterm opens
 let g:neoterm_default_mod = 'botright'
 let g:neoterm_autojump = 1
@@ -551,6 +533,18 @@ let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled = 1
 " }}}
 
+" Vimtex {{{
+let g:vimtex_view_general_callback = 'VimtexCallback'
+let g:vimtex_view_automatic = 0
+function! VimtexCallback(status) abort
+  if a:status
+    call TermPDF(b:vimtex.out())
+  endif
+endfunction
+" }}}
+" }}}
+
+" Custom Tools {{{
 function! CompileMarkdown() abort
   :only
   let md_file = expand('%:p')
@@ -558,12 +552,6 @@ function! CompileMarkdown() abort
   call system('pandoc -s -o ' . pdf_file . ' ' . md_file)
   call TermPDF(pdf_file)
 endfunction
-
-augroup Markdown
-  autocmd!
-  autocmd FileType markdown autocmd BufWritePost <buffer> call CompileMarkdown()
-  autocmd FileType markdown autocmd BufDelete <buffer> call TermPDFClose()
-augroup end
 
 let g:termpdf_lastcalled = 0
 function! TermPDF(file) abort
@@ -580,27 +568,6 @@ function! TermPDFClose() abort
   call system('kitty @ close-window --match title:termpdf')
   call system('kitty @ set-background-opacity 0.97')
 endfunction
-
-" Vimtex {{{
-let g:vimtex_view_general_callback = 'VimtexCallback'
-let g:vimtex_view_automatic = 0
-
-function! VimtexCallback(status) abort
-  if a:status
-    call TermPDF(b:vimtex.out())
-  endif
-endfunction
-
-augroup VimtexTest
-  autocmd!
-  autocmd! User VimtexEventCompileStopped call TermPDFClose()
-  autocmd FileType tex autocmd BufDelete <buffer> call TermPDFClose()
-augroup end
-" }}}
-
-" }}}
-
-" Custom Tools {{{
 
 " Enabled appropriate options for text files
 function! EnableTextFileSettings() abort
@@ -724,7 +691,6 @@ function! NaturalVerticalDrawer() abort
   vertical resize 1
   call animate#window_absolute_width(width)
 endfunction
-
 " Animate the quickfix and ensure it is at the bottom
 function! OpenQuickFix() abort
   if getwininfo(win_getid())[0].loclist != 1
@@ -732,12 +698,10 @@ function! OpenQuickFix() abort
   endif
   call NaturalDrawer()
 endfunction
-
 " Configures an FZF window
 function! NewFZFWindow() abort
   new | wincmd J | resize 1
 endfunction
-
 " Enables UI styles suitable for terminals etc
 function! EnableCleanUI() abort
   setlocal listchars=
@@ -752,7 +716,6 @@ function! EnableCleanUI() abort
     \ colorcolumn=
   autocmd BufLeave <buffer> set laststatus=2 showmode ruler
 endfunction
-
 " There's an issue with animating FZF. The preview sees the terminal as having
 " a small height, and therefore doesn't render the preview with any lines
 " this hack is to toggle the preview on and off, thereby rerendering the
@@ -769,7 +732,6 @@ endfunction
 " }}}
 
 " Commands {{{
-
 " CoC Format
 command! -nargs=0 Format :call CocAction('format')
 " Opens FZF + Ripgrep for not ignored files
@@ -787,14 +749,12 @@ command! -nargs=0 Prettier :CocCommand prettier.formatFile
 " Custom Goyo
 command! -nargs=0 Clean call ToggleDistractionFreeSettings()
 " }}}
-
 function! OnFZFOpen() abort
   call EnableCleanUI()
   call RefreshFZFPreview()
   tnoremap <Esc> <c-c>
   startinsert
 endfunction
-
 function! OnNeoTermOpen() abort
   call EnableCleanUI()
   wincmd J
@@ -813,15 +773,14 @@ augroup General
   autocmd! FileType neoterm call OnNeoTermOpen()
   autocmd! FileType fzf call OnFZFOpen()
   autocmd! VimLeavePre * call DisableDistractionFreeSettings()
-augroup END
-
-augroup TermHandling
-  autocmd!
   if has('nvim')
     autocmd! TermOpen * let g:last_open_term_id = b:terminal_job_id
   endif
+  autocmd! User VimtexEventCompileStopped call TermPDFClose()
+  autocmd FileType tex autocmd BufDelete <buffer> call TermPDFClose()
+  autocmd FileType markdown autocmd BufWritePost <buffer> call CompileMarkdown()
+  autocmd FileType markdown autocmd BufDelete <buffer> call TermPDFClose()
 augroup END
-
 " }}}
 
 " vim:fdm=marker
