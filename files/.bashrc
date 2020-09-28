@@ -41,6 +41,7 @@ SYS_PATHS=(
   "/usr/local/opt/ruby/bin" # Ruby
   "/usr/local/sbin" # Brew scripts
   "/usr/local/bin" # Brew scripts
+  "/Users/cam/.cargo/bin"
 )
 
 # User paths

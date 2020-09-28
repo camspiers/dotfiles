@@ -1,9 +1,0 @@
-name: Drive System Hub
-root: ~/dev/system-hub
-attach: false
-windows:
-  - Editor: nvim -S Session.vim
-  - Docker:
-      - readydocker.sh
-      - docker-compose up -d
-      - lazydocker

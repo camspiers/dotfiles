@@ -546,10 +546,10 @@ mute-stream@0.0.8:
   resolved "https://registry.yarnpkg.com/mute-stream/-/mute-stream-0.0.8.tgz#1630c42b2251ff81e2a283de96a5497ea92e5e0d"
   integrity sha512-nnbWWOkoWyUsTjKrhgD0dcz22mdkSnpYqbEjIm2nhwhuxlSkpywJmBo8h0ZqJdkp73mb90SssHkN4rsRaBAfAA==
 
-neovim@^4.5.0:
-  version "4.8.0"
-  resolved "https://registry.yarnpkg.com/neovim/-/neovim-4.8.0.tgz#887f34f14d9249f7d0f7ca1d841f4169d8d89d67"
-  integrity sha512-gGiVq/r9iIrp2XCdDXb3fBEW4e3H6zMLxgTGuG5e6MaxiLzLnUZj2ersr4r+Ij8qnbRFxCqCrOw5d7lyrGPcWg==
+neovim@^4.9.0:
+  version "4.9.0"
+  resolved "https://registry.yarnpkg.com/neovim/-/neovim-4.9.0.tgz#ce7f8a231f3b49999fe4001413e6d7b63b97369c"
+  integrity sha512-48hDy0Dheo5qFF+cwhj7qaWoXfbiKOQ0CLNE0/aiA41rhn/Z1m0OKQqlp9SqbSMr/PnY5QdiLdbs0xh2UudEfA==
   dependencies:
     "@msgpack/msgpack" "^1.9.3"
     lodash.defaults "^4.2.0"
@@ -596,7 +596,7 @@ path-key@^3.1.0:
   resolved "https://registry.yarnpkg.com/path-key/-/path-key-3.1.1.tgz#581f6ade658cbba65a0d3380de7753295054f375"
   integrity sha512-ojmeN0qd+y0jszEtoY48r0Peq5dwMEkIlCOu6Q5f41lfkswXuKtYrhgoTpLnyIcHm24Uhqx+5Tqm2InSwLhE6Q==
 
-"php-parser@github:glayzzle/php-parser#prettier":
+php-parser@glayzzle/php-parser#prettier:
   version "3.0.0-prerelease.9"
   resolved "https://codeload.github.com/glayzzle/php-parser/tar.gz/3279b7ee9bd78b914b5b840edc749eee0fabbfd8"
 

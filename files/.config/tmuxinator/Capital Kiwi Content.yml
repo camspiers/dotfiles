@@ -1,9 +1,0 @@
-name: Capital Kiwi Content
-root: ~/dev/capital-kiwi-content
-attach: false
-windows:
-  - Editor: nvim
-  - Docker:
-      - readydocker.sh
-      - docker-compose up -d
-      - lazydocker

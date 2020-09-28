@@ -64,6 +64,7 @@ Plug 'ryanoasis/vim-devicons'                 | " Dev icons
 Plug 'vim-airline/vim-airline'                | " Statusline
 Plug 'vim-scripts/folddigest.vim'             | " Visualize folds
 Plug 'wincent/loupe'                          | " Search context improvements
+Plug 'majutsushi/tagbar'
 " }}}
 
 " Editor {{{
@@ -534,13 +535,14 @@ let g:airline#extensions#tabline#enabled = 1
 " }}}
 
 " Vimtex {{{
-let g:vimtex_view_general_callback = 'VimtexCallback'
-let g:vimtex_view_automatic = 0
-function! VimtexCallback(status) abort
-  if a:status
-    call TermPDF(b:vimtex.out())
-  endif
-endfunction
+let g:vimtex_view_method = 'skim'
+" let g:vimtex_view_general_callback = 'VimtexCallback'
+" let g:vimtex_view_automatic = 0
+" function! VimtexCallback(status) abort
+"   if a:status
+"     call TermPDF(b:vimtex.out())
+"   endif
+" endfunction
 " }}}
 " }}}
 
@@ -778,8 +780,8 @@ augroup General
   endif
   autocmd! User VimtexEventCompileStopped call TermPDFClose()
   autocmd FileType tex autocmd BufDelete <buffer> call TermPDFClose()
-  autocmd FileType markdown autocmd BufWritePost <buffer> call CompileMarkdown()
-  autocmd FileType markdown autocmd BufDelete <buffer> call TermPDFClose()
+  " autocmd FileType markdown autocmd BufWritePost <buffer> call CompileMarkdown()
+  " autocmd FileType markdown autocmd BufDelete <buffer> call TermPDFClose()
 augroup END
 " }}}
 

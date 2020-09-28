@@ -2,7 +2,7 @@
   "dependencies": {
     "@prettier/plugin-php": "^0.12.0",
     "create-react-app": "^3.3.0",
-    "neovim": "^4.5.0",
+    "neovim": "^4.9.0",
     "prettier": "^1.19.1"
   }
 }
