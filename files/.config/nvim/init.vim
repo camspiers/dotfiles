@@ -15,8 +15,6 @@ let g:vim_plug_opts = {
   \ 'mbbill/undotree':              {'on': 'UndotreeToggle' },
   \ 'neoclide/coc.nvim':            {'do': { -> coc#util#install()} },
   \ 'vim-vdebug/vdebug':            {'on': []},
-  \ 'lambdalisue/fern.vim':         {'on': 'Fern' },
-  \ 'lambdalisue/fern-renderer-devicons.vim': {'on': 'Fern' },
 \ }
 
 " Register plugin with options
@@ -48,6 +46,7 @@ Plug 'junegunn/fzf.vim'           | " Fuzzy finding plugin
 " Navigation {{{
 Plug 'lambdalisue/fern.vim'    | " Replacement for netrw
 Plug 'tpope/vim-projectionist' | " Navigation of related files
+Plug 'tpope/vim-vinegar'
 " }}}
 
 " Visual {{{
@@ -216,8 +215,6 @@ nnoremap <silent> <Leader><S-a> :AV<CR>
 " }}}
 
 " View Management {{{
-" Open current file in fern
-nnoremap <silent> <leader>n :Fern . -reveal=%<CR>
 " Create vsplit
 nnoremap <silent> <leader>\| :call Vsplit()<CR>
 " Create hsplit
@@ -412,12 +409,6 @@ let g:fzf_colors =
 
 " Goyo {{{
 let g:goyo_width = 81
-" }}}
-
-" Fern {{{
-let g:fern#renderer = "devicons"
-let g:fern#default_hidden = 1
-let g:fern#default_exclude = &wildignore
 " }}}
 
 " Pencil {{{
