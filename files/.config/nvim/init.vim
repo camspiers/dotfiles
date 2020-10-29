@@ -9,12 +9,17 @@ if empty(glob('~/.config/nvim/autoload/plug.vim'))
     \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 endif
 
+" Before plugin load configs {{{
+let g:polyglot_disabled = ['latex']
+" }}}
+
 " Custom Vim Plug {{{
 " Options for each plugin, helps improve readability of plugin registration
 let g:vim_plug_opts = {
   \ 'mbbill/undotree':              {'on': 'UndotreeToggle' },
   \ 'neoclide/coc.nvim':            {'do': { -> coc#util#install()} },
   \ 'vim-vdebug/vdebug':            {'on': []},
+  \ 'iamcco/markdown-preview.nvim': {'do': 'cd app && yarn install'  }
 \ }
 
 " Register plugin with options
@@ -44,7 +49,6 @@ Plug 'junegunn/fzf.vim'           | " Fuzzy finding plugin
 " }}}
 
 " Navigation {{{
-Plug 'lambdalisue/fern.vim'    | " Replacement for netrw
 Plug 'tpope/vim-projectionist' | " Navigation of related files
 Plug 'tpope/vim-vinegar'
 " }}}
@@ -56,7 +60,6 @@ Plug 'camspiers/animate.vim'                  | " Animation plugin
 Plug 'camspiers/lens.vim'                     | " Window resizing plugin
 Plug 'junegunn/goyo.vim'                      | " Distraction free writing mode
 Plug 'junegunn/limelight.vim'                 | " Only highlight current paragraph
-Plug 'lambdalisue/fern-renderer-devicons.vim' | " Dev icons for fern
 Plug 'lifepillar/vim-gruvbox8'                | " Faster version of gruvbox
 Plug 'nathanaelkane/vim-indent-guides'        | " Provides indentation guides
 Plug 'ryanoasis/vim-devicons'                 | " Dev icons
@@ -99,6 +102,8 @@ Plug 'tpope/vim-obsession'           | " Save sessions automatically
 Plug 'tpope/vim-speeddating'         | " Tools for working with dates
 Plug 'tpope/vim-unimpaired'          | " Common mappings for many needs
 Plug 'vim-vdebug/vdebug'             | " Debugging, loaded manually
+Plug 'cedarbaum/fugitive-azure-devops.vim'
+Plug 'iamcco/markdown-preview.nvim'
 " }}}
 
 " Syntax {{{
@@ -307,8 +312,6 @@ nnoremap <silent> <Leader>v :call ToggleVirtualEdit()<CR>
 nnoremap <silent> <Leader>' :call openterm#horizontal('lazygit', 0.8)<CR>
 " Open lazydocker
 nnoremap <silent> <Leader>; :call openterm#horizontal('lazydocker', 0.8)<CR>
-" Open harvest
-nnoremap <silent> <Leader>h :call openterm#horizontal('hstarti', 0.1)<CR>
 " Open scratch pad
 nnoremap <silent> <Leader>sc :call openterm#horizontal('bash', 0.2)<CR>
 " Open calendar + todo
@@ -417,10 +420,6 @@ let g:pencil#textwidth = 80
 let g:pencil#conceallevel = 0
 " }}}
 
-" Polyglot {{{
-let g:polyglot_disabled = ['latex']
-" }}}
-
 " Table Mode {{{
 let g:table_mode_corner = '|'
 " }}}
@@ -438,7 +437,7 @@ let g:coc_global_extensions = [
   \ 'coc-css', 'coc-eslint', 'coc-html', 'coc-json', 'coc-snippets', 'coc-yaml',
   \ 'coc-lists', 'coc-pairs', 'coc-phpls', 'coc-prettier', 'coc-python',
   \ 'coc-reason', 'coc-sh', 'coc-stylelint', 'coc-tslint', 'coc-tsserver',
-  \ 'coc-vimlsp', 'coc-vimtex',
+  \ 'coc-vimlsp', 'coc-vimtex', 'coc-git'
 \ ]
 " }}}
 
@@ -526,6 +525,7 @@ let g:airline#extensions#tabline#enabled = 1
 " }}}
 
 " Vimtex {{{
+let g:tex_flavor = 'latex'
 let g:vimtex_view_method = 'skim'
 " let g:vimtex_view_general_callback = 'VimtexCallback'
 " let g:vimtex_view_automatic = 0

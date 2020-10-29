@@ -65,6 +65,7 @@ brew "vifm"
 brew "vim"
 brew "wget"
 brew "yabai"
+brew "cmacrae/formulae/spacebar"
 brew "yarn"
 
 # App essentials
