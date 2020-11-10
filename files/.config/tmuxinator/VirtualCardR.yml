@@ -1,0 +1,7 @@
+name: VirtualCardR
+root: ~/dev/jnctn/virtual-card-r
+windows:
+  - Editor: nvim -S Session.vim
+  - Build: yarn start
+  - Test: yarn test
+  - Storybook: yarn storybook

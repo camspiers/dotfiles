@@ -1,0 +1,4 @@
+name: BlazorVirtualCard
+root: ~/dev/jnctn/BlazorVirtualCard
+windows:
+  - Editor: nvim -S Session.vim

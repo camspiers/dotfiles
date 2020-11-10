@@ -3,3 +3,4 @@ root: ~/dev/jnctn/Portal
 windows:
   - Editor: nvim -S Session.vim
   - Start: npm start
+  - Test: npm test

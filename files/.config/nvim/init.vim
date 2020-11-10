@@ -16,7 +16,6 @@ let g:polyglot_disabled = ['latex']
 " Custom Vim Plug {{{
 " Options for each plugin, helps improve readability of plugin registration
 let g:vim_plug_opts = {
-  \ 'mbbill/undotree':              {'on': 'UndotreeToggle' },
   \ 'neoclide/coc.nvim':            {'do': { -> coc#util#install()} },
   \ 'vim-vdebug/vdebug':            {'on': []},
   \ 'iamcco/markdown-preview.nvim': {'do': 'cd app && yarn install'  }
@@ -37,7 +36,6 @@ command! -nargs=1 -bar Plug call Plug(<f-args>)
 
 " Defaults {{{
 Plug 'farmergreg/vim-lastplace'   | " Go to last position when opening files
-Plug 'knubie/vim-kitty-navigator' | " Navigate kitty like vim
 Plug 'tpope/vim-sensible'         | " Sensible defaults
 Plug 'wincent/terminus'           | " Mouse support
 " }}}
@@ -51,15 +49,13 @@ Plug 'junegunn/fzf.vim'           | " Fuzzy finding plugin
 " Navigation {{{
 Plug 'tpope/vim-projectionist' | " Navigation of related files
 Plug 'tpope/vim-vinegar'
+Plug 'christoomey/vim-tmux-navigator'
 " }}}
 
 " Visual {{{
 Plug 'arecarn/vim-clean-fold'                 | " Provides function for folds
 Plug 'blueyed/vim-diminactive'                | " Helps identifying active window
 Plug 'camspiers/animate.vim'                  | " Animation plugin
-Plug 'camspiers/lens.vim'                     | " Window resizing plugin
-Plug 'junegunn/goyo.vim'                      | " Distraction free writing mode
-Plug 'junegunn/limelight.vim'                 | " Only highlight current paragraph
 Plug 'lifepillar/vim-gruvbox8'                | " Faster version of gruvbox
 Plug 'nathanaelkane/vim-indent-guides'        | " Provides indentation guides
 Plug 'ryanoasis/vim-devicons'                 | " Dev icons
@@ -82,22 +78,16 @@ Plug 'romainl/vim-cool'              | " Awesome search highlighting
 Plug 'tomtom/tcomment_vim'           | " Better commenting
 Plug 'tpope/vim-repeat'              | " Improves repeat handling
 Plug 'tpope/vim-surround'            | " Surround motions
-Plug 'wellle/targets.vim'            | " Move text objects
 " }}}
 
 " Tools {{{
 Plug 'dhruvasagar/vim-table-mode'    | " Better handling for tables in markdown
 Plug 'itchyny/calendar.vim'          | " Nice calendar app
 Plug 'kassio/neoterm'                | " REPL integration
-Plug 'mbbill/undotree'               | " Undo history visualizer
-Plug 'prashantjois/vim-slack'        | " Slack integration
-Plug 'rbong/vim-flog'                | " Commit viewer
 Plug 'reedes/vim-pencil'             | " Auto hard breaks for text files
-Plug 'reedes/vim-wordy'              | " Identify poor language use
 Plug 'samoshkin/vim-mergetool'       | " Merge tool for git
 Plug 'sedm0784/vim-you-autocorrect'  | " Automatic autocorrect
 Plug 'tpope/vim-fugitive'            | " Git tools
-Plug 'shumphrey/fugitive-gitlab.vim' | " Gitlab integration
 Plug 'tpope/vim-obsession'           | " Save sessions automatically
 Plug 'tpope/vim-speeddating'         | " Tools for working with dates
 Plug 'tpope/vim-unimpaired'          | " Common mappings for many needs
@@ -107,12 +97,34 @@ Plug 'iamcco/markdown-preview.nvim'
 " }}}
 
 " Syntax {{{
-Plug 'phalkunz/vim-ss'                 | " SilverStripe templates
 Plug 'sheerun/vim-polyglot'            | " Lang pack
 " }}}
 
+Plug 'nvim-treesitter/nvim-treesitter'
+Plug 'nvim-treesitter/nvim-treesitter-refactor'
+Plug 'nvim-treesitter/nvim-treesitter-textobjects'
+Plug 'romgrk/nvim-treesitter-context'
+
 call plug#end()
 " }}}
+
+lua <<EOF
+require'nvim-treesitter.configs'.setup {
+  ensure_installed = "maintained",
+  highlight = {
+    enable = true,
+  },
+  refactor = {
+    highlight_definitions = { enable = true },
+    smart_rename = {
+      enable = true,
+      keymaps = {
+        smart_rename = "grr",
+      },
+    },
+  },
+}
+EOF
 
 " Settings {{{
 

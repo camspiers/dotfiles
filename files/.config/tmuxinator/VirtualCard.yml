@@ -1,0 +1,4 @@
+name: VirtualCard
+root: ~/dev/jnctn/VirtualCard
+windows:
+  - Editor: nvim -S Session.vim

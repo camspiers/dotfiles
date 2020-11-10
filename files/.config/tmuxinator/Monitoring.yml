@@ -1,0 +1,4 @@
+name: Monitoring
+root: ~/dev
+windows:
+  - Monitoring: bpytop

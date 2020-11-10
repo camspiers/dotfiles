@@ -1,0 +1,5 @@
+name: Website
+root: ~/dev/jnctn/Website
+windows:
+  - Editor: nvim -S Session.vim
+  - Build: gatsby build
