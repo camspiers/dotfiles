@@ -1,4 +1,0 @@
-name: Episteme
-root: ~/dev/episteme
-windows:
-  - Editor: nvim -S Session.vim

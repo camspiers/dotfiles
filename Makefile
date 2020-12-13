@@ -8,7 +8,6 @@ install:
 
 brew:
 	brew bundle --file="$(DOTFILES)/extra/homebrew/Brewfile"
-	sudo tlmgr install latexmk
 
 neovim:
 	python3 -m pip install --upgrade pynvim

@@ -1,4 +1,0 @@
-name: Taps
-root: ~/dev/taps
-windows:
-  - Editor: nvim

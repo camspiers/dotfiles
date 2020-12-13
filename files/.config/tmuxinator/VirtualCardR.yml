@@ -2,6 +2,11 @@ name: VirtualCardR
 root: ~/dev/jnctn/virtual-card-r
 windows:
   - Editor: nvim -S Session.vim
-  - Build: yarn start
+  - Build:
+      layout: tiled
+      panes:
+        - yarn start
+        - yarn build
+        - yarn serve
   - Test: yarn test
   - Storybook: yarn storybook

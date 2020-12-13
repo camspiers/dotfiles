@@ -56,7 +56,7 @@ Plug 'christoomey/vim-tmux-navigator'
 Plug 'arecarn/vim-clean-fold'                 | " Provides function for folds
 Plug 'blueyed/vim-diminactive'                | " Helps identifying active window
 Plug 'camspiers/animate.vim'                  | " Animation plugin
-Plug 'lifepillar/vim-gruvbox8'                | " Faster version of gruvbox
+Plug 'morhetz/gruvbox'
 Plug 'nathanaelkane/vim-indent-guides'        | " Provides indentation guides
 Plug 'ryanoasis/vim-devicons'                 | " Dev icons
 Plug 'vim-airline/vim-airline'                | " Statusline
@@ -104,11 +104,20 @@ Plug 'nvim-treesitter/nvim-treesitter'
 Plug 'nvim-treesitter/nvim-treesitter-refactor'
 Plug 'nvim-treesitter/nvim-treesitter-textobjects'
 Plug 'romgrk/nvim-treesitter-context'
+Plug 'neovim/nvim-lsp'
+Plug 'neovim/nvim-lspconfig'
+
+Plug 'nvim-lua/popup.nvim'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
+Plug 'kyazdani42/nvim-web-devicons'
 
 call plug#end()
 " }}}
 
 lua <<EOF
+require'lspconfig'.tsserver.setup{}
+
 require'nvim-treesitter.configs'.setup {
   ensure_installed = "maintained",
   highlight = {
@@ -125,6 +134,9 @@ require'nvim-treesitter.configs'.setup {
   },
 }
 EOF
+
+" set foldmethod=expr
+" set foldexpr=nvim_treesitter#foldexpr()
 
 " Settings {{{
 
@@ -165,7 +177,8 @@ set timeoutlen=500 | " Wait less time for mapped sequences
 set background=dark
 let base16colorspace=256                    | " Access colors present in 256 colorspace
 set termguicolors                           | " Enables 24bit colors
-colorscheme gruvbox8                        | " Sets theme to gruvbox
+colorscheme gruvbox                        | " Sets theme to gruvbox
+let g:airline_theme='gruvbox'
 let &colorcolumn="81,121"                   | " Add indicator for 80 and 120
 set foldtext=clean_fold#fold_text_minimal() | " Clean folds
 set noshowmode                              | " Don't show mode changes
@@ -198,6 +211,7 @@ nnoremap <silent> <Leader>= :call CustomFoldDigest()<CR>
 " Search {{{
 " Open fuzzy files with leader \
 nnoremap <silent> <Leader>\ :Files<CR>
+" nnoremap <silent> <Leader>\ :Telescope find_files<CR>
 " Open fuzzy lines with leader l
 nnoremap <silent> <Leader>l :Lines<CR>
 " Open fuzzy buffers with leader b
@@ -448,8 +462,8 @@ let g:LoupeClearHighlightMap = 0
 let g:coc_global_extensions = [
   \ 'coc-css', 'coc-eslint', 'coc-html', 'coc-json', 'coc-snippets', 'coc-yaml',
   \ 'coc-lists', 'coc-pairs', 'coc-phpls', 'coc-prettier', 'coc-python',
-  \ 'coc-reason', 'coc-sh', 'coc-stylelint', 'coc-tslint', 'coc-tsserver',
-  \ 'coc-vimlsp', 'coc-vimtex', 'coc-git'
+  \ 'coc-sh', 'coc-stylelint', 'coc-tslint', 'coc-tsserver',
+  \ 'coc-vimlsp', 'coc-vimtex', 'coc-git', 'coc-omnisharp'
 \ ]
 " }}}
 

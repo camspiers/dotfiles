@@ -1,4 +1,0 @@
-name: Notes
-root: ~/notes
-windows:
-  - Editor: nvim -S Session.vim

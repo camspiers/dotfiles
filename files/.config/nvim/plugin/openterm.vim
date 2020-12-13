@@ -42,7 +42,6 @@ endfunction
 
 function! openterm#open() abort
   call EnableCleanUI()
-  tnoremap <Esc> <c-c>
   startinsert
 endfunction
 

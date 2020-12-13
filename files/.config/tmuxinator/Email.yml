@@ -1,0 +1,4 @@
+name: Email
+root: ~
+windows:
+  - Email: neomutt

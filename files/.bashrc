@@ -38,21 +38,13 @@ SYS_PATHS=(
   "/usr/local/opt/coreutils/libexec/gnubin" # Prefer coreutils
   "/usr/local/opt/gnu-sed/libexec/gnubin" # Custom sed
   "/usr/local/opt/python/libexec/bin" # Python
-  "/usr/local/opt/ruby/bin" # Ruby
   "/usr/local/sbin" # Brew scripts
   "/usr/local/bin" # Brew scripts
-  "/Users/cam/.cargo/bin"
 )
 
 # User paths
 USER_PATHS=(
-  "/opt/metasploit-framework/bin" # Metasploit
-  "/usr/local/opt/fzf/bin" # Fzf
   "$HOME/.dotfiles/scripts" # Personal scripts
-  "$HOME/.composer/vendor/bin" # Global composer scripts
-  "$(/usr/local/opt/ruby/bin/ruby -r rubygems -e 'puts Gem.user_dir')/bin" # Ruby
-  "$HOME/Library/Python/3.7/bin" # Python
-  "$HOME/.dotnet/tools"
 )
 
 # Set PATH with ordering: SYS:PATH:USER
@@ -70,7 +62,7 @@ alias dka='dockerkillall'
 alias f='fg'
 alias ld='lazydocker'
 alias lg='lazygit'
-alias ls='ls -lah --color=auto'
+alias ls='ls -lahG'
 alias ms='tmuxinator-fzf-start.sh'
 alias rd='readydocker.sh'
 alias sf='rg --files --hidden --no-ignore | fzf -m'

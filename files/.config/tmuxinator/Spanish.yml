@@ -1,4 +1,4 @@
-name: Stopmotion
-root: ~/dev/stopmotion
+name: Spanish
+root: ~/Documents/Spanish
 windows:
   - Editor: nvim -S Session.vim
