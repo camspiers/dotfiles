@@ -100,43 +100,18 @@ Plug 'iamcco/markdown-preview.nvim'
 Plug 'sheerun/vim-polyglot'            | " Lang pack
 " }}}
 
-Plug 'nvim-treesitter/nvim-treesitter'
-Plug 'nvim-treesitter/nvim-treesitter-refactor'
-Plug 'nvim-treesitter/nvim-treesitter-textobjects'
-Plug 'romgrk/nvim-treesitter-context'
-Plug 'neovim/nvim-lsp'
-Plug 'neovim/nvim-lspconfig'
-
-Plug 'nvim-lua/popup.nvim'
-Plug 'nvim-lua/plenary.nvim'
-Plug 'nvim-telescope/telescope.nvim'
-Plug 'kyazdani42/nvim-web-devicons'
+Plug 'voldikss/vim-translator'
 
 call plug#end()
 " }}}
 
-lua <<EOF
-require'lspconfig'.tsserver.setup{}
+let g:translator_source_lang = 'en'
+let g:translator_target_lang = 'es'
+let g:translator_window_type = 'popup'
 
-require'nvim-treesitter.configs'.setup {
-  ensure_installed = "maintained",
-  highlight = {
-    enable = true,
-  },
-  refactor = {
-    highlight_definitions = { enable = true },
-    smart_rename = {
-      enable = true,
-      keymaps = {
-        smart_rename = "grr",
-      },
-    },
-  },
-}
-EOF
-
-" set foldmethod=expr
-" set foldexpr=nvim_treesitter#foldexpr()
+" Translate
+vmap <silent> <Leader>t <Plug>TranslateWV
+vmap <silent> <Leader><S-t> :'<,'>TranslateW!<CR>
 
 " Settings {{{
 
@@ -340,8 +315,6 @@ nnoremap <silent> <Leader>' :call openterm#horizontal('lazygit', 0.8)<CR>
 nnoremap <silent> <Leader>; :call openterm#horizontal('lazydocker', 0.8)<CR>
 " Open scratch pad
 nnoremap <silent> <Leader>sc :call openterm#horizontal('bash', 0.2)<CR>
-" Open calendar + todo
-nnoremap <silent> <Leader>t :call OpenCalendar()<CR>
 " Calls the custom start function that requests path map to be defined if not already run
 nnoremap <silent> <F5> :call StartVdebug()<CR>
 " }}}
