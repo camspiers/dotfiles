@@ -11,5 +11,10 @@
     "typescript.tsx"
   ],
   "git.addGBlameToVirtualText": true,
-  "git.virtualTextPrefix": "<<>>  "
+  "git.virtualTextPrefix": "<<>>  ",
+  "tailwindCSS.jsLanguages": [
+    "javascript",
+    "javascriptreact",
+    "typescriptreact"
+  ]
 }

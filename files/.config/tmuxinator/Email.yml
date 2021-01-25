@@ -1,4 +1,6 @@
 name: Email
 root: ~
 windows:
-  - Email: neomutt
+  - Email:
+    - pass mw-cam.spiers@jnctn.nz
+    - neomutt

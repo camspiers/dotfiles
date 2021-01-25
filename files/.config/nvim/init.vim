@@ -463,7 +463,7 @@ let g:coc_global_extensions = [
   \ 'coc-css', 'coc-eslint', 'coc-html', 'coc-json', 'coc-snippets', 'coc-yaml',
   \ 'coc-lists', 'coc-pairs', 'coc-phpls', 'coc-prettier', 'coc-python',
   \ 'coc-sh', 'coc-stylelint', 'coc-tslint', 'coc-tsserver',
-  \ 'coc-vimlsp', 'coc-vimtex', 'coc-git', 'coc-omnisharp'
+  \ 'coc-vimlsp', 'coc-vimtex', 'coc-git', 'coc-omnisharp', 'coc-tailwindcss'
 \ ]
 " }}}
 
