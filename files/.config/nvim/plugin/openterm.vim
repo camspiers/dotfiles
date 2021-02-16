@@ -12,20 +12,14 @@ endfunction
 function! openterm#horizontal(cmd, percent) abort
   if has('nvim') | new | endif
   call openterm#run(a:cmd)
-  wincmd J | resize 1
-  if exists('g:animate#loaded') && g:animate#loaded
-    call animate#window_percent_height(a:percent)
-  endif
+  wincmd J
 endfunction
 
 " Open vsplit with animation
 function! openterm#vertical(cmd, percent) abort
   if has('nvim') | vnew | endif
   call openterm#run(a:cmd)
-  wincmd L | vertical resize 1
-  if exists('g:animate#loaded') && g:animate#loaded
-    call animate#window_percent_width(a:percent)
-  endif
+  wincmd L
 endfunction
 
 " Handles closing in cases where you would be the last window

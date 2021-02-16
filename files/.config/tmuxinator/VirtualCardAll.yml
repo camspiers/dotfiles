@@ -1,0 +1,12 @@
+name: VirtualCardRAll
+root: ~/dev/jnctn/virtual-card-r
+windows:
+  - Editor: nvim -S Session.vim
+  - Build:
+      layout: tiled
+      panes:
+        - yarn start
+        - yarn build
+        - yarn serve
+  - Test: yarn test
+  - Storybook: yarn storybook

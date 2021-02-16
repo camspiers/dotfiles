@@ -45,6 +45,7 @@ SYS_PATHS=(
 # User paths
 USER_PATHS=(
   "$HOME/.dotfiles/scripts" # Personal scripts
+  "$HOME/bin"
 )
 
 # Set PATH with ordering: SYS:PATH:USER
