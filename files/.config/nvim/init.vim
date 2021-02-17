@@ -47,11 +47,11 @@ Plug 'christoomey/vim-tmux-navigator'
 " }}}
 
 " Visual {{{
-Plug 'arecarn/vim-clean-fold'                 | " Provides function for folds
+Plug 'arecarn/vim-clean-fold'     | " Provides function for folds
 Plug 'morhetz/gruvbox'
-Plug 'nathanaelkane/vim-indent-guides'        | " Provides indentation guides
-Plug 'wincent/loupe'                          | " Search context improvements
-Plug 'hoob3rt/lualine.nvim'
+Plug 'glepnir/indent-guides.nvim' | " Provides indentation guides
+Plug 'wincent/loupe'              | " Search context improvements
+Plug 'hoob3rt/lualine.nvim'       | " Status line
 " }}}
 
 " Editor {{{
@@ -80,15 +80,19 @@ Plug 'voldikss/vim-translator'
 Plug 'sheerun/vim-polyglot'            | " Lang pack
 " }}}
 
-
 call plug#end()
 " }}}
 
+" Lua settings
 lua << EOF
 local lualine = require('lualine')
 lualine.status()
 lualine.theme = 'gruvbox'
 lualine.extensions = { 'fzf' }
+
+require('indent_guides').setup({
+  exclude_filetypes = {'help', 'fzf', 'openterm', 'calendar'}
+})
 EOF
 
 let g:translator_source_lang = 'en'
@@ -168,7 +172,6 @@ nnoremap <silent> <Leader>= :call CustomFoldDigest()<CR>
 " Search {{{
 " Open fuzzy files with leader \
 nnoremap <silent> <Leader>\ :Files<CR>
-" nnoremap <silent> <Leader>\ :Telescope find_files<CR>
 " Open fuzzy lines with leader l
 nnoremap <silent> <Leader>l :Lines<CR>
 " Open fuzzy buffers with leader b
@@ -383,10 +386,9 @@ let g:LoupeClearHighlightMap = 0
 " coc-git is causing start screen not to show
 " \ 'coc-git',
 let g:coc_global_extensions = [
-  \ 'coc-css', 'coc-html', 'coc-json', 'coc-snippets', 'coc-yaml',
-  \ 'coc-lists', 'coc-prettier', 'coc-python',
-  \ 'coc-sh', 'coc-stylelint', 'coc-tsserver',
-  \ 'coc-vimlsp', 'coc-omnisharp', 'coc-tailwindcss'
+  \ 'coc-css', 'coc-html', 'coc-json', 'coc-snippets',
+  \ 'coc-prettier', 'coc-sh', 'coc-stylelint', 'coc-tsserver',
+  \ 'coc-vimlsp', 'coc-tailwindcss'
 \ ]
 " }}}
 
@@ -422,13 +424,6 @@ endfunction
 let g:coc_snippet_next = '<tab>'
 " }}}
 
-" Neoterm {{{
-" Sets default location that neoterm opens
-let g:neoterm_default_mod = 'botright'
-let g:neoterm_autojump = 1
-let g:neoterm_direct_open_repl = 1
-" }}}
-
 " Merge Tool {{{
 " 3-way merge
 let g:mergetool_layout = 'bmr'
@@ -438,14 +433,6 @@ let g:mergetool_prefer_revision = 'local'
 " Camelcase Motion {{{
 " Sets up within word motions to use ,
 let g:camelcasemotion_key = ','
-" }}}
-
-" Indent Guides {{{
-let g:indent_guides_enable_on_vim_startup = 1
-let g:indent_guides_guide_size = 1
-let g:indent_guides_start_level = 2
-let g:indent_guides_color_change_percent = 1
-let g:indent_guides_exclude_filetypes = ['help', 'fzf', 'openterm', 'neoterm', 'calendar']
 " }}}
 
 " Fold Digest {{{
