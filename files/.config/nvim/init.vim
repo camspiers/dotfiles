@@ -509,19 +509,6 @@ function! EnableCleanUI() abort
     \ colorcolumn=
   autocmd BufLeave <buffer> set laststatus=2 showmode ruler
 endfunction
-" There's an issue with animating FZF. The preview sees the terminal as having
-" a small height, and therefore doesn't render the preview with any lines
-" this hack is to toggle the preview on and off, thereby rerendering the
-" preview
-function! RefreshFZFPreview() abort
-  if has('nvim')
-    if exists('g:last_open_term_id') && g:last_open_term_id
-      call timer_start(350, {t->chansend(g:last_open_term_id, "\<C-p>\<C-p>")})
-    endif
-  else
-    call term_sendkeys(bufnr('%'), "\<C-p>\<C-p>")
-  endif
-endfunction
 " }}}
 
 " Commands {{{
@@ -542,7 +529,6 @@ command! -nargs=0 Prettier :CocCommand prettier.formatFile
 " }}}
 function! OnFZFOpen() abort
   call EnableCleanUI()
-  call RefreshFZFPreview()
   tnoremap <Esc> <c-c>
   startinsert
 endfunction
@@ -554,7 +540,6 @@ augroup General
   autocmd! FileType qf call OpenQuickFix()
   " Enable text file settings
   autocmd! FileType markdown,txt,tex call EnableTextFileSettings()
-  autocmd! FileType fern,floggraph call EnableCleanUI()
   autocmd! FileType fzf call OnFZFOpen()
   if has('nvim')
     autocmd! TermOpen * let g:last_open_term_id = b:terminal_job_id
