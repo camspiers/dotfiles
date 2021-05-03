@@ -8,3 +8,4 @@ files/.bashrc.local
 *.pdf
 *.log
 files/.config/coc/*
+.DS_Store

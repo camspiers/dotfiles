@@ -1,0 +1,9 @@
+name: IDP
+root: ~/dev/jnctn/IdentityProvider
+windows:
+  - Editor: nvim -S Session.vim
+  - Dotnet: dotnet run -p Jnctn.Idp/ --launch-profile "JavaScriptDevelopment"
+  - Yarn:
+    - cd Jnctn.Idp/idp-client/
+    - yarn start
+

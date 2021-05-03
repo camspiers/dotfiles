@@ -2,8 +2,6 @@
 
 macOS environment managed by git and GNU Stow.
 
-![Environment Screenshot](assets/screenshot.png)
-
 ## Overview
 
 The following are the major components of the dotfiles project.

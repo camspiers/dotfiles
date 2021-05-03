@@ -27,9 +27,10 @@ export EDITOR='nvim'
 export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --iglob "!.DS_Store" --iglob "!.git"'
 export FZF_PREVIEW_COMMAND='bat {}'
 export FZF_DEFAULT_OPTS="
-  --color=dark
-  --color=fg:-1,bg:-1,hl:#5fff87,fg+:-1,bg+:-1,hl+:#ffaf5f
-  --color=info:#af87ff,prompt:#5fff87,pointer:#ff87d7,marker:#ff87d7,spinner:#ff87d7
+  --color=fg:#e5e9f0,bg:#3b4252,hl:#81a1c1
+  --color=fg+:#e5e9f0,bg+:#3b4252,hl+:#81a1c1
+  --color=info:#eacb8a,prompt:#bf6069,pointer:#b48dac
+  --color=marker:#a3be8b,spinner:#b48dac,header:#a3be8b
   --bind ctrl-a:select-all,ctrl-d:deselect-all,tab:toggle+up,shift-tab:toggle+down
 "
 
@@ -60,3 +61,5 @@ eval "$(rbenv init -)"
 
 # Fast Node Manager
 eval "$(fnm env)"
+
+alias luamake=/Users/camspiers/dev/lua-language-server/3rd/luamake/luamake
