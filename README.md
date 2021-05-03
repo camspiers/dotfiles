@@ -7,7 +7,7 @@ macOS environment managed by git and GNU Stow.
 The following are the major components of the dotfiles project.
 
 - [Homebrew Defaults](extra/homebrew/Brewfile)
-- [Neovim Config](files/.config/nvim/init.vim)
+- [Neovim Config](files/.config/nvim/init.lua)
 - [Tmux Config](files/.tmux.conf)
 - [Kitty.app Config](files/.config/kitty/kitty.conf)
 - [Bash Runcom](files/.bashrc)

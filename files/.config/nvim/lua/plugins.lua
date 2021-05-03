@@ -198,4 +198,7 @@ vim.fn.sign_define("LspDiagnosticsSignInformation", {
   numhl = "LspDiagnosticsSignInformation"
 })
 
-require'which-key'.setup {window = {border = "single"}}
+require'which-key'.setup {
+  window = {border = "single"},
+  layout = {height = {min = 100}} -- encourage a single column
+}
