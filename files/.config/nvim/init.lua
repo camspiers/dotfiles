@@ -66,11 +66,11 @@ require"packer".startup(function(use)
   use "tpope/vim-vinegar"
 end)
 
--- -- vim options
+-- vim options
 require 'options'
 
 -- config plugins
 require 'plugins'
 
--- -- vim mappings
+-- vim mappings
 require 'mappings'
