@@ -1,3 +1,4 @@
+vim.o.mouse = "a"
 vim.o.completeopt = "menuone,noselect"
 vim.o.wildignore = vim.o.wildignore .. "*.orig"
 vim.o.wildignore = vim.o.wildignore .. "*.sw?"
@@ -26,6 +27,7 @@ vim.o.splitright = true
 vim.o.termguicolors = true
 vim.o.showmode = false
 vim.o.hidden = true
+vim.o.swapfile = false
 vim.o.updatetime = 300
 vim.o.timeoutlen = 500
 vim.o.clipboard = "unnamed"

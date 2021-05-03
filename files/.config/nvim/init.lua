@@ -33,7 +33,6 @@ require"packer".startup(function(use)
   use "danielpieper/telescope-tmuxinator.nvim"
 
   -- syntax
-  use "sheerun/vim-polyglot"
   use "nvim-treesitter/nvim-treesitter"
   use "mhartington/formatter.nvim"
   use "editorconfig/editorconfig-vim"
@@ -54,7 +53,6 @@ require"packer".startup(function(use)
   use "mlaursen/vim-react-snippets"
 
   -- themes
-  use "ishan9299/modus-theme-vim"
   use 'folke/tokyonight.nvim'
 
   -- old
@@ -63,8 +61,6 @@ require"packer".startup(function(use)
   use "matze/vim-move"
 
   -- basics
-  use "wincent/terminus"
-  use "tpope/vim-sensible"
   use "tpope/vim-repeat"
   use "tpope/vim-obsession"
   use "tpope/vim-vinegar"
