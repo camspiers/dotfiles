@@ -46,6 +46,7 @@ SYS_PATHS=(
 USER_PATHS=(
   "$HOME/.dotfiles/scripts" # Personal scripts
   "$HOME/bin"
+  "$HOME/.luarocks/bin"
 )
 
 # Set PATH with ordering: SYS:PATH:USER
