@@ -1,12 +1,12 @@
 ;; Get the apis we need
-(local {: cmd} vim)
+(local {: cmd : g} vim)
 (local {: stdpath : empty : glob} vim.fn)
 (local {: format} string)
 
 ;; Set the aniseed env
-(tset vim.g "aniseed#env" {:module :dotfiles.init :compile true})
+(tset g "aniseed#env" {:module :dotfiles.init :compile true})
 
-;; Bootstraos a plugin
+;; Bootstraps a plugin
 (fn ensure [user repo]
   "Ensures that a specified module is downloaded and then loaded"
   (local path (format "%s/site/pack/packer/start/%s" (stdpath :data) repo))
