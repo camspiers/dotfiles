@@ -61,6 +61,7 @@ brew "yabai"
 brew "cmacrae/formulae/spacebar"
 brew "yarn"
 brew "cmake"
+brew "fennel"
 
 # App essentials
 cask "anki"
