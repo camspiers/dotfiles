@@ -1,13 +1,22 @@
-(fn ensure [user repo]
-  (let [install-path (string.format "%s/site/pack/packer/start/%s"
-                                    (vim.fn.stdpath :data) repo)]
-    (when (> (vim.fn.empty (vim.fn.glob install-path)) 0)
-      (vim.api.nvim_command (string.format "!git clone https://github.com/%s/%s %s"
-                                           user repo install-path))
-      (vim.api.nvim_command (string.format "packadd %s" repo)))))
+;; Get the apis we need
+(local {: cmd} vim)
+(local {: stdpath : empty : glob} vim.fn)
+(local {: format} string)
 
-(ensure :wbthomason :packer.nvim)
-(ensure :Olical :aniseed)
-
+;; Set the aniseed env
 (tset vim.g "aniseed#env" {:module :dotfiles.init :compile true})
+
+;; Bootstraos a plugin
+(fn ensure [user repo]
+  "Ensures that a specified module is downloaded and then loaded"
+  (local path (format "%s/site/pack/packer/start/%s" (stdpath :data) repo))
+  (when (> (empty (glob path)) 0)
+    (cmd (format "!git clone https://github.com/%s/%s %s" user repo path))
+    (cmd (format "packadd %s" repo))))
+
+;; Ensure packer
+(ensure :wbthomason :packer.nvim)
+
+;; Ensure aniseed
+(ensure :Olical :aniseed)
 
