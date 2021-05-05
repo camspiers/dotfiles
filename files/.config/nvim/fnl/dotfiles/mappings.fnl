@@ -28,7 +28,7 @@
                      :!.git])
 
 (fn on_open [term]
-  (nvim.command :startinsert!)
+  (vim.cmd :startinsert!)
   (nvim.buf_set_keymap term.bufnr :t :q (cmd-fmt :close)
                        {:noremap true :silent true}))
 
