@@ -1,6 +1,0 @@
-{
-    "require": {
-        "silverstripe/upgrader": "^1.4",
-        "psy/psysh": "@stable"
-    }
-}
