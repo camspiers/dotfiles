@@ -1,59 +1,58 @@
-(module dotfiles.options)
+(module dotfiles.options {require-macros [dotfiles.macros]})
 
 ; window options
-(set vim.wo.wrap false)
-(set vim.wo.number true)
-(set vim.wo.relativenumber true)
-(set vim.wo.signcolumn :yes)
+(wopt wrap false)
+(wopt number)
+(wopt relativenumber)
+(wopt signcolumn :yes)
+(wopt colorcolumn "81,121")
+
+; buffer options
+(bopt spelllang :en)
+(bopt undofile)
+; need to set both for some reason
+(opt undofile)
+(bopt iskeyword+ "-")
+(bopt swapfile false)
+(bopt expandtab)
+(bopt tabstop 2)
+(bopt shiftwidth 2)
+
+; global options
+(opt lazyredraw)
+(opt mouse :a)
+(opt completeopt "menuone,noselect")
+(opt background :dark)
+(opt inccommand :split)
+(opt visualbell false)
+(opt showmatch)
+(opt autochdir false)
+(opt errorbells false)
+(opt ignorecase)
+(opt smartcase)
+(opt splitbelow)
+(opt splitright)
+(opt termguicolors)
+(opt showmode false)
+(opt hidden)
+(opt updatetime 300)
+(opt timeoutlen 500)
+(opt clipboard :unnamed)
+(opt wildignore+ (table.concat [:*.orig :*.sw? :*.DS_Store :*.git :*.hg] ","))
 
 ; globals
-(set vim.g.mapleader "\\")
-(set vim.g.maplocalleader ",")
-(set vim.g.LoupeClearHighlightMap 0)
-(set vim.g.camelcasemotion_key ",")
-
-; options
-(set vim.o.mouse :a)
-(set vim.o.completeopt "menuone,noselect")
-(set vim.o.colorcolumn "81,121")
-(set vim.o.background :dark)
-(set vim.o.tabstop 2)
-(set vim.o.shiftwidth 2)
-(set vim.o.inccommand :split)
-(set vim.o.visualbell false)
-(set vim.o.showmatch true)
-(set vim.o.autochdir false)
-(set vim.o.errorbells false)
-(set vim.o.expandtab true)
-(set vim.o.undofile true)
-(set vim.o.ignorecase true)
-(set vim.o.smartcase true)
-(set vim.o.spelllang :en)
-(set vim.o.splitbelow true)
-(set vim.o.splitright true)
-(set vim.o.termguicolors true)
-(set vim.o.showmode false)
-(set vim.o.hidden true)
-(set vim.o.swapfile false)
-(set vim.o.updatetime 300)
-(set vim.o.timeoutlen 500)
-(set vim.o.clipboard :unnamed)
+(g :mapleader "\\")
+(g :maplocalleader ",")
+(g :LoupeClearHighlightMap 0)
+(g :camelcasemotion_key ",")
 
 ; theme
-(set vim.g.tokyonight_style :night)
+(g :tokyonight_style :night)
 
 ; plugin config
-(set vim.g.conjure#client#fennel#aniseed#aniseed_module_prefix :aniseed.)
+(g "conjure#client#fennel#aniseed#aniseed_module_prefix" :aniseed.)
 
 ; commands
 (vim.cmd "syntax enable")
 (vim.cmd "colorscheme tokyonight")
-
-(set vim.o.wildignore (.. vim.o.wildignore
-                          (table.concat [:*.orig
-                                         :*.sw?
-                                         :*.DS_Store
-                                         :*.git
-                                         :*.hg]
-                                        ",")))
 
