@@ -1,7 +1,8 @@
-(module dotfiles.plugin.compe {autoload {compe compe}})
+(module dotfiles.plugin.compe {autoload {compe compe utils dotfiles.utils}})
 
 ;; Set up compe
-(compe.setup {:autocomplete true
+(compe.setup {:enable true
+              :autocomplete true
               :min_length 1
               :preselect :enable
               :documentation true
@@ -15,4 +16,8 @@
                        :spell true
                        :treesitter true
                        :tags false}})
+
+(utils.inoremap :<C-Space> "compe#complete()" {:expr true})
+(utils.inoremap :<CR> "compe#confirm('<CR>')" {:expr true})
+(utils.inoremap :<C-e> "compe#close('<C-e>')" {:expr true})
 

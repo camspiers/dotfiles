@@ -1,5 +1,6 @@
 (module dotfiles.plugin.lsp
-        {autoload {lspsaga lspsaga
+        {autoload {nvim aniseed.nvim
+                   lspsaga lspsaga
                    core aniseed.core
                    which-key which-key
                    lspinstall lspinstall
@@ -29,13 +30,13 @@
   ;; Set up lsp-ts-utils
   (nvim-lsp-ts-utils.setup {:disable_commands true :enable_formatting false})
   ;; Register bindings for lsp-ts-utils
-  (which-key.register {:<leader>go [nvim-lsp-ts-utils.organize_imports
+  (which-key.register {:<leader>lo [nvim-lsp-ts-utils.organize_imports
                                     "LSP Organize"]
-                       :<leader>gr [nvim-lsp-ts-utils.rename_file
+                       :<leader>lr [nvim-lsp-ts-utils.rename_file
                                     "LSP Rename File"]
-                       :<leader>gi [nvim-lsp-ts-utils.import_all
+                       :<leader>li [nvim-lsp-ts-utils.import_all
                                     "LSP Import All"]
-                       :<leader>gc [nvim-lsp-ts-utils.fix_current
+                       :<leader>lc [nvim-lsp-ts-utils.fix_current
                                     "LSP Fix Current"]}
                       {: buffer}))
 
@@ -64,7 +65,8 @@
          (vim.cmd "bufdo e"))
        ;; Auto set up certain servers and install them if they aren't yet installed
        (each [_ server (ipairs auto-setup-servers)]
-         (if (server-installed server) ((. (. lspconfig server) :setup) {})
+         (if (server-installed server)
+             ((. (. lspconfig server) :setup) {})
              (lspinstall.install_server server)))
        ;; If the lua server is installed then set it up
        (when (server-installed :lua)
