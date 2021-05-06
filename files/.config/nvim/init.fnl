@@ -20,3 +20,6 @@
 ;; Ensure aniseed
 (ensure :Olical :aniseed)
 
+;; Ensure the intro screen displays
+(cmd :intro)
+

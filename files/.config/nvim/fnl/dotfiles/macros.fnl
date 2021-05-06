@@ -1,51 +1,3 @@
-(fn g [name value]
-  "Set value for global Vim variable"
-  `(tset vim.g ,name ,value))
-
-(fn set-opt [scope name value]
-  (assert (sym? name))
-  (let [full-opt (view name)
-        len (length full-opt)
-        opt (if (full-opt:match "[-+^!]$") (full-opt:sub 1 (- len 1)) full-opt)]
-    (match (full-opt:sub len)
-      "-" (assert false "not implemented")
-      "^" `(let [v# ,value]
-             (tset ,scope ,opt
-                   (if (= (. ,scope ,opt) "") v# (.. v# "," (. ,scope ,opt)))))
-      "+" `(let [v# ,value]
-             (tset ,scope ,opt
-                   (if (= (. ,scope ,opt) "") v# (.. (. ,scope ,opt) "," v#))))
-      _ `(tset ,scope ,opt ,(or value true)))))
-
-(fn opt [name value]
-  "Set Vim option"
-  (set-opt `vim.o name value))
-
-(fn wopt [name value]
-  "Set Vim window option"
-  (set-opt `vim.wo name value))
-
-(fn bopt [name value]
-  "Set Vim buffer option"
-  (set-opt `vim.bo name value))
-
-(fn translate-opts [opts]
-  (let [flags (icollect [k v (pairs opts)]
-                (match k
-                  :bar (when v
-                         :-bar)
-                  :bang (when v
-                          :-bang)
-                  :register (when v
-                              :-register)
-                  :buffer (when v
-                            :-buffer)
-                  :range (.. :-range= v)
-                  :addr (.. :-addr= v)
-                  :complete (.. :-complete= v)
-                  :nargs (.. :-nargs= v)))]
-    (table.concat flags " ")))
-
 (fn augroup [name ...]
   `(do
      (nvim.ex.augroup ,(tostring name))
@@ -56,5 +8,42 @@
 (fn autocmd [...]
   `(nvim.ex.autocmd ,...))
 
-{: augroup : autocmd : g : on : opt : bopt : wopt}
+(fn sym-tostring [x]
+  "convert variable's name to string"
+  `,(tostring x))
+
+(fn g [name value]
+  "Set value for global Vim variable"
+  (let [name-as-string (sym-tostring name)]
+    `(tset vim.g ,name-as-string ,value)))
+
+(fn get-scope [option]
+  (if (pcall vim.api.nvim_get_option_info option)
+      (. (vim.api.nvim_get_option_info option) :scope)
+      false))
+
+(fn set-option [scope option value]
+  (match scope
+    :global `(vim.api.nvim_set_option ,option ,value)
+    :win `(vim.api.nvim_win_set_option 0 ,option ,value)
+    :buf `(vim.api.nvim_buf_set_option 0 ,option ,value)
+    _ `(print (.. "zest.se- invalid scope '" ,scope "' for option '" ,option
+                  "'"))))
+
+(fn se- [option value]
+  (let [option (sym-tostring option)
+        value (if (= value nil) true value)
+        scope (get-scope option)]
+    (if scope
+        `,(set-option scope option value)
+        (if (= (: option :sub 1 2) :no)
+            (let [option (: option :sub 3)
+                  scope (get-scope option)
+                  value false]
+              (if scope
+                  `,(set-option scope option value)
+                  `(print (.. "zest.se- option '" ,option "' not found"))))
+            `(print (.. "zest.se- option '" ,option "' not found"))))))
+
+{: augroup : autocmd : g : se-}
 
