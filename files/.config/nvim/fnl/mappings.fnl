@@ -1,5 +1,5 @@
 (module mappings {autoload {nvim aniseed.nvim
-                            core aniseed.core
+                            finder finder
                             wk which-key
                             telescope telescope
                             themes telescope.themes
@@ -9,8 +9,7 @@
                             codeaction lspsaga.codeaction
                             diagnostic lspsaga.diagnostic
                             trouble trouble
-                            utils utils
-                            fzy fzy}
+                            utils utils}
                   require-macros [macros]})
 
 (local find_command [:rg
@@ -21,48 +20,35 @@
                      :--iglob
                      :!.git])
 
-(local backspace (vim.api.nvim_eval "\"\\<bs>\""))
+(fn call [cmd]
+  (let [file (assert (io.popen cmd :r))
+        contents (file:read :*all)]
+    (file:close)
+    contents))
 
-(fn fuzzy []
-  (let [oldgrepprg vim.o.grepprg
-        oldgrepformat vim.o.grepformat]
-    (se- grepprg (.. (table.concat find_command " ")
-                     " --vimgrep \\| sed s/$/:1:1/"))
-    (se- grepformat "%f:%l:%c")
-    (nvim.command "silent grep")
-    (nvim.command "silent copen")
-    (var filter "")
-    (var getinput true)
-    (let [results (vim.fn.getqflist)]
-      (while getinput
-        (nvim.command :redraw)
-        (nvim.command (.. "echo 'Fuzzy> " filter "'"))
-        (let [char (vim.fn.getchar)]
-          (if (or (= char 13) (= char 27) (= char 10) (= char 11))
-              (set getinput false)
-              (= (vim.fn.type char) 0)
-              (set filter (.. filter (vim.fn.nr2char char)))
-              (= char backspace)
-              (set filter (filter:sub 1 -2)))
-          (each [_ value (pairs results)]
-            (tset value :filename (nvim.buf_get_name value.bufnr))
-            (tset value :has-match (fzy.has_match filter value.filename))
-            (when value.has-match
-              (tset value :score (fzy.score filter value.filename))))
-          (let [filtered-results (core.filter (fn [r]
-                                                r.has-match)
-                                              results)]
-            (table.sort filtered-results
-                        (fn [a b]
-                          (> a.score b.score)))
-            (vim.fn.setqflist filtered-results)
-            (when (> (core.count filtered-results) 0)
-              (nvim.command "silent cfirst"))))))
-    (se- grepprg oldgrepprg)
-    (se- grepformat oldgrepformat)
-    (nvim.command "silent cclose")
-    (nvim.command :redraw)
-    (nvim.command "echo ''")))
+(fn get-from-command [cmd]
+  (local results-raw (call cmd))
+  (local results [])
+  (each [contents (string.gmatch results-raw "[^\r\n]+")]
+    (table.insert results contents))
+  results)
+
+(fn open-file [selection winnr]
+  (let [buffer (nvim.fn.bufnr selection true)]
+    (nvim.buf_set_option buffer :buflisted true)
+    (nvim.win_set_buf winnr buffer)))
+
+(local find-config {:prompt "Find Files"
+                    :get-results (partial get-from-command
+                                          (table.concat find_command " "))
+                    :on-enter open-file})
+
+(local find-all-config {:prompt "Find All Files"
+                        :get-results (partial get-from-command
+                                              (.. (table.concat find_command
+                                                                " ")
+                                                  " --no-ignore"))
+                        :on-enter open-file})
 
 (fn cmd-fmt [cmd]
   (string.format "<Cmd>%s<CR>" cmd))
@@ -110,7 +96,6 @@
               :<leader>m [grep-cursor-word "Grep cursor word"]
               :<leader>M [grep-cursor-word-no-ignore
                           "Grep cursor word no ignore"]
-              :<leader>pf [fuzzy :Fuzzy]
               :<leader>w (cmd :w "Buffer Write")
               :<Tab> (cmd :bn "Buffer Next")
               :<S-Tab> (cmd :bp "Buffer Prev")
@@ -123,9 +108,9 @@
               :<leader>c (cmd :clo "Close Window")
               :<leader><S-c> (cmd "%clo" "Close All Windows")
               :<leader>o (cmd :on "Only Window")
-              :<leader><leader> [(partial telescope_builtin.find_files
-                                          {: find_command})
-                                 "Find Files"]
+              :<leader><leader> [(partial finder.run find-config) "Find Files"]
+              "<leader><C-\\>" [(partial finder.run find-all-config)
+                                "Find All Files"]
               :<leader>b [telescope_builtin.buffers "Find Buffer"]
               :<leader>f [telescope_builtin.live_grep "Find in Files"]
               :<leader>p {:name "Project Management"
