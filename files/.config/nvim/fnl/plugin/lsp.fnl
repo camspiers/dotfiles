@@ -1,4 +1,4 @@
-(module dotfiles.plugin.lsp
+(module plugin.lsp
         {autoload {nvim aniseed.nvim
                    lspsaga lspsaga
                    core aniseed.core

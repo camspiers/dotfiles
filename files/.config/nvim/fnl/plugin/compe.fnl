@@ -1,4 +1,4 @@
-(module dotfiles.plugin.compe {autoload {compe compe utils dotfiles.utils}})
+(module plugin.compe {autoload {compe compe utils utils}})
 
 ;; Set up compe
 (compe.setup {:enable true

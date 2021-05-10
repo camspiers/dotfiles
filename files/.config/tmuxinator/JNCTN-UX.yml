@@ -1,0 +1,4 @@
+name: JNCTN-UX
+root: ~/dev/jnctn/JNCTN-UX/
+windows:
+  - Editor: nvim -S Session.vim

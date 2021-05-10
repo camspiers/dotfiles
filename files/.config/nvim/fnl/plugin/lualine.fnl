@@ -1,4 +1,4 @@
-(module dotfiles.plugin.lualine {autoload {lualine lualine}})
+(module plugin.lualine {autoload {lualine lualine}})
 
 ;; Section a config
 (local lualine-a {1 :mode})

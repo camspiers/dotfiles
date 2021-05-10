@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@nrwl/cli": "^12.1.1",
     "@prettier/plugin-php": "^0.12.0",
     "create-react-app": "^4.0.3",
     "neovim": "^4.9.0",

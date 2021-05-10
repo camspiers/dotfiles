@@ -1,0 +1,7 @@
+name: JNCTN-UX-App
+root: ~/dev/jnctn/JNCTN-UX/apps/jnctn-app
+windows:
+  - Editor: nvim -S Session.vim
+  - Dev:
+    - cd ../..
+    - yarn nx serve jnctn-app

@@ -1,6 +1,6 @@
-(module dotfiles.plugin.formatter
+(module plugin.formatter
         {autoload {nvim aniseed.nvim formatter formatter}
-         require-macros [dotfiles.macros]})
+         require-macros [macros]})
 
 ;; Register formatters into a table
 (local formatters {})

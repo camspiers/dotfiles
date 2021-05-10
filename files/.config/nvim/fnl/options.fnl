@@ -1,4 +1,4 @@
-(module dotfiles.options {require-macros [dotfiles.macros]})
+(module options {require-macros [macros]})
 
 (se- background :dark)
 (se- clipboard :unnamed)
@@ -30,6 +30,13 @@
 (se- timeoutlen 500)
 (se- undofile)
 (se- updatetime 300)
+(se- cursorline)
+(se- cursorcolumn)
+
+(se- grepprg
+     "rg --no-heading --vimgrep --hidden --iglob '!.DS_Store' --iglob '!.git'")
+
+(se- grepformat "%f:%l:%c:%m")
 
 ; globals
 (g mapleader "\\")
@@ -46,4 +53,6 @@
 ; commands
 (vim.cmd "syntax enable")
 (vim.cmd "colorscheme tokyonight")
+
+(vim.cmd "au FileType qf setlocal nonumber norelativenumber nocursorline nocursorcolumn colorcolumn=")
 

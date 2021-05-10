@@ -1,4 +1,4 @@
-(module dotfiles.utils {autoload {nvim aniseed.nvim a aniseed.core}})
+(module utils {autoload {nvim aniseed.nvim a aniseed.core}})
 
 (defn buf-map [buffer mode from to opts] "Sets a buffer mapping"
       (nvim.buf_set_keymap buffer mode from to opts))

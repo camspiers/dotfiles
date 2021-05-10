@@ -9,3 +9,6 @@ js:*.{ts,tsx}
 
 --type-add
 ts:*.{ts,tsx}
+
+--type-add
+lua:*.{lua,fnl}

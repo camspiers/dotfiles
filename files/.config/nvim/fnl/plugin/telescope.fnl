@@ -1,4 +1,4 @@
-(module dotfiles.plugin.telescope
+(module plugin.telescope
         {autoload {lualine lualine
                    actions telescope.actions
                    telescope telescope}})

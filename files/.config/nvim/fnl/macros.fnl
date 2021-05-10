@@ -1,3 +1,6 @@
+(fn cmd-fmt [cmd]
+  (string.format "<Cmd>%s<CR>" cmd))
+
 (fn augroup [name ...]
   `(do
      (nvim.ex.augroup ,(tostring name))
@@ -19,12 +22,16 @@
 
 (fn get-scope [option]
   (if (pcall vim.api.nvim_get_option_info option)
-      (. (vim.api.nvim_get_option_info option) :scope)
+      (let [info (vim.api.nvim_get_option_info option)]
+        (if info.global_local :global_local info.scope))
       false))
 
 (fn set-option [scope option value]
   (match scope
     :global `(vim.api.nvim_set_option ,option ,value)
+    :global_local `(do
+                     (vim.api.nvim_set_option ,option ,value)
+                     (vim.api.nvim_buf_set_option 0 ,option ,value))
     :win `(vim.api.nvim_win_set_option 0 ,option ,value)
     :buf `(vim.api.nvim_buf_set_option 0 ,option ,value)
     _ `(print (.. "zest.se- invalid scope '" ,scope "' for option '" ,option

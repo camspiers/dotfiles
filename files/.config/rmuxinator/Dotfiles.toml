@@ -1,0 +1,8 @@
+name = "Dotfiles"
+start_directory = "/Users/camspiers/.dotfiles"
+
+[[windows]]
+  name = "Editor"
+  [[windows.panes]]
+  commands = ["nvim"]
+  name = "Editor"
