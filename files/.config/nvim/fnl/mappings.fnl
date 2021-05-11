@@ -1,5 +1,6 @@
 (module mappings {autoload {nvim aniseed.nvim
-                            finder finder
+                            file-finder file-finder
+                            buffer-finder buffer-finder
                             wk which-key
                             telescope telescope
                             themes telescope.themes
@@ -11,44 +12,6 @@
                             trouble trouble
                             utils utils}
                   require-macros [macros]})
-
-(local find_command [:rg
-                     :--files
-                     :--hidden
-                     :--iglob
-                     :!.DS_Store
-                     :--iglob
-                     :!.git])
-
-(fn call [cmd]
-  (let [file (assert (io.popen cmd :r))
-        contents (file:read :*all)]
-    (file:close)
-    contents))
-
-(fn get-from-command [cmd]
-  (local results-raw (call cmd))
-  (local results [])
-  (each [contents (string.gmatch results-raw "[^\r\n]+")]
-    (table.insert results contents))
-  results)
-
-(fn open-file [selection winnr]
-  (let [buffer (nvim.fn.bufnr selection true)]
-    (nvim.buf_set_option buffer :buflisted true)
-    (nvim.win_set_buf winnr buffer)))
-
-(local find-config {:prompt "Find Files"
-                    :get-results (partial get-from-command
-                                          (table.concat find_command " "))
-                    :on-enter open-file})
-
-(local find-all-config {:prompt "Find All Files"
-                        :get-results (partial get-from-command
-                                              (.. (table.concat find_command
-                                                                " ")
-                                                  " --no-ignore"))
-                        :on-enter open-file})
 
 (fn cmd-fmt [cmd]
   (string.format "<Cmd>%s<CR>" cmd))
@@ -108,10 +71,9 @@
               :<leader>c (cmd :clo "Close Window")
               :<leader><S-c> (cmd "%clo" "Close All Windows")
               :<leader>o (cmd :on "Only Window")
-              :<leader><leader> [(partial finder.run find-config) "Find Files"]
-              "<leader><C-\\>" [(partial finder.run find-all-config)
-                                "Find All Files"]
-              :<leader>b [telescope_builtin.buffers "Find Buffer"]
+              :<leader><leader> [file-finder.find "Find Files"]
+              "<leader><C-\\>" [file-finder.find-all "Find All Files"]
+              :<leader>b [buffer-finder.find "Find Buffer"]
               :<leader>f [telescope_builtin.live_grep "Find in Files"]
               :<leader>p {:name "Project Management"
                           :s [projects "Start Project"]

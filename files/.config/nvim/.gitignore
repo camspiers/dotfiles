@@ -1,3 +1,2 @@
 *.lua
 *.vim
-!fzy.lua

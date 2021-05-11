@@ -25,6 +25,8 @@
 (use
   :wbthomason/packer.nvim {}
 
+  :fzy {:rock true}
+
   :Olical/aniseed {}
   :Olical/conjure {}
 
