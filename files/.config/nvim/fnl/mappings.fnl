@@ -1,6 +1,6 @@
 (module mappings {autoload {nvim aniseed.nvim
-                            file-finder file-finder
-                            buffer-finder buffer-finder
+                            file finder.file
+                            buffer finder.buffer
                             wk which-key
                             telescope telescope
                             themes telescope.themes
@@ -71,9 +71,9 @@
               :<leader>c (cmd :clo "Close Window")
               :<leader><S-c> (cmd "%clo" "Close All Windows")
               :<leader>o (cmd :on "Only Window")
-              :<leader><leader> [file-finder.find "Find Files"]
-              "<leader><C-\\>" [file-finder.find-all "Find All Files"]
-              :<leader>b [buffer-finder.find "Find Buffer"]
+              :<leader><leader> [file.find "Find Files"]
+              "<leader><C-\\>" [file.find-all "Find All Files"]
+              :<leader>b [buffer.find "Find Buffer"]
               :<leader>f [telescope_builtin.live_grep "Find in Files"]
               :<leader>p {:name "Project Management"
                           :s [projects "Start Project"]

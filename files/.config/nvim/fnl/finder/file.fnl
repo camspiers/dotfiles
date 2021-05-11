@@ -1,7 +1,7 @@
-(module file-finder {autoload {finder finder nvim aniseed.nvim}})
+(module finder.file {autoload {finder finder nvim aniseed.nvim}})
 
 (local find_command "rg --files --hidden --iglob !.DS_Store --iglob !.git")
-(local find_all_command (.. find_command " --no-ignore -tjs"))
+(local find_all_command (.. find_command " --no-ignore -tweb -tlua -tjs -tphp"))
 (defn- get-results-raw [cmd] (let [file (assert (io.popen cmd :r))
                                    contents (file:read :*all)]
                                (file:close)
@@ -22,12 +22,12 @@
        (each [index file (ipairs files)]
          (open-file file (if (= (length files) index) winnr false))))
 
-(defn find [] (finder.run {:prompt "Find Files"
+(defn find [] (finder.run {:prompt :Files
                            :get-results (partial get-results find_command)
                            :on-select open-file
                            :on-multiselect open-files}))
 
-(defn find-all [] (finder.run {:prompt "Find All Files"
+(defn find-all [] (finder.run {:prompt "All Files"
                                :get-results (partial get-results
                                                      find_all_command)
                                :on-select open-file}))
