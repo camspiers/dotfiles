@@ -47,6 +47,7 @@ USER_PATHS=(
   "$HOME/.dotfiles/scripts" # Personal scripts
   "$HOME/bin"
   "$HOME/.luarocks/bin"
+  "$HOME/.emacs.d/bin"
 )
 
 # Set PATH with ordering: SYS:PATH:USER

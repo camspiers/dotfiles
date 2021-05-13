@@ -34,7 +34,6 @@
   :nvim-lua/plenary.nvim {}
 
   :folke/lsp-trouble.nvim {:mod :trouble}
-  :nvim-telescope/telescope.nvim {:mod :telescope}
   :lewis6991/gitsigns.nvim {:mod :gitsigns}
 
   :folke/which-key.nvim {:mod :which-key}
@@ -51,11 +50,8 @@
   :neovim/nvim-lspconfig {}
   :glepnir/lspsaga.nvim {}
   :jose-elias-alvarez/nvim-lsp-ts-utils {}
-  :nvim-telescope/telescope-fzf-native.nvim {:run "make"}
-  :danielpieper/telescope-tmuxinator.nvim {}
   :nvim-treesitter/nvim-treesitter {}
   :editorconfig/editorconfig-vim {}
-  ; :kevinhwang91/nvim-bqf {}
   :bkad/CamelCaseMotion {}
   :glepnir/indent-guides.nvim {}
   :hrsh7th/vim-vsnip {}
@@ -64,7 +60,6 @@
   :folke/tokyonight.nvim {}
   :romainl/vim-cool {}
   :christoomey/vim-tmux-navigator {}
-  :matze/vim-move {}
   :tpope/vim-repeat {}
   :tpope/vim-obsession {}
   :tpope/vim-vinegar {}

@@ -18,7 +18,7 @@
          (when (not= winnr false)
            (nvim.win_set_buf winnr buffer))))
 
-(defn- open-files [files winnr] (print :hi)
+(defn- open-files [files winnr]
        (each [index file (ipairs files)]
          (open-file file (if (= (length files) index) winnr false))))
 

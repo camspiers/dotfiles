@@ -1,4 +1,4 @@
-(module plugin.compe {autoload {compe compe utils utils}})
+(module plugin.compe {autoload {nvim aniseed.nvim compe compe}})
 
 ;; Set up compe
 (compe.setup {:enable true
@@ -17,7 +17,10 @@
                        :treesitter true
                        :tags false}})
 
-(utils.inoremap :<C-Space> "compe#complete()" {:expr true})
-(utils.inoremap :<CR> "compe#confirm('<CR>')" {:expr true})
-(utils.inoremap :<C-e> "compe#close('<C-e>')" {:expr true})
+(fn map [lhs rhs]
+  (nvim.set_keymap :i lhs rhs {:noremap true :silent true :expr true}))
+
+(map :<C-Space> "compe#complete()")
+(map :<CR> "compe#confirm('<CR>')")
+(map :<C-e> "compe#close('<C-e>')")
 

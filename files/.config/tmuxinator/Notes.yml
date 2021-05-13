@@ -1,4 +1,4 @@
 name: Notes
 root: ~/Documents/Notes
 windows:
-  - Editor: nvim -S Session.vim
+  - Agenda: emacs

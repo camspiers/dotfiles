@@ -1,16 +1,14 @@
 (module mappings {autoload {nvim aniseed.nvim
                             file finder.file
                             buffer finder.buffer
+                            grepfinder finder.grep
+                            tmuxinator finder.tmuxinator
                             wk which-key
-                            telescope telescope
-                            themes telescope.themes
                             terminal toggleterm.terminal
-                            telescope_builtin telescope.builtin
                             hover lspsaga.hover
                             codeaction lspsaga.codeaction
                             diagnostic lspsaga.diagnostic
-                            trouble trouble
-                            utils utils}
+                            trouble trouble}
                   require-macros [macros]})
 
 (fn cmd-fmt [cmd]
@@ -19,12 +17,10 @@
 (fn cmd [cmd name]
   [(cmd-fmt cmd) name])
 
-(fn projects []
-  (telescope.extensions.tmuxinator.projects (themes.get_dropdown {})))
-
 (fn on_open [term]
   (vim.cmd :startinsert!)
-  (utils.buf-map term.bufnr :t :q (cmd-fmt :close) {:noremap true :silent true}))
+  (nvim.buf_set_keymap term.bufnr :t :q (cmd-fmt :close)
+                       {:noremap true :silent true}))
 
 (local lazygit (terminal.Terminal:new {:cmd :lazygit
                                        :hidden true
@@ -74,13 +70,10 @@
               :<leader><leader> [file.find "Find Files"]
               "<leader><C-\\>" [file.find-all "Find All Files"]
               :<leader>b [buffer.find "Find Buffer"]
-              :<leader>f [telescope_builtin.live_grep "Find in Files"]
+              :<leader>f [grepfinder.find "Find in Files"]
               :<leader>p {:name "Project Management"
-                          :s [projects "Start Project"]
+                          :s [tmuxinator.find "Start Project"]
                           :l [open-git "Open Git"]}
-              :* {:name "Cursor Find"
-                  :* ["*" "Find Next in Document"]
-                  :f [telescope_builtin.grep_string "Find by Grep"]}
               :<leader>l {:name "Language Server Provider"
                           :d [vim.lsp.buf.definition "Go to definition"]
                           :D [vim.lsp.buf.declaration "Go to declaration"]
