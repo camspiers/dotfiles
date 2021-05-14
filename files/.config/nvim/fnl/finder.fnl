@@ -236,7 +236,8 @@
   ;; Handles exiting
   (fn on-exit []
     (each [_ bufnr (ipairs buffers)]
-      (nvim.buf_delete bufnr {:force true}))
+      (when (nvim.buf_is_valid bufnr)
+        (nvim.buf_delete bufnr {:force true})))
     (nvim.set_current_win original-winnr)
     (nvim.command :stopinsert))
 
