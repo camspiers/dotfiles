@@ -1,4 +1,4 @@
 name: JNCTN-UX-Design-System
 root: ~/dev/jnctn/JNCTN-UX/libs/design-system
 windows:
-  - Editor: nvim -S Session.vim
+  - Editor: nvim

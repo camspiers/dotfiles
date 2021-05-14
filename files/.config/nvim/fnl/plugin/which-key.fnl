@@ -1,4 +1,4 @@
 (module plugin.which-key {autoload {which-key which-key}})
 
-(which-key.setup {:window {:border :single} :layout {:height {:min 100}}})
+(which-key.setup {})
 

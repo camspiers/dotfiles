@@ -7,5 +7,17 @@
   },
   "files/.inputrc": {
     "alternate": "files/.bash_profile"
+  },
+  "files/.config/nvim/fnl/*.fnl": {
+    "alternate": "files/.config/nvim/lua/{}.lua"
+  },
+  "files/.config/nvim/lua/*.lua": {
+    "alternate": "files/.config/nvim/fnl/{}.fnl"
+  },
+  "*.fnl": {
+    "alternate": "{}.lua"
+  },
+  "*.lua": {
+    "alternate": "{}.fnl"
   }
 }

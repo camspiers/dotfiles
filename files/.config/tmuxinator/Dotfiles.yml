@@ -1,4 +1,4 @@
 name: Dotfiles
 root: ~/.dotfiles
 windows:
-  - Editor: nvim -S Session.vim
+  - Editor: nvim

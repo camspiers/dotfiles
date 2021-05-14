@@ -9,3 +9,5 @@ files/.bashrc.local
 *.log
 files/.config/coc/*
 .DS_Store
+*.lua
+*.vim

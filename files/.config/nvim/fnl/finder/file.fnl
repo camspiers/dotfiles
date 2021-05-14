@@ -1,34 +1,23 @@
-(module finder.file {autoload {finder finder nvim aniseed.nvim}})
+(module finder.file {autoload {finder finder
+                               config finder.config
+                               nvim aniseed.nvim}})
 
-(local find_command "rg --files --hidden --iglob !.DS_Store --iglob !.git")
-(local find_all_command (.. find_command " --no-ignore -tweb -tlua -tjs -tphp"))
-(defn- get-results-raw [cmd] (let [file (assert (io.popen cmd :r))
-                                   contents (file:read :*all)]
-                               (file:close)
-                               contents))
+(fn get-results []
+  (finder.cmd.run (string.format "rg --files --no-ignore --hidden %s %s 2> /dev/null"
+                                 (config.gettypes) (config.getglobs))))
 
-(defn- get-results [cmd] (local results-raw (get-results-raw cmd))
-       (local results [])
-       (each [contents (string.gmatch results-raw "[^\r\n]+")]
-         (table.insert results contents)) results)
-
-(defn- open-file [file winnr]
+(defn- on-select [file winnr]
        (let [buffer (nvim.fn.bufnr file true)]
          (nvim.buf_set_option buffer :buflisted true)
          (when (not= winnr false)
            (nvim.win_set_buf winnr buffer))))
 
-(defn- open-files [files winnr]
+(defn- on-multiselect [files winnr]
        (each [index file (ipairs files)]
-         (open-file file (if (= (length files) index) winnr false))))
+         (on-select file (if (= (length files) index) winnr false))))
 
-(defn find [] (finder.run {:prompt :Files
-                           :get-results (partial get-results find_command)
-                           :on-select open-file
-                           :on-multiselect open-files}))
-
-(defn find-all [] (finder.run {:prompt "All Files"
-                               :get-results (partial get-results
-                                                     find_all_command)
-                               :on-select open-file}))
+(defn run [] (finder.run {:prompt :Files
+                          : get-results
+                          : on-select
+                          : on-multiselect}))
 

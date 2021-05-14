@@ -1,7 +1,7 @@
 name: VirtualCardRAll
 root: ~/dev/jnctn/virtual-card-r
 windows:
-  - Editor: nvim -S Session.vim
+  - Editor: nvim
   - Build:
       layout: tiled
       panes:

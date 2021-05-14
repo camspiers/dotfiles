@@ -2,13 +2,13 @@
 --colors=path:fg:0xbd,0x93,0xf9
 
 --type-add
-web:*.{html,css,js,jsx,ts,tsx,less}
+web:*.html, *.css, *.js, *.jsx, *.ts, *.tsx, *.less, *.mjs
 
 --type-add
-js:*.{ts,tsx}
+lua:*.fnl
 
 --type-add
-ts:*.{ts,tsx}
+fnl:*.fnl
 
 --type-add
-lua:*.{lua,fnl}
+config:rc, Brewfile, *.yml, *.json, *.yaml, *.toml, *.xml

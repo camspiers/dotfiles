@@ -28,6 +28,7 @@
   :fzy {:rock true}
 
   :Olical/aniseed {}
+  :Olical/nvim-local-fennel {}
   :Olical/conjure {}
 
   :nvim-lua/popup.nvim {}
@@ -44,6 +45,8 @@
   :mhartington/formatter.nvim {:mod :formatter}
   :terrortylor/nvim-comment {:mod :comment}
   :hoob3rt/lualine.nvim {:mod :lualine}
+  :numToStr/Navigator.nvim {:mod :navigator}
+  :rmagatti/auto-session {:mod :session}
 
   :tami5/compe-conjure {}
   :kyazdani42/nvim-web-devicons {}
@@ -59,10 +62,8 @@
   :mlaursen/vim-react-snippets {}
   :folke/tokyonight.nvim {}
   :romainl/vim-cool {}
-  :christoomey/vim-tmux-navigator {}
   :tpope/vim-repeat {}
-  :tpope/vim-obsession {}
   :tpope/vim-vinegar {}
   :tpope/vim-unimpaired {}
-  :NTBBloodbath/rest.nvim {})
+  :tpope/vim-projectionist {})
 

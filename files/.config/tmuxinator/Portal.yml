@@ -1,6 +1,6 @@
 name: Portal
 root: ~/dev/jnctn/Portal
 windows:
-  - Editor: nvim -S Session.vim
+  - Editor: nvim
   - Start: npm start
   - Test: npm test

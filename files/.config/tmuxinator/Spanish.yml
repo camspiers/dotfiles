@@ -1,4 +1,4 @@
 name: Spanish
 root: ~/Documents/Spanish
 windows:
-  - Editor: nvim -S Session.vim
+  - Editor: nvim

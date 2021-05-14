@@ -1,8 +1,9 @@
 (module mappings {autoload {nvim aniseed.nvim
                             file finder.file
                             buffer finder.buffer
-                            grepfinder finder.grep
+                            grep finder.grep
                             tmuxinator finder.tmuxinator
+                            tmux finder.tmux
                             wk which-key
                             terminal toggleterm.terminal
                             hover lspsaga.hover
@@ -34,26 +35,27 @@
 (fn get-cursor-word []
   (vim.fn.expand :<cword>))
 
-(fn grep [word no-ignore]
+(fn external-grep [word no-ignore]
   (let [word (or word (nvim.fn.input "Grep> "))]
     (if no-ignore
         (nvim.command (.. (.. "silent grep " word) " --no-ignore"))
         (nvim.command (.. "silent grep " word)))
     (nvim.command :copen)))
 
-(fn grep-no-ignore [word]
+(fn external-grep-no-ignore [word]
   (grep false true))
 
-(fn grep-cursor-word []
+(fn external-grep-cursor-word []
   (grep (get-cursor-word)))
 
-(fn grep-cursor-word-no-ignore []
+(fn external-grep-cursor-word-no-ignore []
   (grep (get-cursor-word) true))
 
-(wk.register {:<leader>n [grep :Grep]
-              :<leader>N [grep-no-ignore "Grep with no ignore"]
-              :<leader>m [grep-cursor-word "Grep cursor word"]
-              :<leader>M [grep-cursor-word-no-ignore
+(wk.register {:<leader>a (cmd :A :Alternate)
+              :<leader>n [external-grep :Grep]
+              :<leader>N [external-grep-no-ignore "Grep with no ignore"]
+              :<leader>m [external-grep-cursor-word "Grep cursor word"]
+              :<leader>M [external-grep-cursor-word-no-ignore
                           "Grep cursor word no ignore"]
               :<leader>w (cmd :w "Buffer Write")
               :<Tab> (cmd :bn "Buffer Next")
@@ -67,12 +69,12 @@
               :<leader>c (cmd :clo "Close Window")
               :<leader><S-c> (cmd "%clo" "Close All Windows")
               :<leader>o (cmd :on "Only Window")
-              :<leader><leader> [file.find "Find Files"]
-              "<leader><C-\\>" [file.find-all "Find All Files"]
-              :<leader>b [buffer.find "Find Buffer"]
-              :<leader>f [grepfinder.find "Find in Files"]
+              :<leader><leader> [file.run "Find Files"]
+              :<leader>b [buffer.run "Find Buffer"]
+              :<leader>f [grep.run "Find in Files"]
               :<leader>p {:name "Project Management"
-                          :s [tmuxinator.find "Start Project"]
+                          :s [tmuxinator.run "Start Project"]
+                          :c [tmux.run "Switch Project"]
                           :l [open-git "Open Git"]}
               :<leader>l {:name "Language Server Provider"
                           :d [vim.lsp.buf.definition "Go to definition"]
