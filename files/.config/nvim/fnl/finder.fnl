@@ -1,6 +1,4 @@
-(module finder {autoload {nvim aniseed.nvim
-                          core aniseed.core
-                          astring aniseed.string}
+(module finder {autoload {nvim aniseed.nvim core aniseed.core}
                 require {fzy fzy}})
 
 ;; Common cmd utilities, used by external finder users
@@ -11,28 +9,75 @@
   (let [file (io.popen cmd :r)
         contents (file:read :*all)]
     (file:close)
-    (core.filter #(not= $1 "") (astring.split contents "\n"))))
+    (core.filter #(not= $1 "") (vim.split contents "\n"))))
 
 ;; Global accessible layouts
 ;; Currently layouts always have the input placed below and therefore room
 ;; must be left available for it to fit
 (def layouts {})
 
-(fn layouts.centered [columns lines]
-  (let [width (math.floor (* columns 0.9))
-        height (math.floor (/ lines 2))]
-    {: width
-     : height
-     :row (math.floor (/ (- lines height) 2))
-     :col (math.floor (/ (- columns width) 2))}))
+(fn layouts.lines []
+  (nvim.get_option :lines))
 
-(fn layouts.bottom [columns lines]
-  (let [width (math.floor (* columns 0.8))
-        height (math.floor (* lines 0.3))]
+(fn layouts.columns []
+  (nvim.get_option :columns))
+
+(fn layouts.middle [total size]
+  (math.floor (/ (- total size) 2)))
+
+(fn layouts.from-bottom [size offset]
+  (- (layouts.lines) size offset))
+
+(fn layouts.from-right [size offset]
+  (- (layouts.columns) size offset))
+
+(fn layouts.size [%width %height]
+  {:width (math.floor (* (layouts.columns) %width))
+   :height (math.floor (* (layouts.lines) %height))})
+
+(fn layouts.%centered [%width %height]
+  (let [{: width : height} (layouts.size %width %height)]
     {: width
      : height
-     :row (- lines height 8)
-     :col (math.floor (/ (- columns width) 2))}))
+     :row (layouts.middle (layouts.lines) height)
+     :col (layouts.middle (layouts.columns) width)}))
+
+(fn layouts.%bottom [%width %height]
+  (let [{: width : height} (layouts.size %width %height)]
+    {: width
+     : height
+     :row (layouts.from-bottom height 10)
+     :col (layouts.middle (layouts.columns) width)}))
+
+(fn layouts.%top [%width %height]
+  (let [{: width : height} (layouts.size %width %height)]
+    {: width : height :row 5 :col (layouts.middle (layouts.columns) width)}))
+
+(fn layouts.%left [%width %height]
+  (let [{: width : height} (layouts.size %width %height)]
+    {: width : height :row (layouts.middle (layouts.lines) height) :col 5}))
+
+(fn layouts.%right [%width %height]
+  (let [{: width : height} (layouts.size %width %height)]
+    {: width
+     : height
+     :row (layouts.middle (layouts.lines) height)
+     :col (layouts.from-right width 5)}))
+
+(fn layouts.centered []
+  (layouts.%centered 0.8 0.5))
+
+(fn layouts.bottom []
+  (layouts.%bottom 0.8 0.5))
+
+(fn layouts.top []
+  (layouts.%top 0.8 0.5))
+
+(fn layouts.left []
+  (layouts.%left 0.5 0.5))
+
+(fn layouts.right []
+  (layouts.%right 0.5 0.5))
 
 ;; Stores mappings for buffers
 (def fns {})
@@ -54,30 +99,26 @@
       (tset buf-fns id fnc))
     (string.format template bufnr id)))
 
-;; Generates the buffer map vim call signiture
-(fn fns.get-call [bufnr fnc]
+;; Generates call signiture for maps
+(fn fns.get-map-call [bufnr fnc]
   (fns.get-by-template bufnr fnc
                        "<Cmd>lua require'finder'.fns.run(%s, '%s')<CR>"))
 
-;; Pattern for autocmds
+;; Generates call signiture for autocmds
 (fn fns.get-autocmd-call [bufnr fnc]
   (fns.get-by-template bufnr fnc ":lua require'finder'.fns.run(%s, '%s')"))
 
 ;; Creates a buffer mapping and creates callable signiture
-(fn map [bufnr lhs fnc]
-  (let [rhs (fns.get-call bufnr fnc)]
+(fn fns.map [bufnr lhs fnc]
+  (let [rhs (fns.get-map-call bufnr fnc)]
     (nvim.buf_set_keymap bufnr :n lhs rhs {})
     (nvim.buf_set_keymap bufnr :i lhs rhs {})))
-
-;; Creates window options for different layouts
-(defn- create-layout [layout]
-       (layout (nvim.get_option :columns) (nvim.get_option :lines)))
 
 ;; Modifies the basic window options to make the input sit below
 
 ;; fnlfmt: skip
 (defn- create-input-layout [layout]
-  (let [{: width : height : row : col} (create-layout layout)]
+  (let [{: width : height : row : col} (layout)]
     {: width :height 1 :row (+ height row 2) : col}))
 
 ;; Creates a scratch buffer, used for both results and input
@@ -102,7 +143,7 @@
 ;; fnlfmt: skip
 (defn- create-results-view [config]
   (let [bufnr (create-buffer)
-        winnr (create-window bufnr (create-layout config.layout) false)]
+        winnr (create-window bufnr (config.layout) false)]
     (nvim.win_set_option winnr :cursorline true)
     (nvim.buf_set_option bufnr :buftype :prompt)
     {: bufnr : winnr}))
@@ -130,11 +171,11 @@
       (on-exit))
 
     (fn on-tab []
-      (config.on-select)
+      (config.on-select-toggle)
       (config.on-down))
 
     (fn on-shifttab []
-      (config.on-unselect)
+      (config.on-select-toggle)
       (config.on-up))
 
     (fn on-ctrla []
@@ -149,18 +190,18 @@
     (fn on_detach [] 
       (fns.clean bufnr))
 
-    (map bufnr :<CR> on-enter)
-    (map bufnr :<Up> config.on-up)
-    (map bufnr :<C-k> config.on-up)
-    (map bufnr :<C-p> config.on-down)
-    (map bufnr :<Down> config.on-down)
-    (map bufnr :<C-j> config.on-down)
-    (map bufnr :<C-n> config.on-down)
-    (map bufnr :<Esc> on-exit)
-    (map bufnr :<C-c> on-exit)
-    (map bufnr :<Tab> on-tab)
-    (map bufnr :<S-Tab> on-shifttab)
-    (map bufnr :<C-a> on-ctrla)
+    (fns.map bufnr :<CR> on-enter)
+    (fns.map bufnr :<Up> config.on-up)
+    (fns.map bufnr :<C-k> config.on-up)
+    (fns.map bufnr :<C-p> config.on-down)
+    (fns.map bufnr :<Down> config.on-down)
+    (fns.map bufnr :<C-j> config.on-down)
+    (fns.map bufnr :<C-n> config.on-down)
+    (fns.map bufnr :<Esc> on-exit)
+    (fns.map bufnr :<C-c> on-exit)
+    (fns.map bufnr :<Tab> on-tab)
+    (fns.map bufnr :<S-Tab> on-shifttab)
+    (fns.map bufnr :<C-a> on-ctrla)
 
     (nvim.command "augroup Finder")
     (nvim.command (string.format
@@ -173,16 +214,17 @@
 
     {: bufnr : winnr}))
 
-;; Turn table into chunks
-(fn chunks [size tbl]
-  (local cs [])
-  (var c [])
-  (each [index value (ipairs tbl)]
-    (table.insert c value)
-    (when (or (= (length c) size) (= index (length tbl)))
-      (table.insert cs c)
-      (set c [])))
-  cs)
+;; Helper function
+(fn partition [size tbl]
+  (var current 0)
+  (local tbl-length (length tbl))
+  (fn []
+    (let [start (* current size)
+          next (+ current 1)
+          end (* next size)
+          chunk [(unpack tbl (+ start 1) end)]]
+      (set current next)
+      (if (= 0 (length chunk)) nil (values current chunk (>= end tbl-length))))))
 
 ;; config {
 ;;   "The prompt displayed to the user"
@@ -222,7 +264,7 @@
   (local initial-results (config.get-results))
 
   ;; Creates a namespace for highlighting
-  (local namespace (nvim.create_namespace "custom_finder"))
+  (local namespace (nvim.create_namespace "Finder"))
 
   ;; Stores the original window to so we can pass it back to the on-select function
   (local original-winnr (nvim.get_current_win))
@@ -259,32 +301,32 @@
 
   ;; Incremental writes
   (fn write-results-inc [results]
-    (if (= (length results) 0)
-      ;; If there are no results then clear
-      (nvim.buf_set_lines results-view-info.bufnr 0 -1 false results)
-      ;; Otherwise render the chunks
-      (do
-        (let [result-chunks (chunks render-chunk-size results)]
-          (each [index chunk (ipairs result-chunks)]
-            (let [size (length chunk)]
+    (let [result-size (length results)]
+      (if (= result-size 0)
+        ;; If there are no results then clear
+        (nvim.buf_set_lines results-view-info.bufnr 0 -1 false results)
+        ;; Otherwise render the chunks
+        (do
+          (each [index chunk last (partition render-chunk-size results)]
+            (let [size (length chunk) end (* index size)]
               ;; Render the chunks lines
               (nvim.buf_set_lines
                 results-view-info.bufnr
                 (* (- index 1) size)
-                (* index size)
+                end
                 false
                 chunk)
               ;; If we are on the last chunk clear all content past its last entry
-              (when (= index (length result-chunks))
+              (when last
                 (nvim.buf_set_lines
                   results-view-info.bufnr
-                  (* index size)
+                  end
                   -1
                   false
                   [])))
-            (coroutine.yield)))
-        (each [row line (pairs results)]
-          (when (. selected line) (add-results-highlight row))))))
+            (coroutine.yield))
+          (each [row line (pairs results)]
+            (when (. selected line) (add-results-highlight row)))))))
 
   ;; Helper function for getting the cursor position
   (fn get-cursor [] (nvim.win_get_cursor results-view-info.winnr))
@@ -354,20 +396,17 @@
         (add-results-highlight i))))
 
   ;; Handles select in the multiselect case
-  (fn on-select []
+  (fn on-select-toggle []
     (when config.on-multiselect
       (let [[row _] (get-cursor) selection (get-cursor-line row)]
         (when (not= selection "")
-          (tset selected selection selection)
-          (add-results-highlight row)))))
-
-  ;; Handles unselect in the multiselect case
-  (fn on-unselect []
-    (when config.on-multiselect
-      (let [[row _] (get-cursor) selection (get-cursor-line row)]
-        (when (not= selection "")
-          (tset selected selection nil)
-          (nvim.buf_clear_namespace results-view-info.bufnr namespace (- row 1) row)))))
+          (if (= (. selected selection) nil)
+            (do 
+              (tset selected selection selection)
+              (add-results-highlight row))
+            (do
+              (tset selected selection nil)
+              (nvim.buf_clear_namespace results-view-info.bufnr namespace (- row 1) row)))))))
 
   ;; On key helper
   (fn on-key [cond get-row]
@@ -393,8 +432,7 @@
      : on-exit
      : on-up
      : on-down
-     : on-select
-     : on-unselect
+     : on-select-toggle
      : on-selectall}))
 
   ;; Register buffer for exiting

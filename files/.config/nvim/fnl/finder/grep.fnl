@@ -17,14 +17,15 @@
      :col (. parts 3)
      :text (. parts 4)}))
 
-(defn- on-multiselect [lines winnr] (vim.fn.setqflist (core.map parse lines))
-       (nvim.command :copen) (nvim.command :cfirst))
+(fn on-multiselect [lines winnr]
+  (vim.fn.setqflist (core.map parse lines))
+  (nvim.command :copen)
+  (nvim.command :cfirst))
 
-(defn- on-select [line winnr] (on-multiselect [line] winnr))
+(fn on-select [line winnr]
+  (on-multiselect [line] winnr))
 
-(local prompt "Live Grep")
-
-(defn run [] (finder.run {: prompt
+(defn run [] (finder.run {:prompt :Grep
                           : get-results
                           :on-filter get-results
                           : on-select
