@@ -109,17 +109,18 @@
   (fns.get-by-template bufnr fnc ":lua require'finder'.fns.run(%s, '%s')"))
 
 ;; Creates a buffer mapping and creates callable signiture
-(fn fns.map [bufnr lhs fnc]
+(fn fns.map [bufnr keys fnc]
   (let [rhs (fns.get-map-call bufnr fnc)]
-    (nvim.buf_set_keymap bufnr :n lhs rhs {})
-    (nvim.buf_set_keymap bufnr :i lhs rhs {})))
+    (each [_ key (ipairs keys)]
+      (nvim.buf_set_keymap bufnr :n key rhs {})
+      (nvim.buf_set_keymap bufnr :i key rhs {}))))
 
 ;; Modifies the basic window options to make the input sit below
 
 ;; fnlfmt: skip
 (defn- create-input-layout [layout]
   (let [{: width : height : row : col} (layout)]
-    {: width :height 1 :row (+ height row 2) : col}))
+    {: width :height 1 :row (+ height row 2) : col :focusable true}))
 
 ;; Creates a scratch buffer, used for both results and input
 (defn- create-buffer [] (nvim.create_buf false true))
@@ -127,7 +128,7 @@
 ;; Creates a window with specified options
 
 ;; fnlfmt: skip
-(defn- create-window [bufnr {: width : height : row : col} focusable]
+(defn- create-window [bufnr {: width : height : row : col : focusable}]
   (nvim.open_win bufnr 0 {: width
                           : height
                           : row
@@ -143,7 +144,7 @@
 ;; fnlfmt: skip
 (defn- create-results-view [config]
   (let [bufnr (create-buffer)
-        winnr (create-window bufnr (config.layout) false)]
+        winnr (create-window bufnr (config.layout))]
     (nvim.win_set_option winnr :cursorline true)
     (nvim.buf_set_option bufnr :buftype :prompt)
     {: bufnr : winnr}))
@@ -153,7 +154,7 @@
 ;; fnlfmt: skip
 (defn- create-input-view [config]
   (let [bufnr (create-buffer)
-        winnr (create-window bufnr (create-input-layout config.layout) true)]
+        winnr (create-window bufnr (create-input-layout config.layout))]
     (nvim.buf_set_option bufnr :buftype :prompt)
     (vim.fn.prompt_setprompt bufnr config.prompt)
     (nvim.command :startinsert)
@@ -190,18 +191,13 @@
     (fn on_detach [] 
       (fns.clean bufnr))
 
-    (fns.map bufnr :<CR> on-enter)
-    (fns.map bufnr :<Up> config.on-up)
-    (fns.map bufnr :<C-k> config.on-up)
-    (fns.map bufnr :<C-p> config.on-down)
-    (fns.map bufnr :<Down> config.on-down)
-    (fns.map bufnr :<C-j> config.on-down)
-    (fns.map bufnr :<C-n> config.on-down)
-    (fns.map bufnr :<Esc> on-exit)
-    (fns.map bufnr :<C-c> on-exit)
-    (fns.map bufnr :<Tab> on-tab)
-    (fns.map bufnr :<S-Tab> on-shifttab)
-    (fns.map bufnr :<C-a> on-ctrla)
+    (fns.map bufnr [:<CR>] on-enter)
+    (fns.map bufnr [:<Up> :<C-k> :<C-p>] config.on-up)
+    (fns.map bufnr [:<Down> :<C-j> :<C-n>] config.on-down)
+    (fns.map bufnr [:<Esc> :<C-c>] on-exit)
+    (fns.map bufnr [:<Tab>] on-tab)
+    (fns.map bufnr [:<S-Tab>] on-shifttab)
+    (fns.map bufnr [:<C-a>] on-ctrla)
 
     (nvim.command "augroup Finder")
     (nvim.command (string.format "autocmd! WinLeave <buffer=%s> %s" bufnr (fns.get-autocmd-call bufnr on-exit)))
@@ -252,7 +248,7 @@
   (local on-update-debounce 75)
 
   ;; Default render chunk size
-  (local render-chunk-size 200)
+  (local render-chunk-size 10)
 
   ;; Default to the bottom layout
   (local layout (or config.layout layouts.bottom))
@@ -261,7 +257,7 @@
   (local initial-results (config.get-results))
 
   ;; Creates a namespace for highlighting
-  (local namespace (nvim.create_namespace "Finder"))
+  (local namespace (nvim.create_namespace :Finder))
 
   ;; Stores the original window to so we can pass it back to the on-select function
   (local original-winnr (nvim.get_current_win))
@@ -357,10 +353,8 @@
   (fn on-update-debounced [search]
     ;; Redraw for quick updating of input
     (nvim.command :redraw)
-
     ;; When a new update comes and there is still a timer then cancel it
     (when timer (vim.loop.timer_stop timer))
-
     ;; Store a timer for stopping. This is a debounce strategy
     (set timer (vim.defer_fn (partial on-update search) on-update-debounce)))
 
