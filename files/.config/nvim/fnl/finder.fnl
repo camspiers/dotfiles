@@ -159,6 +159,10 @@
     (vim.fn.prompt_setprompt bufnr config.prompt)
     (nvim.command :startinsert)
 
+    (when config.initial-filter
+      ;; We do it this way because prompts are broken in nvim
+      (nvim.feedkeys config.initial-filter :n false))
+
     (fn get-filter []
       (let [contents (core.first (nvim.buf_get_lines bufnr 0 1 false))]
         (contents:sub (+ (length config.prompt) 1))))
@@ -252,6 +256,9 @@
 
   ;; Default to the bottom layout
   (local layout (or config.layout layouts.bottom))
+
+  ;; Store buffers for exiting
+  (local initial-filter (or config.initial-filter ""))
 
   ;; Computes the initial results
   (local initial-results (config.get-results))
@@ -410,7 +417,8 @@
 
   ;; Initializes the input view
   (local input-view-info (create-input-view
-    {: layout
+    {: initial-filter
+     : layout
      : prompt
      : on-enter
      : on-exit
@@ -424,5 +432,5 @@
   (table.insert buffers input-view-info.bufnr)
 
   ;; Writes the results to the buffer
-  (on-update-debounced ""))
+  (on-update-debounced initial-filter))
 

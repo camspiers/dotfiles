@@ -31,3 +31,10 @@
                           : on-select
                           : on-multiselect}))
 
+(defn cursor [] (finder.run {:prompt :Grep
+                             :initial-filter (vim.fn.expand :<cword>)
+                             : get-results
+                             :on-filter get-results
+                             : on-select
+                             : on-multiselect}))
+
