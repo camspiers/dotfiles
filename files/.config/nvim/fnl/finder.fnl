@@ -1,3 +1,16 @@
+;; Finder
+;; A small extensible finder system for neovim
+;;
+;; Requirements:
+;;   - aniseed
+;;   - fzf (via luarocks, or just path accessible via 'fzy')
+;;
+;; Example:
+;;
+;; (finder.run {:prompt "Print One or Two"
+;;              :get-results (fn [] [:One :Two])
+;;              :on-select print})
+
 (module finder {autoload {nvim aniseed.nvim core aniseed.core}
                 require {fzy fzy}})
 
@@ -159,7 +172,7 @@
     (vim.fn.prompt_setprompt bufnr config.prompt)
     (nvim.command :startinsert)
 
-    (when config.initial-filter
+    (when (~= config.initial-filter "")
       ;; We do it this way because prompts are broken in nvim
       (nvim.feedkeys config.initial-filter :n false))
 
@@ -252,7 +265,7 @@
   (local on-update-debounce 75)
 
   ;; Default render chunk size
-  (local render-chunk-size 10)
+  (local render-chunk-size 50)
 
   ;; Default to the bottom layout
   (local layout (or config.layout layouts.bottom))

@@ -1,4 +1,5 @@
 (module mappings {autoload {nvim aniseed.nvim
+                            finder finder
                             file finder.file
                             buffer finder.buffer
                             grep finder.grep
@@ -32,9 +33,6 @@
 (fn open-git []
   (lazygit:toggle))
 
-(fn get-cursor-word []
-  (vim.fn.expand :<cword>))
-
 (fn external-grep [word no-ignore]
   (let [word (or word (nvim.fn.input "Grep> "))]
     (if no-ignore
@@ -45,18 +43,26 @@
 (fn external-grep-no-ignore [word]
   (grep false true))
 
-(fn external-grep-cursor-word []
-  (grep (get-cursor-word)))
+(fn example []
+  (finder.run {:prompt :Print
+               :get-results (fn []
+                              [:one
+                               :two
+                               :three
+                               :four
+                               :five
+                               :six
+                               :seven
+                               :eight
+                               :nine
+                               :ten])
+               :on-select print}))
 
-(fn external-grep-cursor-word-no-ignore []
-  (grep (get-cursor-word) true))
-
-(wk.register {:<leader>a (cmd :A :Alternate)
+(wk.register {:<leader>e [example :Example]
+              :<leader>a (cmd :a :alternate)
               :<leader>n [external-grep :Grep]
               :<leader>N [external-grep-no-ignore "Grep with no ignore"]
-              :<leader>m [external-grep-cursor-word "Grep cursor word"]
-              :<leader>M [external-grep-cursor-word-no-ignore
-                          "Grep cursor word no ignore"]
+              :<leader>m [grep.cursor "Grep cursor word"]
               :<leader>w (cmd :w "Buffer Write")
               :<Tab> (cmd :bn "Buffer Next")
               :<S-Tab> (cmd :bp "Buffer Prev")
