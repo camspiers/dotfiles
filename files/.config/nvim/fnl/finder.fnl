@@ -301,7 +301,7 @@
           (each [index chunk last (partition render-chunk-size results)]
             (let [size (length chunk) end (* index size)]
               ;; Render the chunks lines
-              (set-lines (* (- index 1) size) end chunk)
+              (set-lines (* (- index 1) render-chunk-size) end chunk)
               ;; If we are on the last chunk clear all content past its last entry
               (when last (set-lines end -1 [])))
             (coroutine.yield))
@@ -321,12 +321,16 @@
       (config.on-filter search initial-results)
       (do
         ;; This code path resuses initial-results and filters using fzy
-        (local results-table
-          (icollect [_ value (ipairs initial-results)]
-            (when (fzy.has_match search value)
-              {: value :score (fzy.score search value)})))
-        (table.sort results-table #(> $1.score $2.score))
-        (core.map #(. $1 :value) results-table))))
+        (if (= search "")
+          initial-results
+          (do
+            (local results-table
+              (icollect [_ value (ipairs initial-results)]
+                (when (fzy.has_match search value)
+                  {: value :score (fzy.score search value)})))
+            (table.sort results-table #(> $1.score $2.score))
+            (core.map #(. $1 :value) results-table))))))
+          
 
   ;; Debouncing
   (var timer nil)
