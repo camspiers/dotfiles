@@ -179,7 +179,7 @@
       (config.on-up))
 
     (fn on-ctrla []
-      (config.on-selectall (get-filter)))
+      (config.on-select-all-toggle (get-filter)))
 
     (var mounted false)
     (fn on_lines []
@@ -204,10 +204,7 @@
     (fns.map bufnr :<C-a> on-ctrla)
 
     (nvim.command "augroup Finder")
-    (nvim.command (string.format
-                    "autocmd! WinLeave <buffer=%s> %s"
-                    bufnr
-                    (fns.get-autocmd-call bufnr on-exit)))
+    (nvim.command (string.format "autocmd! WinLeave <buffer=%s> %s" bufnr (fns.get-autocmd-call bufnr on-exit)))
     (nvim.command "augroup END")
 
     (nvim.buf_attach bufnr false {: on_lines : on_detach})
@@ -252,7 +249,7 @@
   (local buffers [])
 
   ;; Default debounce
-  (local on-update-debounce 100)
+  (local on-update-debounce 75)
 
   ;; Default render chunk size
   (local render-chunk-size 200)
@@ -293,37 +290,24 @@
   (fn add-results-highlight [row]
     (nvim.buf_add_highlight results-view-info.bufnr namespace :Comment (- row 1) 0 -1))
 
-  ;; Creates a helper function for writing to the results buffer with highlighting
-  (fn write-results [results]
-    (nvim.buf_set_lines results-view-info.bufnr 0 1 false results)
-    (each [row line (pairs results)]
-      (when (. selected line) (add-results-highlight row))))
+  ;; Helper to set lines to results view
+  (fn set-lines [start end lines]
+    (nvim.buf_set_lines results-view-info.bufnr start end false lines))
 
   ;; Incremental writes
-  (fn write-results-inc [results]
+  (fn write-results [results]
     (let [result-size (length results)]
       (if (= result-size 0)
         ;; If there are no results then clear
-        (nvim.buf_set_lines results-view-info.bufnr 0 -1 false results)
+        (set-lines 0 -1 [])
         ;; Otherwise render the chunks
         (do
           (each [index chunk last (partition render-chunk-size results)]
             (let [size (length chunk) end (* index size)]
               ;; Render the chunks lines
-              (nvim.buf_set_lines
-                results-view-info.bufnr
-                (* (- index 1) size)
-                end
-                false
-                chunk)
+              (set-lines (* (- index 1) size) end chunk)
               ;; If we are on the last chunk clear all content past its last entry
-              (when last
-                (nvim.buf_set_lines
-                  results-view-info.bufnr
-                  end
-                  -1
-                  false
-                  [])))
+              (when last (set-lines end -1 [])))
             (coroutine.yield))
           (each [row line (pairs results)]
             (when (. selected line) (add-results-highlight row)))))))
@@ -353,6 +337,24 @@
 
   ;; Update function, called when the filter changes
   (fn on-update [search]
+    ;; Clear the timer
+    (set timer nil)
+    ;; Separate the getting of results and the rendering of results into
+    ;; two passes to enable yeilding back for user input between them
+    (let [results-co (coroutine.create get-results)
+          write-co (coroutine.create write-results)]
+      ;; Run the search
+      (local (status results) (coroutine.resume results-co search))
+      (when status
+        (do
+          ;; Start the writer coroutine
+          (coroutine.resume write-co results)
+          ;; Continue writing until the coroutine is dead
+          (while (~= (coroutine.status write-co) :dead)
+            (coroutine.resume write-co))))))
+
+  ;; Debounced version
+  (fn on-update-debounced [search]
     ;; Redraw for quick updating of input
     (nvim.command :redraw)
 
@@ -360,23 +362,7 @@
     (when timer (vim.loop.timer_stop timer))
 
     ;; Store a timer for stopping. This is a debounce strategy
-    (set timer
-      (vim.defer_fn (fn []
-        ;; Clear the timer
-        (set timer nil)
-        ;; Separate the getting of results and the rendering of results into
-        ;; two passes to enable yeilding back for user input between them
-        (let [results-co (coroutine.create get-results)
-              write-co (coroutine.create write-results-inc)]
-          ;; Run the search
-          (local (status results) (coroutine.resume results-co search))
-          (when status
-            (do
-              ;; Start the writer coroutine
-              (coroutine.resume write-co results)
-              ;; Continue writing until the coroutine is dead
-              (while (~= (coroutine.status write-co) :dead)
-                (coroutine.resume write-co)))))) on-update-debounce)))
+    (set timer (vim.defer_fn (partial on-update search) on-update-debounce)))
 
   ;; Handles entering
   (fn on-enter []
@@ -388,12 +374,13 @@
       (when config.on-multiselect (config.on-multiselect selected-values original-winnr))))
 
   ;; Handles select all in the multiselect case
-  (fn on-selectall [search]
+  (fn on-select-all-toggle [search]
     (when config.on-multiselect
       (each [_ value (ipairs (get-results search))]
-        (tset selected value value))
-      (for [i 1 (nvim.buf_line_count results-view-info.bufnr)]
-        (add-results-highlight i))))
+        (if (= (. selected value) nil)
+          (tset selected value value)
+          (tset selected value nil)))
+      (on-update search)))
 
   ;; Handles select in the multiselect case
   (fn on-select-toggle []
@@ -409,7 +396,7 @@
               (nvim.buf_clear_namespace results-view-info.bufnr namespace (- row 1) row)))))))
 
   ;; On key helper
-  (fn on-key [cond get-row]
+  (fn on-key-direction [cond get-row]
     (let [[row _] (get-cursor)]
       (when (cond row)
         (nvim.win_set_cursor results-view-info.winnr [(get-row row) 0])
@@ -417,27 +404,27 @@
 
   ;; On up handler
   (fn on-up []
-    (on-key #(> $1 1) #(- $1 1)))
+    (on-key-direction #(> $1 1) #(- $1 1)))
 
   ;; On down handler
   (fn on-down []
-    (on-key #(< $1 (nvim.buf_line_count results-view-info.bufnr)) #(+ $1 1)))
+    (on-key-direction #(< $1 (nvim.buf_line_count results-view-info.bufnr)) #(+ $1 1)))
 
   ;; Initializes the input view
   (local input-view-info (create-input-view
     {: layout
      : prompt
-     : on-update
      : on-enter
      : on-exit
      : on-up
      : on-down
      : on-select-toggle
-     : on-selectall}))
+     : on-select-all-toggle
+     :on-update on-update-debounced}))
 
   ;; Register buffer for exiting
   (table.insert buffers input-view-info.bufnr)
 
   ;; Writes the results to the buffer
-  (write-results initial-results))
+  (on-update-debounced ""))
 
