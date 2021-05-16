@@ -1,5 +1,8 @@
 (module finder.tmuxinator
-        {autoload {finder finder tmux finder.tmux core aniseed.core}})
+        {autoload {finder finder
+                   utils finder.utils
+                   tmux finder.tmux
+                   core aniseed.core}})
 
 (fn get-sessions-set []
   (local sessions-set {})
@@ -10,10 +13,10 @@
 (fn get-results []
   (let [sessions (get-sessions-set)]
     (core.filter #(= (. sessions $1) nil)
-                 (finder.cmd.run "tmuxinator list -n | tail -n +2"))))
+                 (utils.run "tmuxinator list -n | tail -n +2"))))
 
 (fn launch-session [project]
-  (finder.cmd.run (string.format "tmuxinator start '%s' --no-attach" project)))
+  (utils.run (string.format "tmuxinator start '%s' --no-attach" project)))
 
 (fn on-select [project]
   (launch-session project)

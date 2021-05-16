@@ -1,10 +1,11 @@
 (module finder.file {autoload {finder finder
+                               utils finder.utils
                                config finder.config
                                nvim aniseed.nvim}})
 
 (fn get-results []
-  (finder.cmd.run (string.format "rg --files --no-ignore --hidden %s %s 2> /dev/null"
-                                 (config.gettypes) (config.getglobs))))
+  (utils.run (string.format "rg --files --no-ignore --hidden %s %s 2> /dev/null"
+                                (config.gettypes) (config.getiglobs))))
 
 (fn on-select [file winnr]
   (let [buffer (nvim.fn.bufnr file true)]

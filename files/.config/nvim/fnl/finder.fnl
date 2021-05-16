@@ -1,28 +1,30 @@
-;; Finder
-;; A small extensible finder system for neovim
-;;
-;; Requirements:
-;;   - aniseed
-;;   - fzf (via luarocks, or just path accessible via 'fzy')
-;;
-;; Example:
-;;
-;; (finder.run {:prompt "Print One or Two"
-;;              :get-results (fn [] [:One :Two])
-;;              :on-select print})
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                                                                            ;;
+;; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   Finder   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ;;
+;;                                                                            ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                                                                            ;;
+;; ~~~~~~~~~~ A small fast extensible finder system for neovim. ~~~~~~~~~~~~~ ;;
+;;                                                                            ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                                                                            ;;
+;; Requirements:                                                              ;;
+;;                                                                            ;;
+;;   - aniseed                                                                ;;
+;;   - fzf (via luarocks, or just path accessible via 'fzy')                  ;;
+;;                                                                            ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                                                                            ;;
+;; Example:                                                                   ;;
+;;                                                                            ;;
+;; (finder.run {:prompt "Print One or Two"                                    ;;
+;;              :get-results (fn [] [:One :Two])                              ;;
+;;              :on-select print})                                            ;;
+;;                                                                            ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (module finder {autoload {nvim aniseed.nvim core aniseed.core}
                 require {fzy fzy}})
-
-;; Common cmd utilities, used by external finder users
-(def cmd {})
-
-;; Runs a command and waits for output
-(fn cmd.run [cmd]
-  (let [file (io.popen cmd :r)
-        contents (file:read :*all)]
-    (file:close)
-    (core.filter #(not= $1 "") (vim.split contents "\n"))))
 
 ;; Global accessible layouts
 ;; Currently layouts always have the input placed below and therefore room

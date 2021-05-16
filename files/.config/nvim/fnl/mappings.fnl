@@ -1,6 +1,7 @@
 (module mappings {autoload {nvim aniseed.nvim
                             finder finder
                             file finder.file
+                            cd finder.cd
                             buffer finder.buffer
                             grep finder.grep
                             tmuxinator finder.tmuxinator
@@ -58,7 +59,8 @@
                                :ten])
                :on-select print}))
 
-(wk.register {:<leader>e [example :Example]
+(wk.register {:<leader>e [cd.run "Change Directory"]
+              :<leader>c (cmd :clo "Close Window")
               :<leader>a (cmd :a :alternate)
               :<leader>n [external-grep :Grep]
               :<leader>N [external-grep-no-ignore "Grep with no ignore"]

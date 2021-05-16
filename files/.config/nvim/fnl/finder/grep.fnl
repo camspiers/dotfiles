@@ -1,4 +1,5 @@
 (module finder.grep {autoload {finder finder
+                               utils finder.utils
                                config finder.config
                                nvim aniseed.nvim
                                astring aniseed.string
@@ -6,8 +7,8 @@
 
 (fn get-results [filter]
   (if filter
-      (finder.cmd.run (string.format "rg --vimgrep --hidden %s %s %q 2> /dev/null"
-                                     (config.gettypes) (config.getglobs) filter))
+      (utils.run (string.format "rg --vimgrep --hidden %s %s %q 2> /dev/null"
+                                (config.gettypes) (config.getiglobs) filter))
       []))
 
 (fn parse [line]

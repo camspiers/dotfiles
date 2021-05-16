@@ -17,7 +17,11 @@
 (defn gettypes []
       (astring.join " " (core.map #(string.format "-t%s" $1) types)))
 
+(defn getiglobs [] (astring.join " "
+                                 (core.map #(string.format "--iglob '%s'" $1)
+                                           globs)))
+
 (defn getglobs [] (astring.join " "
-                                (core.map #(string.format "--iglob '%s'" $1)
+                                (core.map #(string.format "--glob '%s'" $1)
                                           globs)))
 
