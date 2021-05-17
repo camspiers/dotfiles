@@ -2,6 +2,7 @@
                             finder finder
                             file finder.file
                             cd finder.cd
+                            oldfiles finder.oldfiles
                             buffer finder.buffer
                             grep finder.grep
                             tmuxinator finder.tmuxinator
@@ -25,13 +26,13 @@
   (nvim.buf_set_keymap term.bufnr :t :q (cmd-fmt :close)
                        {:noremap true :silent true}))
 
-(local lazygit (terminal.Terminal:new {:cmd :lazygit
-                                       :hidden true
-                                       :direction :float
-                                       :float_opts {:border :curved}
-                                       : on_open}))
-
 (fn open-git []
+  (local lazygit (terminal.Terminal:new {:cmd (string.format "lazygit %s"
+                                                             (vim.fn.getcwd))
+                                         :hidden true
+                                         :direction :float
+                                         :float_opts {:border :curved}
+                                         : on_open}))
   (lazygit:toggle))
 
 (fn external-grep [word no-ignore]
@@ -43,21 +44,6 @@
 
 (fn external-grep-no-ignore [word]
   (grep false true))
-
-(fn example []
-  (finder.run {:prompt :Print
-               :get-results (fn []
-                              [:one
-                               :two
-                               :three
-                               :four
-                               :five
-                               :six
-                               :seven
-                               :eight
-                               :nine
-                               :ten])
-               :on-select print}))
 
 (wk.register {:<leader>e [cd.run "Change Directory"]
               :<leader>c (cmd :clo "Close Window")
@@ -78,6 +64,7 @@
               :<leader><S-c> (cmd "%clo" "Close All Windows")
               :<leader>o (cmd :on "Only Window")
               :<leader><leader> [file.run "Find Files"]
+              :<leader>h [oldfiles.run "Old files"]
               :<leader>b [buffer.run "Find Buffer"]
               :<leader>f [grep.run "Find in Files"]
               :<leader>p {:name "Project Management"
