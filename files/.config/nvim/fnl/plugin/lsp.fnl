@@ -1,20 +1,50 @@
-(module plugin.lsp
-        {autoload {nvim aniseed.nvim
-                   lspsaga lspsaga
-                   core aniseed.core
-                   which-key which-key
-                   lspinstall lspinstall
-                   lspconfig lspconfig
-                   nvim-lsp-ts-utils nvim-lsp-ts-utils}})
+(module plugin.lsp {autoload {nvim aniseed.nvim
+                              core aniseed.core
+                              which-key which-key
+                              lspinstall lspinstall
+                              lspconfig lspconfig
+                              nvim-lsp-ts-utils nvim-lsp-ts-utils
+                              trouble trouble}})
 
 ;; These servers get automatically setup
-(def- auto-setup-servers [:bash :json :tailwindcss :html :css])
+(local auto-setup-servers [:bash :json :tailwindcss :html :css])
 
-(defn- server-installed [server] "Checks if the server is installed"
-       (core.some (partial = server) (lspinstall.installed_servers)))
+(fn server-installed [server]
+  "Checks if the server is installed"
+  (core.some (partial = server) (lspinstall.installed_servers)))
+
+(local general-config {})
+
+(fn general-config.on_attach [client buffer]
+  (which-key.register {:<leader>l {:name "Language Server Provider"
+                                   :d [vim.lsp.buf.definition
+                                       "Go to definition"]
+                                   :D [vim.lsp.buf.type_definition
+                                       "Type definition"]
+                                   :r [vim.lsp.buf.references
+                                       "Go to references"]
+                                   :i [vim.lsp.buf.implementation
+                                       "Go to implementation"]
+                                   :h [vim.lsp.buf.hover "Hover doc"]
+                                   :k [vim.lsp.buf.signiture_help
+                                       "Signiture help"]
+                                   :a [vim.lsp.buf.code_action "Code action"]}
+                       :<leader>t {:name :Trouble
+                                   :t [trouble.toggle "Trouble Toggle"]
+                                   :w [(partial trouble.toggle
+                                                :lsp_workspace_diagnostics)
+                                       "LSP Workspace Diagnostics"]
+                                   :d [(partial trouble.toggle
+                                                :lsp_document_diagnostics)
+                                       "LSP Document Diagnostics"]
+                                   :q [(partial trouble.toggle :quickfix)
+                                       "Quickfix List"]
+                                   :l [(partial trouble.toggle :loclist)
+                                       "Location List"]}}
+                      {: buffer}))
 
 ;; The typescript config
-(def- typescript-config {})
+(local typescript-config {})
 
 ;; Typescript handlers
 (set typescript-config.handlers
@@ -29,54 +59,62 @@
   (set client.resolved_capabilities.document_formatting false)
   ;; Set up lsp-ts-utils
   (nvim-lsp-ts-utils.setup {:disable_commands true :enable_formatting false})
+  ;; Set up common bindings
+  (general-config.on_attach client buffer)
   ;; Register bindings for lsp-ts-utils
-  (which-key.register {:<leader>lo [nvim-lsp-ts-utils.organize_imports
+  (which-key.register {:<leader>uo [nvim-lsp-ts-utils.organize_imports
                                     "LSP Organize"]
-                       :<leader>lr [nvim-lsp-ts-utils.rename_file
+                       :<leader>ur [nvim-lsp-ts-utils.rename_file
                                     "LSP Rename File"]
-                       :<leader>li [nvim-lsp-ts-utils.import_all
+                       :<leader>ua [nvim-lsp-ts-utils.import_all
                                     "LSP Import All"]
-                       :<leader>lc [nvim-lsp-ts-utils.fix_current
+                       :<leader>uc [nvim-lsp-ts-utils.fix_current
                                     "LSP Fix Current"]}
                       {: buffer}))
 
-(defn- setup-typescript-server [] "Sets up the typescript server"
-       (lspconfig.typescript.setup typescript-config))
+(fn setup-typescript-server []
+  "Sets up the typescript server"
+  (lspconfig.typescript.setup typescript-config))
 
-(def- lua-server-settings
-      {:Lua {:runtime {:version :LuaJIT :path (vim.split package.path ";")}
-             :diagnostics {:globals {1 :vim}}
-             :workspace {:library {(vim.fn.expand :$VIMRUNTIME/lua) true
-                                   (vim.fn.expand :$VIMRUNTIME/lua/vim/lsp) true}}}})
+(local lua-server-settings
+       {:Lua {:runtime {:version :LuaJIT :path (vim.split package.path ";")}
+              :diagnostics {:globals {1 :vim}}
+              :workspace {:library {(vim.fn.expand :$VIMRUNTIME/lua) true
+                                    (vim.fn.expand :$VIMRUNTIME/lua/vim/lsp) true}}}})
 
-(defn- setup-lua-server [] "Sets up the lua server"
-       (lspconfig.lua.setup {:settings lua-server-settings}))
+(fn setup-lua-server []
+  "Sets up the lua server"
+  (lspconfig.lua.setup {:settings lua-server-settings}))
 
-(defn- setup-csharp-server [] "Sets up the csharp server"
-       (lspconfig.csharp.setup {}))
+(fn setup-csharp-server []
+  "Sets up the csharp server"
+  (lspconfig.csharp.setup {}))
 
-(defn- setup-lsp-servers []
-       "Sets up all lsp servers, installing & auto configuring ones that are 'auto-setup'"
-       ;; Set up lspinstall
-       (lspinstall.setup) ;; Register a post install hook
-       (fn lspinstall.post_install_hook []
-         "Register a post install hook that calls this setup servers function"
-         (setup-lsp-servers)
-         (vim.cmd "bufdo e"))
-       ;; Auto set up certain servers and install them if they aren't yet installed
-       (each [_ server (ipairs auto-setup-servers)]
-         (if (server-installed server)
-             ((. (. lspconfig server) :setup) {})
-             (lspinstall.install_server server)))
-       ;; If the lua server is installed then set it up
-       (when (server-installed :lua)
-         (setup-lua-server))
-       ;; If the typescript server is installed then set it up
-       (when (server-installed :typescript)
-         (setup-typescript-server))
-       ;; If the csharp server is installed then set it up
-       (when (server-installed :csharp)
-         (setup-csharp-server)))
+(fn setup-lsp-servers []
+  "Sets up all lsp servers, installing & auto configuring ones that are 'auto-setup'"
+  ;; Set up lspinstall
+  (lspinstall.setup)
+  ;; Register a post install hook
+
+  (fn lspinstall.post_install_hook []
+    "Register a post install hook that calls this setup servers function"
+    (setup-lsp-servers)
+    (vim.cmd "bufdo e"))
+
+  ;; Auto set up certain servers and install them if they aren't yet installed
+  (each [_ server (ipairs auto-setup-servers)]
+    (if (server-installed server)
+        ((. (. lspconfig server) :setup) general-config)
+        (lspinstall.install_server server)))
+  ;; If the lua server is installed then set it up
+  (when (server-installed :lua)
+    (setup-lua-server))
+  ;; If the typescript server is installed then set it up
+  (when (server-installed :typescript)
+    (setup-typescript-server))
+  ;; If the csharp server is installed then set it up
+  (when (server-installed :csharp)
+    (setup-csharp-server)))
 
 ;; Set up all the servers
 (setup-lsp-servers)
@@ -101,6 +139,4 @@
                     {:texthl :LspDiagnosticsSignInformation
                      :text ""
                      :numhl :LspDiagnosticsSignInformation})
-
-(lspsaga.init_lsp_saga {})
 

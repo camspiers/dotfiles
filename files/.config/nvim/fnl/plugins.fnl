@@ -51,7 +51,6 @@
   :tami5/compe-conjure {}
   :kyazdani42/nvim-web-devicons {}
   :neovim/nvim-lspconfig {}
-  :glepnir/lspsaga.nvim {}
   :jose-elias-alvarez/nvim-lsp-ts-utils {}
   :nvim-treesitter/nvim-treesitter {}
   :editorconfig/editorconfig-vim {}

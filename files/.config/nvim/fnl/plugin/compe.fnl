@@ -2,7 +2,7 @@
 
 ;; Set up compe
 (compe.setup {:enable true
-              :autocomplete true
+              :autocomplete false
               :min_length 1
               :preselect :enable
               :documentation true

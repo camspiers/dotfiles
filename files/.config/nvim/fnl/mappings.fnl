@@ -1,5 +1,6 @@
 (module mappings {autoload {nvim aniseed.nvim
                             finder finder
+                            action finder.action
                             file finder.file
                             cd finder.cd
                             oldfiles finder.oldfiles
@@ -9,9 +10,6 @@
                             tmux finder.tmux
                             wk which-key
                             terminal toggleterm.terminal
-                            hover lspsaga.hover
-                            codeaction lspsaga.codeaction
-                            diagnostic lspsaga.diagnostic
                             trouble trouble}
                   require-macros [macros]})
 
@@ -45,8 +43,7 @@
 (fn external-grep-no-ignore [word]
   (grep false true))
 
-(wk.register {:<leader>e [cd.run "Change Directory"]
-              :<leader>c (cmd :clo "Close Window")
+(wk.register {:<leader>c (cmd :clo "Close Window")
               :<leader>a (cmd :a :alternate)
               :<leader>n [external-grep :Grep]
               :<leader>N [external-grep-no-ignore "Grep with no ignore"]
@@ -64,25 +61,22 @@
               :<leader><S-c> (cmd "%clo" "Close All Windows")
               :<leader>o (cmd :on "Only Window")
               :<leader><leader> [file.run "Find Files"]
-              :<leader>h [oldfiles.run "Old files"]
-              :<leader>b [buffer.run "Find Buffer"]
-              :<leader>f [grep.run "Find in Files"]
-              :<leader>p {:name "Project Management"
-                          :s [tmuxinator.run "Start Project"]
-                          :c [tmux.run "Switch Project"]
-                          :l [open-git "Open Git"]}
+              :<leader>f {:name :Finders
+                          :o [oldfiles.run "Old files"]
+                          :b [buffer.run :Buffers]
+                          :e [cd.run "Change Directory"]
+                          :f [grep.run "Grep files"]
+                          :a [action.run "Run Action"]
+                          :t [tmux.run "Switch Project"]}
+              "<leader>'" [open-git "Open Git"]
               :<leader>l {:name "Language Server Provider"
                           :d [vim.lsp.buf.definition "Go to definition"]
                           :D [vim.lsp.buf.declaration "Go to declaration"]
                           :r [vim.lsp.buf.references "Go to references"]
                           :i [vim.lsp.buf.implementation
                               "Go to implementation"]
-                          :h [hover.render_hover_doc "Hover doc"]
-                          :a [codeaction.code_action "Code action"]
-                          :p [diagnostic.lsp_jump_diagnostic_prev
-                              "Diagnostic Prev"]
-                          :n [diagnostic.lsp_jump_diagnostic_next
-                              "Diagnostic Next"]}
+                          :h [vim.lsp.buf.hover "Hover doc"]
+                          :a [vim.lsp.buf.code_action "Code action"]}
               :<leader>t {:name :Trouble
                           :t [trouble.toggle "Trouble Toggle"]
                           :w [(partial trouble.toggle
