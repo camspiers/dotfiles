@@ -11,7 +11,7 @@
 ;; Requirements:                                                              ;;
 ;;                                                                            ;;
 ;;   - aniseed                                                                ;;
-;;   - fzf (via luarocks, or just path accessible via 'fzy')                  ;;
+;;   - fzy (via luarocks, or just path accessible via 'fzy')                  ;;
 ;;                                                                            ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                                                                            ;;
