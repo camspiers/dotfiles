@@ -14,8 +14,8 @@
 (fn parse [line]
   (let [parts (astring.split line ":")]
     {:filename (. parts 1)
-     :lnum (. parts 2)
-     :col (. parts 3)
+     :lnum (tonumber (. parts 2))
+     :col (tonumber (. parts 3))
      :text (. parts 4)}))
 
 (fn on-multiselect [lines winnr]
@@ -24,7 +24,12 @@
   (nvim.command :cfirst))
 
 (fn on-select [line winnr]
-  (on-multiselect [line] winnr))
+  (let [{: filename : lnum : col} (parse line)]
+    (print (vim.inspect [lnum col]))
+    (let [buffer (nvim.fn.bufnr filename true)]
+      (nvim.buf_set_option buffer :buflisted true)
+      (nvim.win_set_buf winnr buffer)
+      (nvim.win_set_cursor winnr [lnum col]))))
 
 (defn run [] (finder.run {:prompt :Grep
                           : get-results
