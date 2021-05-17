@@ -32,6 +32,7 @@
 (se- updatetime 300)
 (se- cursorline)
 (se- cursorcolumn)
+(se- history 5000)
 
 (se- grepprg
      "rg --no-heading --vimgrep --hidden --iglob '!.DS_Store' --iglob '!.git'")
