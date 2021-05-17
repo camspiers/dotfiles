@@ -1,4 +1,4 @@
 (module plugin.toggleterm {autoload {toggleterm toggleterm}})
 
-(toggleterm.setup {})
+(toggleterm.setup {:open_mapping "<c-\\>"})
 
