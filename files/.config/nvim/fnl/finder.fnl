@@ -23,8 +23,7 @@
 ;;                                                                            ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(module finder {autoload {nvim aniseed.nvim core aniseed.core}
-                require {fzy fzy}})
+(module finder {autoload {nvim aniseed.nvim core aniseed.core fzy fzy}})
 
 ;; Global accessible layouts
 ;; Currently layouts always have the input placed below and therefore room
