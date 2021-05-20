@@ -1,4 +1,4 @@
-(module options {require-macros [macros]})
+(module options {autoload {nvim aniseed.nvim} require-macros [macros]})
 
 (se- background :dark)
 (se- clipboard :unnamed)
@@ -33,6 +33,9 @@
 (se- cursorline)
 (se- cursorcolumn)
 (se- history 5000)
+
+(nvim.command "autocmd TermOpen * set nocursorline")
+(nvim.command "autocmd TermOpen * set nocursorcolumn")
 
 (se- grepprg
      "rg --no-heading --vimgrep --hidden --iglob '!.DS_Store' --iglob '!.git'")

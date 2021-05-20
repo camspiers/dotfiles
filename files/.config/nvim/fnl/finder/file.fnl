@@ -5,7 +5,7 @@
 
 (fn get-results []
   (utils.run (string.format "rg --files --no-ignore --hidden %s %s 2> /dev/null"
-                                (config.gettypes) (config.getiglobs))))
+                            (config.gettypes) (config.getiglobs))))
 
 (fn on-select [file winnr]
   (let [buffer (nvim.fn.bufnr file true)]

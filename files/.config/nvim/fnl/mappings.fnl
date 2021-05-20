@@ -43,6 +43,11 @@
 (fn external-grep-no-ignore [word]
   (grep false true))
 
+(fn close-all-buffers [force]
+  (each [_ value (ipairs (nvim.list_bufs))]
+    (when (and (= (vim.fn.buflisted value) 1) (= (vim.fn.bufexists value) 1))
+      (nvim.buf_delete value {: force}))))
+
 (wk.register {:<leader>c (cmd :clo "Close Window")
               :<leader>a (cmd :a :alternate)
               :<leader>n [external-grep :Grep]
@@ -53,8 +58,10 @@
               :<S-Tab> (cmd :bp "Buffer Prev")
               :<leader>x (cmd :bd "Buffer Delete")
               :<leader><S-x> (cmd :bd! "Buffer Delete (!)")
-              :<leader>z (cmd "%bd" "Buffer Delete All")
-              :<leader><S-z> (cmd "%bd!" "Buffer Delete All (!)")
+              :<leader>z [(partial close-all-buffers false)
+                          "Buffer Delete All"]
+              :<leader><S-z> [(partial close-all-buffers true)
+                              "Buffer Delete All (!)"]
               :<leader>| (cmd :vs "Split Vertical")
               :<leader>- (cmd :sp "Split Horizontal")
               :<leader>c (cmd :clo "Close Window")

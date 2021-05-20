@@ -33,6 +33,7 @@
 
   :nvim-lua/popup.nvim {}
   :nvim-lua/plenary.nvim {}
+  :nvim-telescope/telescope.nvim {}
 
   :folke/lsp-trouble.nvim {:mod :trouble}
   :lewis6991/gitsigns.nvim {:mod :gitsigns}

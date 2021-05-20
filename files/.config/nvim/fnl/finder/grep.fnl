@@ -6,7 +6,7 @@
                                core aniseed.core}})
 
 (fn get-results [filter]
-  (if filter
+  (if (and (not= filter "") (not= filter nil))
       (utils.run (string.format "rg --vimgrep --hidden %s %s %q 2> /dev/null"
                                 (config.gettypes) (config.getiglobs) filter))
       []))
