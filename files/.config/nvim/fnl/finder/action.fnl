@@ -13,5 +13,6 @@
 (defn run [] (finder.run {:layout finder.layouts.centered
                           :prompt "Run Action"
                           : get-results
+                          :filter true
                           : on-select}))
 

@@ -11,5 +11,5 @@
   (vim.schedule (fn []
                   (nvim.set_current_dir dir))))
 
-(defn run [] (finder.run {:prompt :cd : get-results : on-select}))
+(defn run [] (finder.run {:prompt :cd : get-results :filter true : on-select}))
 

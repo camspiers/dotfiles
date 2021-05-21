@@ -19,6 +19,7 @@
 
 (defn run [] (finder.run {:prompt :Files
                           : get-results
+                          :filter true
                           : on-select
                           : on-multiselect}))
 

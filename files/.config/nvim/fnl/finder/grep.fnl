@@ -5,11 +5,54 @@
                                astring aniseed.string
                                core aniseed.core}})
 
+(fn spawn [cmd args cwd]
+  (var stdinbuffer "")
+  (var stderrbuffer "")
+  (let [stdout (vim.loop.new_pipe false)
+        stderr (vim.loop.new_pipe false)
+        handle (vim.loop.spawn cmd {: args :stdio [nil stdout stderr] : cwd}
+                               (fn [code signal]
+                                 (stdout:read_stop)
+                                 (stderr:read_stop)
+                                 (stdout:close)
+                                 (stderr:close)
+                                 (handle:close)))]
+    (stdout:read_start (fn [err data]
+                         (assert (not err))
+                         (when data
+                           (set stdinbuffer data))))
+    (stderr:read_start (fn [err data]
+                         (assert (not err))
+                         (when data
+                           (set stderrbuffer data))))
+
+    (fn kill []
+      (handle:kill vim.loop.constants.SIGTERM))
+
+    (fn iterator []
+      (if (and handle (handle:is_active))
+          (let [stdin stdinbuffer
+                stderr stderrbuffer]
+            (set stdinbuffer "")
+            (set stderrbuffer "")
+            (values stdin stderr kill))
+          nil))
+
+    iterator))
+
 (fn get-results [filter]
-  (if (and (not= filter "") (not= filter nil))
-      (utils.run (string.format "rg --vimgrep --hidden %s %s %q 2> /dev/null"
-                                (config.gettypes) (config.getiglobs) filter))
-      []))
+  ;; TODO Does block-buffered acutally bring any benefit?
+  (each [data err kill (spawn :rg [:--vimgrep
+                                   :--block-buffered
+                                   :--hidden
+                                   filter]
+                              (vim.fn.getcwd))]
+    (if (not= err "")
+        (coroutine.yield nil)
+        (let [results (if (= data "") [] (vim.split data "\n" true))
+              (cancel) (coroutine.yield results err)]
+          (when cancel
+            (kill))))))
 
 (fn parse [line]
   (let [parts (astring.split line ":")]
@@ -33,14 +76,12 @@
 
 (defn run [] (finder.run {:prompt :Grep
                           : get-results
-                          :on-filter get-results
                           : on-select
                           : on-multiselect}))
 
 (defn cursor [] (finder.run {:prompt :Grep
                              :initial-filter (vim.fn.expand :<cword>)
                              : get-results
-                             :on-filter get-results
                              : on-select
                              : on-multiselect}))
 

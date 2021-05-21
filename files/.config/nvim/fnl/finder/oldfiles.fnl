@@ -11,5 +11,8 @@
 (fn get-results []
   (core.filter #(= (vim.fn.empty (vim.fn.glob $1)) 0) vim.v.oldfiles))
 
-(defn run [] (finder.run {:prompt "Old files" : get-results : on-select}))
+(defn run [] (finder.run {:prompt "Old files"
+                          : get-results
+                          :filter true
+                          : on-select}))
 

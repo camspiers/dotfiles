@@ -12,5 +12,8 @@
                  (= (vim.fn.bufexists value) 1))
         name))))
 
-(defn run [] (finder.run {:prompt :Buffers : get-results : on-select}))
+(defn run [] (finder.run {:prompt :Buffers
+                          : get-results
+                          :filter true
+                          : on-select}))
 
