@@ -1,9 +1,9 @@
-(module finder.grep {autoload {finder finder
-                               utils finder.utils
-                               config finder.config
-                               nvim aniseed.nvim
-                               astring aniseed.string
-                               core aniseed.core}})
+(module snap.grep {autoload {snap snap
+                             utils snap.utils
+                             config snap.config
+                             nvim aniseed.nvim
+                             astring aniseed.string
+                             core aniseed.core}})
 
 (fn spawn [cmd args cwd]
   (var stdinbuffer "")
@@ -74,12 +74,12 @@
       (nvim.win_set_buf winnr buffer)
       (nvim.win_set_cursor winnr [lnum col]))))
 
-(defn run [] (finder.run {:prompt :Grep
+(defn run [] (snap.run {:prompt :Grep
                           : get-results
                           : on-select
                           : on-multiselect}))
 
-(defn cursor [] (finder.run {:prompt :Grep
+(defn cursor [] (snap.run {:prompt :Grep
                              :initial-filter (vim.fn.expand :<cword>)
                              : get-results
                              : on-select

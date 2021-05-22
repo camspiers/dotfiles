@@ -1,13 +1,13 @@
 (module mappings {autoload {nvim aniseed.nvim
-                            finder finder
-                            action finder.action
-                            file finder.file
-                            cd finder.cd
-                            oldfiles finder.oldfiles
-                            buffer finder.buffer
-                            grep finder.grep
-                            tmuxinator finder.tmuxinator
-                            tmux finder.tmux
+                            snap snap
+                            action snap.action
+                            file snap.file
+                            cd snap.cd
+                            oldfiles snap.oldfiles
+                            buffer snap.buffer
+                            grep snap.grep
+                            tmuxinator snap.tmuxinator
+                            tmux snap.tmux
                             wk which-key
                             terminal toggleterm.terminal
                             trouble trouble}

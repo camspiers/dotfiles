@@ -1,4 +1,4 @@
-(module finder.utils {autoload {core aniseed.core}})
+(module snap.utils {autoload {core aniseed.core}})
 
 ;; Runs a command and waits for output
 (defn run [cmd]

@@ -1,4 +1,4 @@
-(module dotfiles-config {autoload {config finder.config}})
+(module dotfiles-config {autoload {config snap.config}})
 
 (config.addglobs [:!*.lua])
 

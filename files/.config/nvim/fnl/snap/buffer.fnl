@@ -1,6 +1,6 @@
-(module finder.buffer {autoload {finder finder
-                                 nvim aniseed.nvim
-                                 core aniseed.core}})
+(module snap.buffer {autoload {snap snap
+                               nvim aniseed.nvim
+                               core aniseed.core}})
 
 (fn on-select [selection winnr]
   (let [buffer (nvim.fn.bufnr selection true)]
@@ -18,7 +18,7 @@
   (local (_ buffers) (coroutine.yield get-slow-data))
   buffers)
 
-(defn run [] (finder.run {:prompt :Buffers
-                          :get-results (finder.filter-sort get-results)
+(defn run [] (snap.run {:prompt :Buffers
+                          :get-results (snap.filter-sort get-results)
                           : on-select}))
 

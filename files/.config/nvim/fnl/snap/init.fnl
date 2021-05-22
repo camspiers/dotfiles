@@ -1,6 +1,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                                                                            ;;
-;; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   Finder   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ;;
+;; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  Snap   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ;;
+;;                                                                            ;;
+;;          "except possibly one, who, if certain rumors were true            ;;
+;;                might have done it by snapping his fingers"                 ;;
 ;;                                                                            ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                                                                            ;;
@@ -17,14 +20,13 @@
 ;;                                                                            ;;
 ;; Example:                                                                   ;;
 ;;                                                                            ;;
-;; (finder.run {:prompt "Print One or Two"                                    ;;
+;; (snap.run {:prompt "Print One or Two"                                      ;;
 ;;              :get-results (fn [] [:One :Two])                              ;;
 ;;              :on-select print})                                            ;;
 ;;                                                                            ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(module finder {autoload {nvim aniseed.nvim core aniseed.core}
-                require {fzy fzy}})
+(module snap {autoload {nvim aniseed.nvim core aniseed.core} require {fzy fzy}})
 
 ;; Partition for quick sort
 (fn partition [tbl p r comp]
@@ -123,8 +125,7 @@
     (tset fns bufnr buf-fns)
     (when (= (. buf-fns id) nil)
       (tset buf-fns id fnc))
-    (string.format "%slua require'finder'.fns.run(%s, '%s')%s" pre bufnr id
-                   post)))
+    (string.format "%slua require'snap'.fns.run(%s, '%s')%s" pre bufnr id post)))
 
 ;; Generates call signiture for maps
 (fn fns.get-map-call [bufnr fnc]
@@ -228,7 +229,7 @@
     (fns.map bufnr [:<C-d>] config.on-pagedown)
     (fns.map bufnr [:<C-u>] config.on-pageup)
 
-    (nvim.command "augroup Finder")
+    (nvim.command "augroup Snap")
     (nvim.command (string.format "autocmd! WinLeave <buffer=%s> %s" bufnr (fns.get-autocmd-call bufnr on-exit)))
     (nvim.command "augroup END")
 
@@ -242,12 +243,22 @@
     (.. space text space)))
 
 ;; Create a basic loading screen
-(fn create-loading-screen [width height]
+
+;; fnlfmt: skip
+(fn create-loading-screen [width counter]
+  (local text " Loading ")
+  (local dots (string.rep "." (% counter (- width (length text)))))
   (local loading [])
-  (for [i 1 height]
-    (if (= i (math.floor (/ height 2)))
-        (table.insert loading (center "... Loading ..." (- width 2)))
-        (table.insert loading (string.rep " " (- width 2)))))
+  (table.insert loading "")
+  (table.insert loading (string.rep "=" width))
+  (table.insert loading "")
+  (table.insert loading "")
+  (table.insert loading (center (.. dots text dots) width))
+  (table.insert loading "")
+  (table.insert loading "")
+  (table.insert loading (string.rep "=" width))
+  (table.insert loading "")
+  (table.insert loading "")
   loading)
 
 (fn score-compare [a b]
@@ -365,7 +376,7 @@
   (local initial-filter (or config.initial-filter ""))
 
   ;; Creates a namespace for highlighting
-  (local namespace (nvim.create_namespace :Finder))
+  (local namespace (nvim.create_namespace :Snap))
 
   ;; Stores the original window to so we can pass it back to the on-select function
   (local original-winnr (nvim.get_current_win))
@@ -397,9 +408,6 @@
 
   ;; Register buffer for exiting
   (table.insert buffers view.bufnr)
-
-  ;; Create a static loading screen (TODO think about dynamic loading screen API)
-  (local loading-screen (create-loading-screen view.width view.height))
 
   ;; Helper function for highlighting
   (fn add-results-highlight [row]
@@ -438,9 +446,6 @@
     ;; where it has the responsibility to kill running processes etc
     (fn should-cancel [] (or exit (not= filter last-filter)))
 
-    ;; Counter used to control the loading screen
-    (var counter 0)
-
     ;; Only run when the filter has changed
     (when (not= filter last-filter)
       ;; The last filter has changed
@@ -478,22 +483,20 @@
             (set blocking-value (fnc))
             (set pending-blocking-value false))))
 
+        ;; Store the number of times the loading screen has displayed
+        (var loading-count 1)
+
+        ;; Store the last time the loap has run
+        (var last-time (vim.loop.now))
+
         ;; This checker runs on every loop of the event loop
         ;; It checks if the coroutine is not dead and has more values
         (fn checker []
           (when pending-blocking-value
             (lua "return nil"))
 
-          ;; Increment the counter
-          (set counter (+ counter 1))
-
           ;; Update the cancel flag
           (tset message :cancel (should-cancel))
-
-          ;; Render a basic loading screen
-          ;; but oly if loading has taken two ticks
-          (when (= counter 2)
-            (vim.schedule (partial write-results loading-screen)))
 
           ;; When the coroutine is not dead, process its results
           (if (not= (coroutine.status reader) :dead)
@@ -508,7 +511,16 @@
                 ;; The coroutine is dead so stop the checker and schedule a write
                 "nil" (end)))
             ;; When the coroutine is dead then stop the checker and write
-            (end)))
+            (end))
+
+          ;; Render a basic loading screen
+          (when (> (- (vim.loop.now) last-time) 500)
+            (set last-time (vim.loop.now))
+            (set loading-count (+ loading-count 1))
+            (vim.schedule (fn []
+              (when (not message.cancel)
+                (local loading (create-loading-screen view.width loading-count))
+                (set-lines 0 (length loading) loading))))))
 
         ;; Start the checker after each IO poll
         (check:start checker))))

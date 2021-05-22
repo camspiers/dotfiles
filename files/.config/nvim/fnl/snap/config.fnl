@@ -1,4 +1,4 @@
-(module finder.config {autoload {finder finder
+(module snap.config {autoload {snap snap
                                  astring aniseed.string
                                  core aniseed.core}})
 

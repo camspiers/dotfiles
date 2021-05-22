@@ -1,6 +1,6 @@
-(module finder.oldfiles {autoload {finder finder
-                                   nvim aniseed.nvim
-                                   core aniseed.core}})
+(module snap.oldfiles {autoload {snap snap
+                                 nvim aniseed.nvim
+                                 core aniseed.core}})
 
 (fn on-select [file winnr]
   (let [buffer (nvim.fn.bufnr file true)]
@@ -15,7 +15,7 @@
   (local (_ results) (coroutine.yield get-slow-data))
   results)
 
-(defn run [] (finder.run {:prompt "Old files"
-                          :get-results (finder.filter-sort get-results)
+(defn run [] (snap.run {:prompt "Old files"
+                          :get-results (snap.filter-sort get-results)
                           : on-select}))
 

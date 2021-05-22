@@ -1,7 +1,7 @@
-(module finder.file {autoload {finder finder
-                               utils finder.utils
-                               config finder.config
-                               nvim aniseed.nvim}})
+(module snap.file {autoload {snap snap
+                             utils snap.utils
+                             config snap.config
+                             nvim aniseed.nvim}})
 
 (fn get-results [message]
   (utils.run (string.format "rg --files --no-ignore --hidden %s %s 2> /dev/null"
@@ -17,8 +17,8 @@
   (each [index file (ipairs files)]
     (on-select file (if (= (length files) index) winnr false))))
 
-(defn run [] (finder.run {:prompt :Files
-                          :get-results (finder.filter-sort get-results)
+(defn run [] (snap.run {:prompt :Files
+                          :get-results (snap.filter-sort get-results)
                           : on-select
                           : on-multiselect}))
 

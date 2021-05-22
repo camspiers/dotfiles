@@ -1,8 +1,7 @@
-(module finder.tmuxinator
-        {autoload {finder finder
-                   utils finder.utils
-                   tmux finder.tmux
-                   core aniseed.core}})
+(module snap.tmuxinator {autoload {snap snap
+                                   utils snap.utils
+                                   tmux snap.tmux
+                                   core aniseed.core}})
 
 (fn get-sessions-set []
   (local sessions-set {})
@@ -29,9 +28,9 @@
   (when (vim.fn.exists :$TMUX)
     (vim.schedule select-session)))
 
-(defn run [] (finder.run {:layout finder.layouts.centered
-                          :prompt "Start Session"
-                          : get-results
-                          : on-select
-                          : on-multiselect}))
+(defn run [] (snap.run {:layout snap.layouts.centered
+                        :prompt "Start Session"
+                        : get-results
+                        : on-select
+                        : on-multiselect}))
 
