@@ -23,8 +23,10 @@
 ;;                                                                            ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(module finder {autoload {nvim aniseed.nvim core aniseed.core fzy fzy}})
+(module finder {autoload {nvim aniseed.nvim core aniseed.core}
+                require {fzy fzy}})
 
+;; Partition for quick sort
 (fn partition [tbl p r comp]
   (let [x (. tbl r)]
     (var i (- p 1))
@@ -251,54 +253,59 @@
 (fn score-compare [a b]
   (> a.score b.score))
 
-;; Standard on-filter function using fzy
-
-;; fnlfmt: skip
-(fn default-on-filter [search initial-results height]
-  ;; This code path resuses initial-results and filters using fzy
-  (if (= search "")
-    initial-results
-    (let [results []]
-       (each [_ value (ipairs initial-results)]
-         (when (fzy.has_match search value)
-           (table.insert results {: value :score (fzy.score search value)})))
-      (let [len (length results)]
-        (if (> len height)
-          (partial-quicksort results 1 len height score-compare)
-          (table.sort results score-compare)))
-      (core.map #$1.value results))))
-
 ;; Accumulates non empty results
 (fn accumulate [results partial-results]
-  (when (not= (length partial-results) 0)
+  (when (= (type partial-results) :string)
+    (print partial-results))
+  (when (not= partial-results nil)
     (each [_ value (ipairs partial-results)]
       (when (not= value "")
         (table.insert results value)))))
 
-; (fn filter [producer]
-;   (var cache [])
-;   (fn [search height]
-;     (if (= (length cache) 0)
-;         (coroutine.create (fn []
-;                             (local co (coroutine.create producer))
-; 
-;                             (local (_ partial-results) (coroutine.resume producer search height))
-; 
-;                             (accumulate cache partial-results)
-; 
-;                             (each [_ value (ipairs partial-results]
-;                               (coroutine.yield 
-; 
-;                             (while (not= (coroutine.status a) :dead)
-;                             (local (_ partial-results) (coroutine.resume producer search height))
-;                               
-;                               
-;                               ))))
-;     (default-on-filter cache)))
+;; fnlfmt: skip
+(defn cache [producer]
+  "Provides a method to avoid running passed producer multiple times"
+  (var cache [])
+  (fn [message]
+    (if (= (length cache) 0)
+      (let [reader (coroutine.create producer)]
+        (while (not= (coroutine.status reader) :dead)
+          (local (_ results) (coroutine.resume reader message))
+          (accumulate cache results)
+          (coroutine.yield results)))
+      cache)))
 
-; 
-; (fn sort [producer]
-;   nil)
+;; fnlfmt: skip
+(defn filter [producer]
+  "Filters each result from the producer using message.filter"
+  (fn [message]
+    (fn filter [results]
+      (core.filter #(fzy.has_match message.filter $1) results))
+
+    (let [reader (coroutine.create producer)]
+      (while (not= (coroutine.status reader) :dead)
+        (local (_ results) (coroutine.resume reader message))
+        (coroutine.yield (if (= results nil) nil (filter results)))))))
+
+;; fnlfmt: skip
+(defn sort [producer]
+  "Sorts the result set, please note this accumulates all results without yielding"
+  (fn [message]
+    (local buffer [])
+    (local reader (coroutine.create producer))
+    (while (not= (coroutine.status reader) :dead)
+      (local (_ results) (coroutine.resume reader message))
+      (when (not= results nil)
+        (each [_ value (ipairs results)]
+          (table.insert buffer
+                        {: value :score (fzy.score message.filter value)}))))
+    (partial-quicksort buffer 1 (length buffer) message.height score-compare)
+    (coroutine.yield (core.map #$1.value buffer))))
+
+;; fnlfmt: skip
+(defn filter-sort [producer]
+  "Combines the cache + filter + sort pattern for common uses"
+  (sort (filter (cache producer))))
 
 ;; Run docs:
 ;;
@@ -309,10 +316,7 @@
 ;;   "Get the results to display"
 ;;   :get-results () => itable<string>
 ;;
-;;   "What to run on select"
-;;   :on-select (selection) => nil
-;;
-;;   "How to display the searcher"
+;;   "How to display the search results"
 ;;   :?layout (columns lines) => {
 ;;     :width number
 ;;     :height number
@@ -331,9 +335,6 @@
 (defn run [config]
   ;; Store last search
   (var last-filter nil)
-
-  ;; Computes the initial results
-  (var initial-results [])
 
   ;; Store the last results
   (var last-results [])
@@ -363,6 +364,9 @@
   ;; Stores the selected items, used for multiselect
   (local selected {})
 
+  ;; Get the cmd
+  (local cwd (vim.fn.getcwd))
+
   ;; Handles exiting
   (fn on-exit []
     ;; Send the signal to exit to all potentially running processes in coroutines
@@ -376,33 +380,32 @@
     ;; Return back to original window
     (nvim.set_current_win original-winnr)
 
-    ;; TODO Find out why insert more is sometimes entered
-    ;; is it because we to to insert mode in the prompt?
+    ;; Return back from insert mode
     (nvim.command :stopinsert))
 
   ;; Creates the results buffer and window and stores thier numbers
-  (local results-view-info (create-results-view {: layout : on-exit}))
+  (local view (create-results-view {: layout : on-exit}))
 
   ;; Register buffer for exiting
-  (table.insert buffers results-view-info.bufnr)
+  (table.insert buffers view.bufnr)
 
   ;; Create a static loading screen (TODO think about dynamic loading screen API)
-  (local loading-screen (create-loading-screen results-view-info.width results-view-info.height))
+  (local loading-screen (create-loading-screen view.width view.height))
 
   ;; Helper function for highlighting
   (fn add-results-highlight [row]
-    (nvim.buf_add_highlight results-view-info.bufnr namespace :Comment (- row 1) 0 -1))
+    (nvim.buf_add_highlight view.bufnr namespace :Comment (- row 1) 0 -1))
 
   ;; Helper to set lines to results view
   (fn set-lines [start end lines]
-    (nvim.buf_set_lines results-view-info.bufnr start end false lines))
+    (nvim.buf_set_lines view.bufnr start end false lines))
 
   ;; Helper function for getting the cursor position
-  (fn get-cursor-row [] (let [[row _] (nvim.win_get_cursor results-view-info.winnr)] row))
+  (fn get-cursor-row [] (let [[row _] (nvim.win_get_cursor view.winnr)] row))
 
   ;; Helper function for getting the line under the cursor
   (fn get-cursor-line [row]
-    (core.first (nvim.buf_get_lines results-view-info.bufnr (- row 1) row false)))
+    (core.first (nvim.buf_get_lines view.bufnr (- row 1) row false)))
 
   ;; Only write what results are needed
   (fn write-results [results]
@@ -415,98 +418,85 @@
           (do
             ;; Don't render more than we need to
             ;; this is getting only the height plus the cursor
-            (local partial-results [(unpack results 1 (+ results-view-info.height (get-cursor-row)))])
+            (local partial-results [(unpack results 1 (+ view.height (get-cursor-row)))])
             (set-lines 0 -1 partial-results)
             (each [row line (pairs partial-results)]
               (when (. selected line) (add-results-highlight row))))))))
 
-  ;; Common function to get results with filter applied only when needed
-  (fn on-filter [filter]
-    (default-on-filter filter initial-results results-view-info.height))
-
   ;; This is the non-scheduled version of on-update
-  (fn on-update-unwraped [filter]
+  (fn on-update-unwraped [filter height]
     ;; Helper to determine if we should cancel, sent to coroutine
     ;; where it has the responsibility to kill running processes etc
     (fn should-cancel [] (or exit (not= filter last-filter)))
+
+    ;; Counter used to control the loading screen
+    (var counter 0)
 
     ;; Only run when the filter has changed
     (when (not= filter last-filter)
       ;; The last filter has changed
       (set last-filter filter)
 
-      ;; If we are filtering, and we have results then just filter
-      (if (and config.filter (not= (length initial-results) 0))
-        ;; Just filter
-        (do
-          ;; The filtered results are stored for the handling of select all
-          ;; and for the handling of keys
-          (set last-results (on-filter filter))
-          
+      (let [reader (coroutine.create config.get-results)
+            check (vim.loop.new_check)]
+        ;; Prepare new results array for collection
+        (local results [])
+
+        ;; Update the cancel flag
+        (local message {: filter
+                        : height
+                        : cwd
+                        :cancel (should-cancel)
+                        :slow-data (when config.get-slow-data (config.get-slow-data))})
+
+        ;; Creates a writer scheduler with the results table in the closure
+        (fn schedule-write []
+          ;; Store the last written results
+          (set last-results results)
+
           ;; Schedule the write
-          (vim.schedule (partial write-results last-results)))
+          (vim.schedule (partial write-results results)))
 
-        ;; Otherwise we need to invoke the reader coroutine
-        (do
+        ;; Run this whenever the checker should be considered to have ended
+        (fn end []
+          (check:stop)
+          (when (not message.cancel)
+            (schedule-write)))
+
+        ;; This checker runs on every loop of the event loop
+        ;; It checks if the coroutine is not dead and has more values
+        (fn checker []
+          ;; Increment the counter
+          (set counter (+ counter 1))
+
+          ;; Update the cancel flag
+          (tset message :cancel (should-cancel))
+
           ;; Render a basic loading screen
-          (write-results loading-screen)
+          ;; but oly if loading has taken two ticks
+          (when (= counter 2)
+            (vim.schedule (partial write-results loading-screen)))
 
-          ;; Create the coroutine and a checker that will be used to process
-          ;; new values from the coroutine each tick
-          (let [reader (coroutine.create config.get-results)
-                check (vim.loop.new_check)]
+          ;; When the coroutine is not dead, process its results
+          (if (not= (coroutine.status reader) :dead)
+            ;; Fetches results be also sends cancel signal
+            (let [(_ partial-results) (coroutine.resume reader message)]
+              (when (= (type partial-results) "string") (print "Table not returned: " partial-results))
+              ;; When there is nil the coroutine has reached its last value
+              (if (not= partial-results nil)
+                ;; Store the values, there are more to come
+                (accumulate results partial-results)
+                ;; The coroutine is dead so stop the checker and schedule a write
+                (end)))
+            ;; When the coroutine is dead then stop the checker and write
+            (end)))
 
-            ;; Prepare new results array for collection
-            (local results [])
-
-            ;; Begin the coroutine passing the initial filter
-            (local (_ partial-results) (coroutine.resume reader filter))
-
-            ;; Accumulate the first values. Likely aync get-results will cause
-            ;; the coroutine to become dead here
-            (accumulate results partial-results)
-
-            ;; Creates a writer scheduler with the results table in the closure
-            (fn schedule-write []
-              ;; Store the last written results
-              (set last-results results)
-
-              ;; If this is our filter get-reuslts then we need to store the
-              ;; unfiltered results as the initial results for later filtering
-              (when (= (length initial-results) 0)
-                (set initial-results results))
-
-              ;; Schedule the write
-              (vim.schedule (partial write-results
-                (if config.filter (on-filter filter) results))))
-
-            ;; This checker runs on every loop of the event loop
-            ;; It checks if the coroutine is not dead and has more values
-            (fn checker []
-              ;; When the coroutine is not dead, process its results
-              (if (not= (coroutine.status reader) :dead)
-                ;; Fetches results be also sends cancel signal
-                (let [(_ partial-results stderr) (coroutine.resume reader (should-cancel))]
-                  ;; When there is nil the coroutine has reached its last value
-                  (if (not= partial-results nil)
-                    ;; Store the values, there are more to come
-                    (accumulate results partial-results)
-                    ;; The coroutine is dead so stop the checker and schedule a write
-                    (do
-                      (check:stop)
-                      (when (not (should-cancel))
-                        (schedule-write)))))
-                ;; When the coroutine is dead then stop the checker and write
-                (do
-                  (check:stop)
-                  (schedule-write))))
-
-            ;; Start the checker after each IO poll
-            (check:start checker))))))
+        ;; Start the checker after each IO poll
+        (check:start checker))))
 
   ;; You can't immediately start the checker so schedule
   (fn on-update [filter]
-    (vim.schedule (partial on-update-unwraped filter)))
+    (vim.schedule (partial on-update-unwraped filter view.height)))
 
   ;; Handles entering
   (fn on-enter []
@@ -537,13 +527,13 @@
               (add-results-highlight row))
             (do
               (tset selected selection nil)
-              (nvim.buf_clear_namespace results-view-info.bufnr namespace (- row 1) row)))))))
+              (nvim.buf_clear_namespace view.bufnr namespace (- row 1) row)))))))
 
   ;; On key helper
   (fn on-key-direction [get-next-index]
     (let [row (get-cursor-row) index (get-next-index row)]
-      (nvim.win_set_cursor results-view-info.winnr
-        [(math.max 1 (math.min (nvim.buf_line_count results-view-info.bufnr) index)) 0])
+      (nvim.win_set_cursor view.winnr
+        [(math.max 1 (math.min (nvim.buf_line_count view.bufnr) index)) 0])
       (write-results last-results)))
 
   ;; On up handler
@@ -556,11 +546,11 @@
  
   ;; Page up handler
   (fn on-pageup []
-    (on-key-direction #(- $1 results-view-info.height)))
+    (on-key-direction #(- $1 view.height)))
 
   ;; Page down handler
   (fn on-pagedown []
-    (on-key-direction #(+ $1 results-view-info.height)))
+    (on-key-direction #(+ $1 view.height)))
 
   ;; Initializes the input view
   (local input-view-info (create-input-view

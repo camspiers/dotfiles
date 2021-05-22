@@ -3,7 +3,7 @@
                                config finder.config
                                nvim aniseed.nvim}})
 
-(fn get-results []
+(fn get-results [message]
   (utils.run (string.format "rg --files --no-ignore --hidden %s %s 2> /dev/null"
                             (config.gettypes) (config.getiglobs))))
 
@@ -18,8 +18,7 @@
     (on-select file (if (= (length files) index) winnr false))))
 
 (defn run [] (finder.run {:prompt :Files
-                          : get-results
-                          :filter true
+                          :get-results (finder.filter-sort get-results)
                           : on-select
                           : on-multiselect}))
 
