@@ -262,14 +262,20 @@
       (when (not= value "")
         (table.insert results value)))))
 
+;; fnlfmt: skip
 (fn resume [co message value]
   "Transfers sync values allowing the yielding of functions with non fast-api access"
   (let [(_ result) (coroutine.resume co message value)]
-    (if (= (type result) :function)
-        (do
-          (local (_ value) (coroutine.yield result))
-          (resume co message value))
-        result)))
+    (if
+      (= (type result) :function)
+      ;; When we have a function, we want to yield it
+      ;; get the value then continue
+      (do
+        (local (_ value) (coroutine.yield result))
+        (resume co message value))
+      (not message.cancel)
+      result
+      nil)))
 
 ;; fnlfmt: skip
 (defn cache [producer]
@@ -333,9 +339,6 @@
 ;;     :col number
 ;;   }
 ;;
-;;   "An optional boolean to enable filtering"
-;;   :?filter boolean
-;;
 ;;   "An optional function that enables multiselect executes on multiselect"
 ;;   :?on-multiselect (selections) => nil
 ;; }
@@ -372,9 +375,6 @@
 
   ;; Stores the selected items, used for multiselect
   (local selected {})
-
-  ;; Get the cmd
-  (local cwd (vim.fn.getcwd))
 
   ;; Handles exiting
   (fn on-exit []
@@ -451,42 +451,37 @@
         ;; Prepare new results array for collection
         (local results [])
 
-        ;; Update the cancel flag
+        ;; Store the message API for coroutines
         (local message {: filter
                         : height
-                        : cwd
                         :cancel (should-cancel)})
-
-        ;; Creates a writer scheduler with the results table in the closure
-        (fn schedule-write []
-          ;; Store the last written results
-          (set last-results results)
-          ;; Schedule the write
-          (vim.schedule (partial write-results results)))
 
         ;; Run this whenever the checker should be considered to have ended
         (fn end []
           (check:stop)
           (when (not message.cancel)
-            (schedule-write)))
+            ;; Store the last written results
+            (set last-results results)
+            ;; Schedule the write
+            (vim.schedule (partial write-results results))))
 
         ;; Tracks the requests of slow nvim calls
-        (var pending-sync-value false)
+        (var pending-blocking-value false)
 
         ;; Stores the results of slow nvim calls
-        (var sync-value nil)
+        (var blocking-value nil)
 
         ;; Schedules a sync value for processing
-        (fn schedule-sync-value [fnc]
-          (set pending-sync-value true) 
+        (fn schedule-blocking-value [fnc]
+          (set pending-blocking-value true) 
           (vim.schedule (fn []
-            (set sync-value (fnc))
-            (set pending-sync-value false))))
+            (set blocking-value (fnc))
+            (set pending-blocking-value false))))
 
         ;; This checker runs on every loop of the event loop
         ;; It checks if the coroutine is not dead and has more values
         (fn checker []
-          (when pending-sync-value
+          (when pending-blocking-value
             (lua "return nil"))
 
           ;; Increment the counter
@@ -503,9 +498,10 @@
           ;; When the coroutine is not dead, process its results
           (if (not= (coroutine.status reader) :dead)
             ;; Fetches results be also sends cancel signal
-            (let [(_ value) (coroutine.resume reader message sync-value)]
+            (let [(_ value) (coroutine.resume reader message blocking-value)]
               (match (type value)
-                "function" (schedule-sync-value value)
+                ;; We have a function so schedule it to be computed
+                "function" (schedule-blocking-value value)
                 ;; Store the values, there are more to come
                 "table" (accumulate results value)
                 ;; When there is nil the coroutine has reached its last value
