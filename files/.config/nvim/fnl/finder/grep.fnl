@@ -41,13 +41,12 @@
     iterator))
 
 (fn get-results [message]
-  ;; TODO Does block-buffered acutally bring any benefit?
+  (local (_ cwd) (coroutine.yield vim.fn.getcwd))
   (each [data err kill (spawn :rg
                               [:--vimgrep
-                               :--block-buffered
+                               ; :--block-buffered
                                :--hidden
-                               message.filter]
-                              message.slow-data)]
+                               message.filter] cwd)]
     (if (not= err "")
         (coroutine.yield nil)
         (let [results (if (= data "") [] (vim.split data "\n" true))]
@@ -76,13 +75,11 @@
       (nvim.win_set_cursor winnr [lnum col]))))
 
 (defn run [] (finder.run {:prompt :Grep
-                          :get-slow-data vim.fn.getcwd
                           : get-results
                           : on-select
                           : on-multiselect}))
 
 (defn cursor [] (finder.run {:prompt :Grep
-                             :get-slow-data vim.fn.getcwd
                              :initial-filter (vim.fn.expand :<cword>)
                              : get-results
                              : on-select

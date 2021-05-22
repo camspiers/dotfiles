@@ -15,11 +15,10 @@
                          (nvim.list_bufs))))
 
 (fn get-results [message]
-  message.slow-data)
+  (local (_ buffers) (coroutine.yield get-slow-data))
+  buffers)
 
 (defn run [] (finder.run {:prompt :Buffers
                           :get-results (finder.filter-sort get-results)
-                          : get-slow-data
-                          :filter true
                           : on-select}))
 

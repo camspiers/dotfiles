@@ -262,6 +262,15 @@
       (when (not= value "")
         (table.insert results value)))))
 
+(fn resume [co message value]
+  "Transfers sync values allowing the yielding of functions with non fast-api access"
+  (let [(_ result) (coroutine.resume co message value)]
+    (if (= (type result) :function)
+        (do
+          (local (_ value) (coroutine.yield result))
+          (resume co message value))
+        result)))
+
 ;; fnlfmt: skip
 (defn cache [producer]
   "Provides a method to avoid running passed producer multiple times"
@@ -270,7 +279,7 @@
     (if (= (length cache) 0)
       (let [reader (coroutine.create producer)]
         (while (not= (coroutine.status reader) :dead)
-          (local (_ results) (coroutine.resume reader message))
+          (local results (resume reader message))
           (accumulate cache results)
           (coroutine.yield results)))
       cache)))
@@ -284,7 +293,7 @@
 
     (let [reader (coroutine.create producer)]
       (while (not= (coroutine.status reader) :dead)
-        (local (_ results) (coroutine.resume reader message))
+        (local results (resume reader message))
         (coroutine.yield (if (= results nil) nil (filter results)))))))
 
 ;; fnlfmt: skip
@@ -294,7 +303,7 @@
     (local buffer [])
     (local reader (coroutine.create producer))
     (while (not= (coroutine.status reader) :dead)
-      (local (_ results) (coroutine.resume reader message))
+      (local results (resume reader message))
       (when (not= results nil)
         (each [_ value (ipairs results)]
           (table.insert buffer
@@ -446,14 +455,12 @@
         (local message {: filter
                         : height
                         : cwd
-                        :cancel (should-cancel)
-                        :slow-data (when config.get-slow-data (config.get-slow-data))})
+                        :cancel (should-cancel)})
 
         ;; Creates a writer scheduler with the results table in the closure
         (fn schedule-write []
           ;; Store the last written results
           (set last-results results)
-
           ;; Schedule the write
           (vim.schedule (partial write-results results)))
 
@@ -463,9 +470,25 @@
           (when (not message.cancel)
             (schedule-write)))
 
+        ;; Tracks the requests of slow nvim calls
+        (var pending-sync-value false)
+
+        ;; Stores the results of slow nvim calls
+        (var sync-value nil)
+
+        ;; Schedules a sync value for processing
+        (fn schedule-sync-value [fnc]
+          (set pending-sync-value true) 
+          (vim.schedule (fn []
+            (set sync-value (fnc))
+            (set pending-sync-value false))))
+
         ;; This checker runs on every loop of the event loop
         ;; It checks if the coroutine is not dead and has more values
         (fn checker []
+          (when pending-sync-value
+            (lua "return nil"))
+
           ;; Increment the counter
           (set counter (+ counter 1))
 
@@ -480,14 +503,14 @@
           ;; When the coroutine is not dead, process its results
           (if (not= (coroutine.status reader) :dead)
             ;; Fetches results be also sends cancel signal
-            (let [(_ partial-results) (coroutine.resume reader message)]
-              (when (= (type partial-results) "string") (print "Table not returned: " partial-results))
-              ;; When there is nil the coroutine has reached its last value
-              (if (not= partial-results nil)
+            (let [(_ value) (coroutine.resume reader message sync-value)]
+              (match (type value)
+                "function" (schedule-sync-value value)
                 ;; Store the values, there are more to come
-                (accumulate results partial-results)
+                "table" (accumulate results value)
+                ;; When there is nil the coroutine has reached its last value
                 ;; The coroutine is dead so stop the checker and schedule a write
-                (end)))
+                "nil" (end)))
             ;; When the coroutine is dead then stop the checker and write
             (end)))
 

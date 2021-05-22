@@ -8,14 +8,14 @@
     (when (not= winnr false)
       (nvim.win_set_buf winnr buffer))))
 
-(fn get-results [{: slow-data}]
-  slow-data)
-
 (fn get-slow-data []
   (core.filter #(= (vim.fn.empty (vim.fn.glob $1)) 0) vim.v.oldfiles))
 
+(fn get-results []
+  (local (_ results) (coroutine.yield get-slow-data))
+  results)
+
 (defn run [] (finder.run {:prompt "Old files"
                           :get-results (finder.filter-sort get-results)
-                          :get-slow-data #vim.v.oldfiles
                           : on-select}))
 
