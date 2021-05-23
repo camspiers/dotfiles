@@ -25,6 +25,17 @@ snap.run {
 }
 ```
 
+#### Filtered lists
+
+```lua
+snap.run {
+  get_results = snap.filter(function ()
+    return {"Result 1", "Result 2"}
+  end)
+  on_select = print
+}
+```
+
 ### Using `snap.io.spawn` to implement grep with `ripgrep`
 
 ```lua
