@@ -1,9 +1,10 @@
-(module snap.utils {autoload {core aniseed.core}})
+(module snap.utils)
 
 ;; Runs a command and waits for output
+
+;; fnlfmt: skip
 (defn run [cmd]
-      (let [file (io.popen cmd :r)
-            contents (file:read :*all)]
-        (file:close)
-        (core.filter #(not= $1 "") (vim.split contents "\n"))))
+  (with-open [file (io.popen cmd :r)]
+    (let [contents (file:read :*all)]
+      (vim.tbl_filter #(not= $1 "") (vim.split contents "\n")))))
 
