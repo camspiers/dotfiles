@@ -21,12 +21,36 @@
 ;; Example:                                                                   ;;
 ;;                                                                            ;;
 ;; (snap.run {:prompt "Print One or Two"                                      ;;
-;;              :get-results (fn [] [:One :Two])                              ;;
-;;              :on-select print})                                            ;;
+;;            :get_results (fn [] [:One :Two])                                ;;
+;;            :on_select print})                                              ;;
 ;;                                                                            ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (module snap {autoload {nvim aniseed.nvim core aniseed.core} require {fzy fzy}})
+
+;; Metatable for a result, allows the representation of results as both strings
+;; and tables with extra data
+(def meta-tbl {:__tostring #$1.result})
+
+;; Turns a result into a meta result
+
+;; fnlfmt: skip
+(defn meta_result [result]
+  (match (type result)
+    :string (let [meta-result {: result}]
+              (setmetatable meta-result meta-tbl)
+              meta-result)
+    :table (do
+             (assert (= (getmetatable result) meta-tbl))
+             result)))
+
+;; Sets a meta field like score
+
+;; fnlfmt: skip
+(defn with_meta [result field value]
+  (let [meta-result (meta_result result)]
+    (tset meta-result field value)
+    meta-result))
 
 ;; Partition for quick sort
 (fn partition [tbl p r comp]
@@ -47,7 +71,7 @@
 ;; For large amounts of results we can skip sorting the entire table
 
 ;; fnlfmt: skip
-(defn partial-quicksort [tbl p r m comp]
+(fn partial-quicksort [tbl p r m comp]
   (when (< p r)
     (let [q (partition tbl p r comp)]
       (partial-quicksort tbl p (- q 1) m comp)
@@ -261,77 +285,79 @@
   (table.insert loading "")
   loading)
 
-(fn score-compare [a b]
-  (> a.score b.score))
-
 ;; Accumulates non empty results
 (fn accumulate [results partial-results]
   (when (= (type partial-results) :string)
     (print partial-results))
   (when (not= partial-results nil)
     (each [_ value (ipairs partial-results)]
-      (when (not= value "")
+      (when (not= (tostring value) "")
         (table.insert results value)))))
 
 ;; fnlfmt: skip
-(fn resume [co message value]
+(defn resume [thread request value]
   "Transfers sync values allowing the yielding of functions with non fast-api access"
-  (let [(_ result) (coroutine.resume co message value)]
+  (let [(_ result) (coroutine.resume thread request value)]
     (if
       (= (type result) :function)
       ;; When we have a function, we want to yield it
       ;; get the value then continue
       (do
         (local (_ value) (coroutine.yield result))
-        (resume co message value))
-      (not message.cancel)
+        (resume thread request value))
+      (not request.cancel)
       result
       nil)))
+
+;; fnlfmt: skip
+(defn yield [value]
+  "Basic wrapper around coroutine.yield that returns first result"
+  (let [(_ result) (coroutine.yield value)]
+    result))
 
 ;; fnlfmt: skip
 (defn cache [producer]
   "Provides a method to avoid running passed producer multiple times"
   (var cache [])
-  (fn [message]
+  (fn [request]
     (if (= (length cache) 0)
       (let [reader (coroutine.create producer)]
         (while (not= (coroutine.status reader) :dead)
-          (local results (resume reader message))
+          (local results (resume reader request))
           (accumulate cache results)
           (coroutine.yield results)))
       cache)))
 
 ;; fnlfmt: skip
 (defn filter [producer]
-  "Filters each result from the producer using message.filter"
-  (fn [message]
+  "Filters each result from the producer using request.filter"
+  (fn [request]
     (fn filter [results]
-      (core.filter #(fzy.has_match message.filter $1) results))
+      (core.filter #(fzy.has_match request.filter $1) results))
 
     (let [reader (coroutine.create producer)]
       (while (not= (coroutine.status reader) :dead)
-        (local results (resume reader message))
+        (local (results meta-data) (resume reader request))
         (coroutine.yield (if (= results nil) nil (filter results)))))))
 
 ;; fnlfmt: skip
-(defn sort [producer]
-  "Sorts the result set, please note this accumulates all results without yielding"
-  (fn [message]
+(defn score [producer]
+  "Scores the result set"
+  (fn [request]
     (local buffer [])
     (local reader (coroutine.create producer))
     (while (not= (coroutine.status reader) :dead)
-      (local results (resume reader message))
+      (local results (resume reader request))
       (when (not= results nil)
-        (each [_ value (ipairs results)]
-          (table.insert buffer
-                        {: value :score (fzy.score message.filter value)}))))
-    (partial-quicksort buffer 1 (length buffer) message.height score-compare)
-    (coroutine.yield (core.map #$1.value buffer))))
+        (coroutine.yield (core.map #(with_meta $1 :score
+                                               (fzy.score request.filter
+                                                          (tostring $1)))
+                                   results))))))
 
 ;; fnlfmt: skip
-(defn filter-sort [producer]
+(defn filter_with_score [producer]
   "Combines the cache + filter + sort pattern for common uses"
-  (sort (filter (cache producer))))
+  (score (filter (cache producer))))
 
 ;; Run docs:
 ;;
@@ -340,7 +366,7 @@
 ;;   :prompt string
 ;;
 ;;   "Get the results to display"
-;;   :get-results () => itable<string>
+;;   :get_results () => itable<string>
 ;;
 ;;   "How to display the search results"
 ;;   :?layout (columns lines) => {
@@ -351,7 +377,7 @@
 ;;   }
 ;;
 ;;   "An optional function that enables multiselect executes on multiselect"
-;;   :?on-multiselect (selections) => nil
+;;   :?on_multiselect (selections) => nil
 ;; }
 
 ;; fnlfmt: skip
@@ -363,7 +389,7 @@
   (var last-results [])
 
   ;; Exit flag tracks whether buffers have detatched
-  ;; Used to send cancel message to get-results coroutines
+  ;; Used to send cancel request to get_results coroutines
   (var exit false)
 
   ;; Store buffers for exiting
@@ -378,7 +404,7 @@
   ;; Creates a namespace for highlighting
   (local namespace (nvim.create_namespace :Snap))
 
-  ;; Stores the original window to so we can pass it back to the on-select function
+  ;; Stores the original window to so we can pass it back to the on_select function
   (local original-winnr (nvim.get_current_win))
 
   ;; Configures a default or custom prompt
@@ -433,10 +459,25 @@
           (set-lines 0 -1 [])
           ;; Otherwise render partial results
           (do
+            (local first (core.first results))
+            ;; When we have scores attached then sort
+            (when
+              (and (= (getmetatable first) meta-tbl) (not= first.score nil))
+              (partial-quicksort
+                results
+                1
+                (length results)
+                view.height
+                #(> $1.score $2.score)))
+
             ;; Don't render more than we need to
             ;; this is getting only the height plus the cursor
             (local partial-results [(unpack results 1 (+ view.height (get-cursor-row)))])
-            (set-lines 0 -1 partial-results)
+
+            ;; Set the lines, but make sure tables are converted to strings
+            (set-lines 0 -1 (core.map tostring partial-results))
+
+            ;; Update highlights
             (each [row line (pairs partial-results)]
               (when (. selected line) (add-results-highlight row))))))))
 
@@ -446,25 +487,22 @@
     ;; where it has the responsibility to kill running processes etc
     (fn should-cancel [] (or exit (not= filter last-filter)))
 
-    ;; Only run when the filter has changed
-    (when (not= filter last-filter)
-      ;; The last filter has changed
-      (set last-filter filter)
-
-      (let [reader (coroutine.create config.get-results)
-            check (vim.loop.new_check)]
+    ;; Only run when the filter hasn't changed from the unscheduled set
+    (when (= filter last-filter)
+      (let [check (vim.loop.new_check)
+            reader (coroutine.create config.get_results)]
         ;; Prepare new results array for collection
         (local results [])
 
-        ;; Store the message API for coroutines
-        (local message {: filter
+        ;; Store the request API for coroutines
+        (local request {: filter
                         : height
                         :cancel (should-cancel)})
 
         ;; Run this whenever the checker should be considered to have ended
         (fn end []
           (check:stop)
-          (when (not message.cancel)
+          (when (not request.cancel)
             ;; Store the last written results
             (set last-results results)
             ;; Schedule the write
@@ -496,12 +534,12 @@
             (lua "return nil"))
 
           ;; Update the cancel flag
-          (tset message :cancel (should-cancel))
+          (tset request :cancel (should-cancel))
 
           ;; When the coroutine is not dead, process its results
           (if (not= (coroutine.status reader) :dead)
             ;; Fetches results be also sends cancel signal
-            (let [(_ value) (coroutine.resume reader message blocking-value)]
+            (let [(_ value) (coroutine.resume reader request blocking-value)]
               (match (type value)
                 ;; We have a function so schedule it to be computed
                 "function" (schedule-blocking-value value)
@@ -518,7 +556,7 @@
             (set last-time (vim.loop.now))
             (set loading-count (+ loading-count 1))
             (vim.schedule (fn []
-              (when (not message.cancel)
+              (when (not request.cancel)
                 (local loading (create-loading-screen view.width loading-count))
                 (set-lines 0 (length loading) loading))))))
 
@@ -527,6 +565,10 @@
 
   ;; You can't immediately start the checker so schedule
   (fn on-update [filter]
+    ;; The last filter has changed
+    (set last-filter filter)
+
+    ;; Schedule the run
     (vim.schedule (partial on-update-unwraped filter view.height)))
 
   ;; Handles entering
@@ -535,12 +577,12 @@
     (if (= (core.count selected-values) 0)
       (let [row (get-cursor-row) selection (get-cursor-line row)]
         (when (not= selection "")
-          (config.on-select selection original-winnr)))
-      (when config.on-multiselect (config.on-multiselect selected-values original-winnr))))
+          (config.on_select selection original-winnr)))
+      (when config.on_multiselect (config.on_multiselect selected-values original-winnr))))
 
   ;; Handles select all in the multiselect case
   (fn on-select-all-toggle []
-    (when config.on-multiselect
+    (when config.on_multiselect
       (each [_ value (ipairs last-results)]
         (if (= (. selected value) nil)
           (tset selected value value)
@@ -549,7 +591,7 @@
 
   ;; Handles select in the multiselect case
   (fn on-select-toggle []
-    (when config.on-multiselect
+    (when config.on_multiselect
       (let [row (get-cursor-row) selection (get-cursor-line row)]
         (when (not= selection "")
           (if (= (. selected selection) nil)

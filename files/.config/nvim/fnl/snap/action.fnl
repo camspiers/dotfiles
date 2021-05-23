@@ -4,15 +4,15 @@
 
 (defn add [name action] (tset actions name action))
 
-(fn get-results []
+(fn get_results []
   (core.keys actions))
 
-(fn on-select [action]
+(fn on_select [action]
   (vim.schedule (. actions action)))
 
 (defn run [] (snap.run {:layout snap.layouts.centered
                         :prompt "Run Action"
-                        : get-results
+                        : get_results
                         :filter true
-                        : on-select}))
+                        : on_select}))
 

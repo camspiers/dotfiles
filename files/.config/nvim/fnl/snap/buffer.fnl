@@ -1,8 +1,6 @@
-(module snap.buffer {autoload {snap snap
-                               nvim aniseed.nvim
-                               core aniseed.core}})
+(module snap.buffer {autoload {snap snap nvim aniseed.nvim core aniseed.core}})
 
-(fn on-select [selection winnr]
+(fn on_select [selection winnr]
   (let [buffer (nvim.fn.bufnr selection true)]
     (nvim.buf_set_option buffer :buflisted true)
     (nvim.win_set_buf winnr buffer)))
@@ -14,11 +12,11 @@
                                (= (vim.fn.bufexists $1) 1))
                          (nvim.list_bufs))))
 
-(fn get-results [message]
+(fn get_results [message]
   (local (_ buffers) (coroutine.yield get-slow-data))
   buffers)
 
 (defn run [] (snap.run {:prompt :Buffers
-                          :get-results (snap.filter-sort get-results)
-                          : on-select}))
+                        :get_results (snap.filter_with_score get_results)
+                        : on_select}))
 
