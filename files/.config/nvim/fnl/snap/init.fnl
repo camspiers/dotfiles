@@ -26,7 +26,12 @@
 ;;                                                                            ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(module snap {autoload {nvim aniseed.nvim core aniseed.core} require {fzy fzy}})
+(module snap {autoload {nvim aniseed.nvim} require {fzy fzy}})
+
+;; Basic helper to get the first value
+(fn tbl-first [tbl]
+  (when tbl
+    (. tbl 1)))
 
 ;; Metatable for a result, allows the representation of results as both strings
 ;; and tables with extra data
@@ -51,6 +56,12 @@
   (let [meta-result (meta_result result)]
     (tset meta-result field value)
     meta-result))
+
+;; Basic function for detecting metafield
+
+;; fnlfmt: skip
+(defn has_meta [result field]
+  (and (= (getmetatable result) meta-tbl) (not= (. result field) nil)))
 
 ;; Partition for quick sort
 (fn partition [tbl p r comp]
@@ -85,11 +96,11 @@
 
 ;; Helper to get lines
 (fn layouts.lines []
-  (nvim.get_option :lines))
+  (vim.api.nvim_get_option :lines))
 
 ;; Helper to get columns
 (fn layouts.columns []
-  (nvim.get_option :columns))
+  (vim.api.nvim_get_option :columns))
 
 ;; The middle for the height or width requested (from top or left)
 (fn layouts.middle [total size]
@@ -163,8 +174,8 @@
 (fn fns.map [bufnr keys fnc]
   (let [rhs (fns.get-map-call bufnr fnc)]
     (each [_ key (ipairs keys)]
-      (nvim.buf_set_keymap bufnr :n key rhs {})
-      (nvim.buf_set_keymap bufnr :i key rhs {}))))
+      (vim.api.nvim_buf_set_keymap bufnr :n key rhs {})
+      (vim.api.nvim_buf_set_keymap bufnr :i key rhs {}))))
 
 ;; Modifies the basic window options to make the input sit below
 (fn create-input-layout [layout]
@@ -173,13 +184,13 @@
 
 ;; Creates a scratch buffer, used for both results and input
 (fn create-buffer []
-  (nvim.create_buf false true))
+  (vim.api.nvim_create_buf false true))
 
 ;; Creates a window with specified options
 
 ;; fnlfmt: skip
 (fn create-window [bufnr {: width : height : row : col : focusable}]
-  (nvim.open_win bufnr 0 {: width
+  (vim.api.nvim_open_win bufnr 0 {: width
                           : height
                           : row
                           : col
@@ -196,8 +207,9 @@
   (let [bufnr (create-buffer)
         layout (config.layout)
         winnr (create-window bufnr layout)]
-    (nvim.win_set_option winnr :cursorline true)
-    (nvim.buf_set_option bufnr :buftype :prompt)
+    (vim.api.nvim_win_set_option winnr :cursorline true)
+    (vim.api.nvim_win_set_option winnr :wrap false)
+    (vim.api.nvim_buf_set_option bufnr :buftype :prompt)
     {: bufnr : winnr :height layout.height :width layout.width}))
 
 ;; Creates the input buffer
@@ -206,16 +218,16 @@
 (fn create-input-view [config]
   (let [bufnr (create-buffer)
         winnr (create-window bufnr (create-input-layout config.layout))]
-    (nvim.buf_set_option bufnr :buftype :prompt)
+    (vim.api.nvim_buf_set_option bufnr :buftype :prompt)
     (vim.fn.prompt_setprompt bufnr config.prompt)
-    (nvim.command :startinsert)
+    (vim.api.nvim_command :startinsert)
 
     (when (~= config.initial-filter "")
       ;; We do it this way because prompts are broken in nvim
-      (nvim.feedkeys config.initial-filter :n false))
+      (vim.api.nvim_feedkeys config.initial-filter :n false))
 
     (fn get-filter []
-      (let [contents (core.first (nvim.buf_get_lines bufnr 0 1 false))]
+      (let [contents (tbl-first (vim.api.nvim_buf_get_lines bufnr 0 1 false))]
         (if contents (contents:sub (+ (length config.prompt) 1)) "")))
 
     (fn on-exit []
@@ -253,36 +265,39 @@
     (fns.map bufnr [:<C-d>] config.on-pagedown)
     (fns.map bufnr [:<C-u>] config.on-pageup)
 
-    (nvim.command "augroup Snap")
-    (nvim.command (string.format "autocmd! WinLeave <buffer=%s> %s" bufnr (fns.get-autocmd-call bufnr on-exit)))
-    (nvim.command "augroup END")
+    (vim.api.nvim_command
+      (string.format "autocmd! WinLeave <buffer=%s> %s" bufnr (fns.get-autocmd-call bufnr on-exit)))
 
-    (nvim.buf_attach bufnr false {: on_lines : on_detach})
+    (vim.api.nvim_buf_attach bufnr false {: on_lines : on_detach})
 
     {: bufnr : winnr}))
 
+(fn center-with-text-width [text text-width width]
+  (let [space (string.rep " " (/ (- width text-width) 2))]
+    (.. space text space)))
+
 ;; Center text for loading screen
 (fn center [text width]
-  (let [space (string.rep " " (/ (- width (length text)) 2))]
-    (.. space text space)))
+  (center-with-text-width text (string.len text) width))
 
 ;; Create a basic loading screen
 
 ;; fnlfmt: skip
-(fn create-loading-screen [width counter]
-  (local text " Loading ")
-  (local dots (string.rep "." (% counter (- width (length text)))))
+(fn create-loading-screen [width height counter]
+  (local dots (string.rep "." (% counter 5)))
+  (local space (string.rep " " (- 5 (string.len dots))))
+  (local loading-with-dots (.. "│" space dots " Loading " dots space "│")) 
+  (local text-width (string.len loading-with-dots))
   (local loading [])
-  (table.insert loading "")
-  (table.insert loading (string.rep "=" width))
-  (table.insert loading "")
-  (table.insert loading "")
-  (table.insert loading (center (.. dots text dots) width))
-  (table.insert loading "")
-  (table.insert loading "")
-  (table.insert loading (string.rep "=" width))
-  (table.insert loading "")
-  (table.insert loading "")
+
+  (for [_ 1 (/ height 2)]
+    (table.insert loading ""))
+
+  (table.insert loading
+    (center-with-text-width (.. "╭" (string.rep "─" 19) "╮") text-width width))
+  (table.insert loading (center loading-with-dots width))
+  (table.insert loading
+    (center-with-text-width (.. "╰" (string.rep "─" 19) "╯") text-width width))
   loading)
 
 ;; Accumulates non empty results
@@ -299,14 +314,16 @@
   "Transfers sync values allowing the yielding of functions with non fast-api access"
   (let [(_ result) (coroutine.resume thread request value)]
     (if
-      (= (type result) :function)
       ;; When we have a function, we want to yield it
       ;; get the value then continue
+      (= (type result) :function)
       (do
         (local (_ value) (coroutine.yield result))
         (resume thread request value))
+      ;; If we aren't canceling then return result
       (not request.cancel)
       result
+      ;; Otherwise return nil
       nil)))
 
 ;; fnlfmt: skip
@@ -333,7 +350,7 @@
   "Filters each result from the producer using request.filter"
   (fn [request]
     (fn filter [results]
-      (core.filter #(fzy.has_match request.filter $1) results))
+      (vim.tbl_filter #(fzy.has_match request.filter $1) results))
 
     (let [reader (coroutine.create producer)]
       (while (not= (coroutine.status reader) :dead)
@@ -349,7 +366,7 @@
     (while (not= (coroutine.status reader) :dead)
       (local results (resume reader request))
       (when (not= results nil)
-        (coroutine.yield (core.map #(with_meta $1 :score
+        (coroutine.yield (vim.tbl_map #(with_meta $1 :score
                                                (fzy.score request.filter
                                                           (tostring $1)))
                                    results))))))
@@ -362,11 +379,14 @@
 ;; Run docs:
 ;;
 ;; @config: {
-;;   "The prompt displayed to the user"
-;;   :prompt string
-;;
 ;;   "Get the results to display"
 ;;   :get_results () => itable<string>
+;;
+;;   "Called when value is selected"
+;;   :on_select () => nil
+;;
+;;   "The prompt displayed to the user"
+;;   :prompt string
 ;;
 ;;   "How to display the search results"
 ;;   :?layout (columns lines) => {
@@ -402,10 +422,10 @@
   (local initial-filter (or config.initial-filter ""))
 
   ;; Creates a namespace for highlighting
-  (local namespace (nvim.create_namespace :Snap))
+  (local namespace (vim.api.nvim_create_namespace :Snap))
 
   ;; Stores the original window to so we can pass it back to the on_select function
-  (local original-winnr (nvim.get_current_win))
+  (local original-winnr (vim.api.nvim_get_current_win))
 
   ;; Configures a default or custom prompt
   (local prompt (string.format "%s> " (or config.prompt :Find)))
@@ -420,14 +440,14 @@
 
     ;; Delete each open buffer
     (each [_ bufnr (ipairs buffers)]
-      (when (nvim.buf_is_valid bufnr)
-        (nvim.buf_delete bufnr {:force true})))
+      (when (vim.api.nvim_buf_is_valid bufnr)
+        (vim.api.nvim_buf_delete bufnr {:force true})))
 
     ;; Return back to original window
-    (nvim.set_current_win original-winnr)
+    (vim.api.nvim_set_current_win original-winnr)
 
     ;; Return back from insert mode
-    (nvim.command :stopinsert))
+    (vim.api.nvim_command :stopinsert))
 
   ;; Creates the results buffer and window and stores thier numbers
   (local view (create-results-view {: layout : on-exit}))
@@ -437,18 +457,18 @@
 
   ;; Helper function for highlighting
   (fn add-results-highlight [row]
-    (nvim.buf_add_highlight view.bufnr namespace :Comment (- row 1) 0 -1))
+    (vim.api.nvim_buf_add_highlight view.bufnr namespace :Comment (- row 1) 0 -1))
 
   ;; Helper to set lines to results view
   (fn set-lines [start end lines]
-    (nvim.buf_set_lines view.bufnr start end false lines))
+    (vim.api.nvim_buf_set_lines view.bufnr start end false lines))
 
   ;; Helper function for getting the cursor position
-  (fn get-cursor-row [] (let [[row _] (nvim.win_get_cursor view.winnr)] row))
+  (fn get-cursor-row [] (let [[row _] (vim.api.nvim_win_get_cursor view.winnr)] row))
 
   ;; Helper function for getting the line under the cursor
   (fn get-cursor-line [row]
-    (core.first (nvim.buf_get_lines view.bufnr (- row 1) row false)))
+    (tbl-first (vim.api.nvim_buf_get_lines view.bufnr (- row 1) row false)))
 
   ;; Only write what results are needed
   (fn write-results [results]
@@ -459,23 +479,12 @@
           (set-lines 0 -1 [])
           ;; Otherwise render partial results
           (do
-            (local first (core.first results))
-            ;; When we have scores attached then sort
-            (when
-              (and (= (getmetatable first) meta-tbl) (not= first.score nil))
-              (partial-quicksort
-                results
-                1
-                (length results)
-                view.height
-                #(> $1.score $2.score)))
-
             ;; Don't render more than we need to
             ;; this is getting only the height plus the cursor
             (local partial-results [(unpack results 1 (+ view.height (get-cursor-row)))])
 
             ;; Set the lines, but make sure tables are converted to strings
-            (set-lines 0 -1 (core.map tostring partial-results))
+            (set-lines 0 -1 (vim.tbl_map tostring partial-results))
 
             ;; Update highlights
             (each [row line (pairs partial-results)]
@@ -491,6 +500,21 @@
     (when (= filter last-filter)
       (let [check (vim.loop.new_check)
             reader (coroutine.create config.get_results)]
+        ;; Tracks if any results have rendered
+        (var has-rendered false)
+
+        ;; Tracks the requests of slow nvim calls
+        (var pending-blocking-value false)
+
+        ;; Stores the results of slow nvim calls
+        (var blocking-value nil)
+
+        ;; Store the number of times the loading screen has displayed
+        (var loading-count 1)
+
+        ;; Store the last time the loap has run
+        (var last-time (vim.loop.now))
+
         ;; Prepare new results array for collection
         (local results [])
 
@@ -499,20 +523,31 @@
                         : height
                         :cancel (should-cancel)})
 
+        ;; Schedules a write, this can be partial results
+        (fn schedule-write [results]
+          ;; Update that we have rendered
+          (set has-rendered true)
+          (vim.schedule (partial write-results results)))
+
         ;; Run this whenever the checker should be considered to have ended
         (fn end []
+          ;; Stop the checker
           (check:stop)
+          ;; If we aren't resulting cancal then render
           (when (not request.cancel)
+            ;; When we have scores attached then sort
+            (when
+              (has_meta (tbl-first results) :score)
+              (partial-quicksort
+                results
+                1
+                (length results)
+                view.height
+                #(> $1.score $2.score)))
             ;; Store the last written results
             (set last-results results)
             ;; Schedule the write
-            (vim.schedule (partial write-results results))))
-
-        ;; Tracks the requests of slow nvim calls
-        (var pending-blocking-value false)
-
-        ;; Stores the results of slow nvim calls
-        (var blocking-value nil)
+            (schedule-write results)))
 
         ;; Schedules a sync value for processing
         (fn schedule-blocking-value [fnc]
@@ -520,12 +555,6 @@
           (vim.schedule (fn []
             (set blocking-value (fnc))
             (set pending-blocking-value false))))
-
-        ;; Store the number of times the loading screen has displayed
-        (var loading-count 1)
-
-        ;; Store the last time the loap has run
-        (var last-time (vim.loop.now))
 
         ;; This checker runs on every loop of the event loop
         ;; It checks if the coroutine is not dead and has more values
@@ -544,7 +573,14 @@
                 ;; We have a function so schedule it to be computed
                 "function" (schedule-blocking-value value)
                 ;; Store the values, there are more to come
-                "table" (accumulate results value)
+                "table" (do
+                  (accumulate results value)
+                  ;; This is an optimization to begin writing unscored results
+                  ;; as early as we can
+                  (when (and
+                          (>= (length results) view.height)
+                          (not (has_meta (tbl-first results) :score)))
+                    (schedule-write results)))
                 ;; When there is nil the coroutine has reached its last value
                 ;; The coroutine is dead so stop the checker and schedule a write
                 "nil" (end)))
@@ -552,13 +588,13 @@
             (end))
 
           ;; Render a basic loading screen
-          (when (> (- (vim.loop.now) last-time) 500)
+          (when (and (not has-rendered) (> (- (vim.loop.now) last-time) 500))
             (set last-time (vim.loop.now))
             (set loading-count (+ loading-count 1))
             (vim.schedule (fn []
               (when (not request.cancel)
-                (local loading (create-loading-screen view.width loading-count))
-                (set-lines 0 (length loading) loading))))))
+                (local loading (create-loading-screen view.width view.height loading-count))
+                (set-lines 0 -1 loading))))))
 
         ;; Start the checker after each IO poll
         (check:start checker))))
@@ -573,8 +609,8 @@
 
   ;; Handles entering
   (fn on-enter []
-    (local selected-values (core.vals selected))
-    (if (= (core.count selected-values) 0)
+    (local selected-values (vim.tbl_values selected))
+    (if (= (length selected-values) 0)
       (let [row (get-cursor-row) selection (get-cursor-line row)]
         (when (not= selection "")
           (config.on_select selection original-winnr)))
@@ -600,22 +636,22 @@
               (add-results-highlight row))
             (do
               (tset selected selection nil)
-              (nvim.buf_clear_namespace view.bufnr namespace (- row 1) row)))))))
+              (vim.api.nvim_buf_clear_namespace view.bufnr namespace (- row 1) row)))))))
 
   ;; On key helper
   (fn on-key-direction [get-next-index]
     (let [row (get-cursor-row) index (get-next-index row)]
-      (nvim.win_set_cursor view.winnr
-        [(math.max 1 (math.min (nvim.buf_line_count view.bufnr) index)) 0])
+      (vim.api.nvim_win_set_cursor view.winnr
+        [(math.max 1 (math.min (vim.api.nvim_buf_line_count view.bufnr) index)) 0])
       (write-results last-results)))
 
   ;; On up handler
   (fn on-up []
-    (on-key-direction core.dec))
+    (on-key-direction #(- $1 1)))
 
   ;; On down handler
   (fn on-down []
-    (on-key-direction core.inc))
+    (on-key-direction #(+ $1 1)))
  
   ;; Page up handler
   (fn on-pageup []
