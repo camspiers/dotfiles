@@ -38,12 +38,14 @@ snap.run {
 
 ### Using `snap.io.spawn` to implement grep with `ripgrep`
 
+Shows usage of `snap.io.spawn` and the usage of the `message` api.
+
 ```lua
 snap.run {
-  get_results = function(message)
+  get_results = function(request)
     local cwd = snap.yield(vim.fn.getcwd)
-    for data, err, kill in io.spawn("rg", {"--vimgrep", message.filter}, cwd) do
-      if message.cancel then
+    for data, err, kill in io.spawn("rg", {"--vimgrep", request.filter}, cwd) do
+      if request.cancel then
         kill()
         coroutine.yield(nil)
       elseif (err ~= "") then
@@ -201,13 +203,25 @@ TODO
 
 ### `snap.resume`
 
-TODO
+Resumes a passed coroutine while handling non-fast API requests.
 
 ### `snap.yield`
 
-TODO
+Makes getting values from yield easier by skiping first coroutine.yield return value.
 
 ### `snap.cache`
+
+Caches results. Used when results are collected by process on first open, but just processed on subsequent calls.
+
+### `snap.filter`
+
+Filters by `request.filter`.
+
+### `snap.score`
+
+TODO
+
+### `snap.filter_with_score`
 
 TODO
 

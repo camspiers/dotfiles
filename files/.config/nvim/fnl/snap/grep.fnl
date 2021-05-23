@@ -3,10 +3,10 @@
                              nvim aniseed.nvim
                              core aniseed.core}})
 
-(fn get_results [message]
+(fn get_results [request]
   (local cwd (snap.yield vim.fn.getcwd))
-  (each [data err kill (io.spawn :rg [:--vimgrep :--hidden message.filter] cwd)]
-    (if message.cancel (do
+  (each [data err kill (io.spawn :rg [:--vimgrep :--hidden request.filter] cwd)]
+    (if request.cancel (do
                          (kill)
                          (coroutine.yield nil))
         (not= err "") (coroutine.yield nil)
