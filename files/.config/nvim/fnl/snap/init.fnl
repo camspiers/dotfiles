@@ -26,7 +26,7 @@
 ;;                                                                            ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(module snap {autoload {nvim aniseed.nvim} require {fzy fzy}})
+(module snap {require {fzy fzy}})
 
 ;; Basic helper to get the first value
 (fn tbl-first [tbl]
