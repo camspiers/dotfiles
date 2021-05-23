@@ -1,7 +1,4 @@
-(module snap.grep {autoload {snap snap
-                             io snap.io
-                             nvim aniseed.nvim
-                             core aniseed.core}})
+(module snap.grep {autoload {snap snap io snap.io}})
 
 (fn get_results [request]
   (local cwd (snap.yield vim.fn.getcwd))
@@ -21,17 +18,16 @@
      :text (. parts 4)}))
 
 (fn on_multiselect [lines winnr]
-  (vim.fn.setqflist (core.map parse lines))
-  (nvim.command :copen)
-  (nvim.command :cfirst))
+  (vim.fn.setqflist (vim.tbl_map parse lines))
+  (vim.api.nvim_command :copen)
+  (vim.api.nvim_command :cfirst))
 
 (fn on_select [line winnr]
   (let [{: filename : lnum : col} (parse line)]
-    (print (vim.inspect [lnum col]))
-    (let [buffer (nvim.fn.bufnr filename true)]
-      (nvim.buf_set_option buffer :buflisted true)
-      (nvim.win_set_buf winnr buffer)
-      (nvim.win_set_cursor winnr [lnum col]))))
+    (let [buffer (vim.fn.bufnr filename true)]
+      (vim.api.nvim_buf_set_option buffer :buflisted true)
+      (vim.api.nvim_win_set_buf winnr buffer)
+      (vim.api.nvim_win_set_cursor winnr [lnum col]))))
 
 (defn run [] (snap.run {:prompt :Grep
                         : get_results

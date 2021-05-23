@@ -36,7 +36,7 @@ snap.run {
 }
 ```
 
-### Using `snap.io.spawn` to implement grep with `ripgrep`
+### Async loading
 
 Shows usage of `snap.io.spawn` and the usage of the `message` api.
 
@@ -115,7 +115,7 @@ To understand the API design of `snap` we must first understand the usage of cor
 
 ### Yield types
 
-There are 3 available types that a `get_results` function can yield:
+There are 4 available types that a `get_results` function can yield:
 
 - `itable<string>`
 - `itable<meta-result>`

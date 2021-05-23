@@ -1,17 +1,13 @@
-(module snap.file {autoload {snap snap
-                             utils snap.utils
-                             config snap.config
-                             nvim aniseed.nvim}})
+(module snap.file {autoload {snap snap utils snap.utils}})
 
 (fn get_results [message]
-  (utils.run (string.format "rg --files --no-ignore --hidden %s %s 2> /dev/null"
-                            (config.gettypes) (config.getiglobs))))
+  (utils.run "rg --files --no-ignore --hidden"))
 
 (fn on_select [file winnr]
-  (let [buffer (nvim.fn.bufnr file true)]
-    (nvim.buf_set_option buffer :buflisted true)
+  (let [buffer (vim.fn.bufnr file true)]
+    (vim.api.nvim_buf_set_option buffer :buflisted true)
     (when (not= winnr false)
-      (nvim.win_set_buf winnr buffer))))
+      (vim.api.nvim_win_set_buf winnr buffer))))
 
 (fn on_multiselect [files winnr]
   (each [index file (ipairs files)]
