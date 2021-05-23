@@ -1,4 +1,4 @@
-(module snap.action {autoload {snap snap core aniseed.core}})
+(module snapcustom.action {autoload {snap snap core aniseed.core}})
 
 (local actions {})
 
@@ -13,6 +13,5 @@
 (defn run [] (snap.run {:layout snap.layouts.centered
                         :prompt "Run Action"
                         : get_results
-                        :filter true
                         : on_select}))
 

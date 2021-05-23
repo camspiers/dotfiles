@@ -1,4 +1,4 @@
-(module dotfiles-config {autoload {config snap.config}})
+(module dotfiles-config {autoload {config snapcustom.config}})
 
 (config.addglobs [:!*.lua])
 

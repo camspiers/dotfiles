@@ -310,27 +310,23 @@
         (table.insert results value)))))
 
 ;; fnlfmt: skip
+(defn yield [value]
+  "Basic wrapper around coroutine.yield that returns first result"
+  (let [(_ result) (coroutine.yield value)]
+    result))
+
+;; fnlfmt: skip
 (defn resume [thread request value]
   "Transfers sync values allowing the yielding of functions with non fast-api access"
   (let [(_ result) (coroutine.resume thread request value)]
     (if
       ;; When we have a function, we want to yield it
       ;; get the value then continue
-      (= (type result) :function)
-      (do
-        (local (_ value) (coroutine.yield result))
-        (resume thread request value))
+      (= (type result) :function) (resume thread request (yield result))
       ;; If we aren't canceling then return result
-      (not request.cancel)
-      result
+      (not request.cancel) result
       ;; Otherwise return nil
       nil)))
-
-;; fnlfmt: skip
-(defn yield [value]
-  "Basic wrapper around coroutine.yield that returns first result"
-  (let [(_ result) (coroutine.yield value)]
-    result))
 
 ;; fnlfmt: skip
 (defn cache [producer]
@@ -354,14 +350,13 @@
 
     (let [reader (coroutine.create producer)]
       (while (not= (coroutine.status reader) :dead)
-        (local (results meta-data) (resume reader request))
+        (local (results) (resume reader request))
         (coroutine.yield (if (= results nil) nil (filter results)))))))
 
 ;; fnlfmt: skip
 (defn score [producer]
   "Scores the result set"
   (fn [request]
-    (local buffer [])
     (local reader (coroutine.create producer))
     (while (not= (coroutine.status reader) :dead)
       (local results (resume reader request))

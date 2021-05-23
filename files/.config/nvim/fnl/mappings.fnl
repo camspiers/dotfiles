@@ -1,13 +1,12 @@
 (module mappings {autoload {nvim aniseed.nvim
                             snap snap
-                            action snap.action
+                            action snapcustom.action
                             file snap.file
-                            cd snap.cd
                             oldfiles snap.oldfiles
                             buffer snap.buffer
                             grep snap.grep
-                            tmuxinator snap.tmuxinator
-                            tmux snap.tmux
+                            tmuxinator snapcustom.tmuxinator
+                            tmux snapcustom.tmux
                             wk which-key
                             terminal toggleterm.terminal
                             trouble trouble}
@@ -71,7 +70,6 @@
               :<leader>f {:name :Finders
                           :o [oldfiles.run "Old files"]
                           :b [buffer.run :Buffers]
-                          :e [cd.run "Change Directory"]
                           :f [grep.run "Grep files"]
                           :a [action.run "Run Action"]
                           :t [tmux.run "Switch Project"]}

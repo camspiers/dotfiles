@@ -10,10 +10,9 @@
   (vim.tbl_filter #(= (vim.fn.empty (vim.fn.glob $1)) 0) vim.v.oldfiles))
 
 (fn get_results []
-  (local results (snap.yield get-slow-data))
-  results)
+  (pick-values 1 (snap.yield get-slow-data)))
 
 (defn run [] (snap.run {:prompt "Old files"
-                        :get_results (snap.filter_with_score get-results)
+                        :get_results (snap.filter_with_score get_results)
                         : on_select}))
 

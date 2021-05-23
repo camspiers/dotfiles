@@ -1,7 +1,5 @@
-(module snap.tmuxinator {autoload {snap snap
-                                   utils snap.utils
-                                   tmux snap.tmux
-                                   core aniseed.core}})
+(module snapcustom.tmuxinator
+        {autoload {snap snap utils snap.utils tmux snap.tmux core aniseed.core}})
 
 (fn get-sessions-set []
   (local sessions-set {})

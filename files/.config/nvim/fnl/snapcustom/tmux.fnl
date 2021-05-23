@@ -1,4 +1,4 @@
-(module snap.tmux {autoload {snap snap utils snap.utils}})
+(module snapcustom.tmux {autoload {snap snap utils snap.utils}})
 
 (defn get_results [] (utils.run "tmux list-sessions -F '#S'"))
 
@@ -6,7 +6,7 @@
   (utils.run (string.format "tmux switch-client -t '%s'" project)))
 
 (defn run [] (snap.run {:layout snap.layouts.centered
-                          :prompt "Select Session"
-                          : get_results
-                          : on_select}))
+                        :prompt "Select Session"
+                        : get_results
+                        : on_select}))
 

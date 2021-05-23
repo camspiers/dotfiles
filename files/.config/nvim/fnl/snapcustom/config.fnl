@@ -1,6 +1,4 @@
-(module snap.config {autoload {snap snap
-                                 astring aniseed.string
-                                 core aniseed.core}})
+(module snapcustom.config {autoload {astring aniseed.string core aniseed.core}})
 
 ;; The rg types to search on
 (var types [])
