@@ -320,13 +320,13 @@
   "Transfers sync values allowing the yielding of functions with non fast-api access"
   (let [(_ result) (coroutine.resume thread request value)]
     (if
+      ;; If we are cancelling then return nil
+      request.cancel nil
       ;; When we have a function, we want to yield it
       ;; get the value then continue
       (= (type result) :function) (resume thread request (yield result))
       ;; If we aren't canceling then return result
-      (not request.cancel) result
-      ;; Otherwise return nil
-      nil)))
+      result)))
 
 ;; fnlfmt: skip
 (defn cache [producer]
