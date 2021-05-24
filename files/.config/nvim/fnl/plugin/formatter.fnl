@@ -1,6 +1,5 @@
-(module plugin.formatter
-        {autoload {nvim aniseed.nvim formatter formatter}
-         require-macros [macros]})
+(module plugin.formatter {autoload {nvim aniseed.nvim formatter formatter}
+                          require-macros [macros]})
 
 ;; Register formatters into a table
 (local formatters {})
@@ -25,5 +24,5 @@
 
 ;; Register autocommands for file formatting on save
 (augroup formatter_autogroup
-         (autocmd :BufWritePost "*.ts,*.tsx,*.lua,*.fnl" :FormatWrite))
+         (autocmd :BufWritePost "*.ts,*.tsx,*.lua" :FormatWrite))
 

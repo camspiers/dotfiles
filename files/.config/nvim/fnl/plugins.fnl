@@ -2,24 +2,25 @@
                  require-macros [macros]})
 
 ;; Curtesy of Olical
-(defn safe-require-plugin-config [name]
-      (let [(ok? val-or-err) (pcall require (.. :plugin. name))]
-        (when (not ok?)
-          (print (.. "dotfiles error: " val-or-err)))))
+(fn safe-require-plugin-config [name]
+  (let [(ok? val-or-err) (pcall require (.. :plugin. name))]
+    (when (not ok?)
+      (print (.. "dotfiles error: " val-or-err)))))
 
-;; Curtesy of Olical
-(defn- use [...] "Iterates through the arguments as pairs and calls packer's use function for
+;; Curtesy of Olical with rocks changes
+(fn use [...]
+  "Iterates through the arguments as pairs and calls packer's use function for
   each of them. Works around Fennel not liking mixed associative and sequential
   tables as well."
-       (let [pkgs [...]]
-         (packer.startup (fn [use use-rocks]
-                           (for [i 1 (core.count pkgs) 2]
-                             (let [name (. pkgs i)
-                                   opts (. pkgs (+ i 1))]
-                               (-?> (. opts :mod) (safe-require-plugin-config))
-                               (if (. opts :rock)
-                                   (use-rocks name)
-                                   (use (core.assoc opts 1 name)))))))))
+  (let [pkgs [...]]
+    (packer.startup (fn [use use-rocks]
+                      (for [i 1 (core.count pkgs) 2]
+                        (let [name (. pkgs i)
+                              opts (. pkgs (+ i 1))]
+                          (-?> (. opts :mod) (safe-require-plugin-config))
+                          (if (. opts :rock)
+                              (use-rocks name)
+                              (use (core.assoc opts 1 name)))))))))
 
 ;; fnlfmt: skip
 (use
@@ -30,6 +31,8 @@
   :Olical/aniseed {}
   :Olical/nvim-local-fennel {}
   :Olical/conjure {}
+
+  "~/dev/snap" {}
 
   :nvim-lua/popup.nvim {}
   :nvim-lua/plenary.nvim {}
