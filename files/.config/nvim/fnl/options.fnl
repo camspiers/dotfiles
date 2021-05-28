@@ -47,6 +47,8 @@
 (g maplocalleader ",")
 (g LoupeClearHighlightMap 0)
 (g camelcasemotion_key ",")
+(g netrw_keepdir 0)
+(g netrw_banner 1)
 
 ; theme
 (g tokyonight_style :night)

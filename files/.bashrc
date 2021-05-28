@@ -85,6 +85,6 @@ bind -x '"\C-f":"fg"'
 source $HOME/fzf-marks/fzf-marks.plugin.bash
 
 # Configure starship
-eval "$(starship init bash)"
+# eval "$(starship init bash)"
 
 alias luamake=/Users/camspiers/dev/lua-language-server/3rd/luamake/luamake

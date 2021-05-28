@@ -1,15 +1,18 @@
 (module mappings {autoload {nvim aniseed.nvim
                             snap snap
                             action snapcustom.action
-                            file snap.file
-                            oldfiles snap.oldfiles
-                            buffer snap.buffer
-                            grep snap.grep
+                            directory snap.producer.fd.directory
+                            cwd snap.select.cwd
+                            file file
+                            oldfiles oldfiles
+                            buffer buffer
+                            grep grep
                             tmuxinator snapcustom.tmuxinator
                             tmux snapcustom.tmux
                             wk which-key
                             terminal toggleterm.terminal
                             trouble trouble}
+                  require {fzy snap.consumer.fzy}
                   require-macros [macros]})
 
 (fn cmd-fmt [cmd]
@@ -47,6 +50,11 @@
     (when (and (= (vim.fn.buflisted value) 1) (= (vim.fn.bufexists value) 1))
       (nvim.buf_delete value {: force}))))
 
+(fn find-directory [request]
+  (snap.run {:prompt :Directory
+             :producer (fzy directory)
+             :select cwd.select}))
+
 (wk.register {:<leader>c (cmd :clo "Close Window")
               :<leader>a (cmd :a :alternate)
               :<leader>n [external-grep :Grep]
@@ -70,6 +78,7 @@
               :<leader>f {:name :Finders
                           :o [oldfiles.run "Old files"]
                           :b [buffer.run :Buffers]
+                          :d [find-directory :Directory]
                           :f [grep.run "Grep files"]
                           :a [action.run "Run Action"]
                           :t [tmux.run "Switch Project"]}
@@ -96,4 +105,3 @@
 
 (wk.register {:gc [":<c-u>call CommentOperator(visualmode())<cr>"
                    "Comment Code"]} {:mode :v})
-
