@@ -32,7 +32,7 @@
   :Olical/nvim-local-fennel {}
   :Olical/conjure {}
 
-  "~/dev/snap" {}
+  "~/dev/snap" {:mod :snap}
 
   :nvim-lua/popup.nvim {}
   :nvim-lua/plenary.nvim {}
@@ -51,12 +51,12 @@
   :hoob3rt/lualine.nvim {:mod :lualine}
   :numToStr/Navigator.nvim {:mod :navigator}
   :rmagatti/auto-session {:mod :session}
+  :nvim-treesitter/nvim-treesitter {:mod :treesitter}
 
   :tami5/compe-conjure {}
   :kyazdani42/nvim-web-devicons {}
   :neovim/nvim-lspconfig {}
   :jose-elias-alvarez/nvim-lsp-ts-utils {}
-  :nvim-treesitter/nvim-treesitter {}
   :editorconfig/editorconfig-vim {}
   :bkad/CamelCaseMotion {}
   :glepnir/indent-guides.nvim {}
@@ -65,6 +65,7 @@
   :mlaursen/vim-react-snippets {}
   :folke/tokyonight.nvim {}
   :romainl/vim-cool {}
+  :tpope/vim-fugitive {}
   :tpope/vim-repeat {}
   :tpope/vim-vinegar {}
   :tpope/vim-unimpaired {}

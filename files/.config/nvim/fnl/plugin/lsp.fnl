@@ -7,7 +7,7 @@
                               trouble trouble}})
 
 ;; These servers get automatically setup
-(local auto-setup-servers [:bash :json :tailwindcss :html :css])
+(local auto-setup-servers [:json :tailwindcss :html :css])
 
 (fn server-installed [server]
   "Checks if the server is installed"

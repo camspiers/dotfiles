@@ -1,14 +1,4 @@
 (module mappings {autoload {nvim aniseed.nvim
-                            snap snap
-                            action snapcustom.action
-                            directory snap.producer.fd.directory
-                            cwd snap.select.cwd
-                            file file
-                            oldfiles oldfiles
-                            buffer buffer
-                            grep grep
-                            tmuxinator snapcustom.tmuxinator
-                            tmux snapcustom.tmux
                             wk which-key
                             terminal toggleterm.terminal
                             trouble trouble}
@@ -50,16 +40,10 @@
     (when (and (= (vim.fn.buflisted value) 1) (= (vim.fn.bufexists value) 1))
       (nvim.buf_delete value {: force}))))
 
-(fn find-directory [request]
-  (snap.run {:prompt :Directory
-             :producer (fzy directory)
-             :select cwd.select}))
-
 (wk.register {:<leader>c (cmd :clo "Close Window")
               :<leader>a (cmd :a :alternate)
               :<leader>n [external-grep :Grep]
               :<leader>N [external-grep-no-ignore "Grep with no ignore"]
-              :<leader>m [grep.cursor "Grep cursor word"]
               :<leader>w (cmd :w "Buffer Write")
               :<Tab> (cmd :bn "Buffer Next")
               :<S-Tab> (cmd :bp "Buffer Prev")
@@ -74,14 +58,6 @@
               :<leader>c (cmd :clo "Close Window")
               :<leader><S-c> (cmd "%clo" "Close All Windows")
               :<leader>o (cmd :on "Only Window")
-              :<leader><leader> [file.run "Find Files"]
-              :<leader>f {:name :Finders
-                          :o [oldfiles.run "Old files"]
-                          :b [buffer.run :Buffers]
-                          :d [find-directory :Directory]
-                          :f [grep.run "Grep files"]
-                          :a [action.run "Run Action"]
-                          :t [tmux.run "Switch Project"]}
               "<leader>'" [open-git "Open Git"]
               :<leader>l {:name "Language Server Provider"
                           :d [vim.lsp.buf.definition "Go to definition"]

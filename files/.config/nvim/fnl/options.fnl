@@ -33,6 +33,7 @@
 (se- cursorline)
 (se- cursorcolumn)
 (se- history 5000)
+(se- wildignore ".git,.git/*,.DS_Store")
 
 (nvim.command "autocmd TermOpen * set nocursorline")
 (nvim.command "autocmd TermOpen * set nocursorcolumn")
