@@ -35,8 +35,11 @@
 (se- history 5000)
 (se- wildignore ".git,.git/*,.DS_Store")
 
-(nvim.command "autocmd TermOpen * set nocursorline")
-(nvim.command "autocmd TermOpen * set nocursorcolumn")
+(nvim.command "augroup Custom")
+(nvim.command "autocmd! TermOpen * set nocursorline")
+(nvim.command "autocmd! TermOpen * set nocursorcolumn")
+(nvim.command "autocmd! Filetype fennel setlocal syntax=")
+(nvim.command "augroup END")
 
 (se- grepprg
      "rg --no-heading --vimgrep --hidden --iglob '!.DS_Store' --iglob '!.git'")
@@ -44,7 +47,6 @@
 (se- grepformat "%f:%l:%c:%m")
 
 ; globals
-(g mapleader "\\")
 (g maplocalleader ",")
 (g LoupeClearHighlightMap 0)
 (g camelcasemotion_key ",")

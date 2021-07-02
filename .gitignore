@@ -11,3 +11,7 @@ files/.config/coc/*
 .DS_Store
 *.lua
 *.vim
+files/.config/Microsoft*
+files/.config/NuGet
+files/.config/.mono
+files/.config/xbuild
