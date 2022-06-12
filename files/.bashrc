@@ -88,3 +88,9 @@ source $HOME/fzf-marks/fzf-marks.plugin.bash
 # eval "$(starship init bash)"
 
 alias luamake=/Users/camspiers/dev/lua-language-server/3rd/luamake/luamake
+
+eval "$(rbenv init - bash)"
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion

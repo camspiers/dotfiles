@@ -70,7 +70,7 @@ source <(kitty + complete setup bash)
 
 # rbenv
 export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@1.1)"
-eval "$(rbenv init -)"
+eval "$(rbenv init - bash)"
 
 # Fast Node Manager
 eval "$(fnm env)"

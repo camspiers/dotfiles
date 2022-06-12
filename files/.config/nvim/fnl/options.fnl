@@ -53,6 +53,10 @@
 (g netrw_keepdir 0)
 (g netrw_banner 1)
 
+;; Use lua filetype matching
+(g do_filetype_lua 1)
+(g did_load_filetypes 0)
+
 ; theme
 (g tokyonight_style :night)
 

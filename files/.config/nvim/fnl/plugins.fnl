@@ -1,6 +1,8 @@
 (module plugins {autoload {packer packer nvim aniseed.nvim core aniseed.core}
                  require-macros [macros]})
 
+(vim.fn.setenv "MACOSX_DEPLOYMENT_TARGET" "10.15")
+
 ;; Curtesy of Olical
 (fn safe-require-plugin-config [name]
   (let [(ok? val-or-err) (pcall require (.. :plugin. name))]
@@ -37,6 +39,7 @@
   :morhetz/gruvbox {}
   :joshdick/onedark.vim {}
   :lifepillar/vim-solarized8 {}
+  :folke/twilight.nvim {:mod twilight}
 
   :nvim-lua/popup.nvim {}
   :nvim-lua/plenary.nvim {}
@@ -47,15 +50,16 @@
 
   :folke/which-key.nvim {:mod :which-key}
   :akinsho/nvim-toggleterm.lua {:mod :toggleterm}
-  :kabouzeid/nvim-lspinstall {:mod :lsp}
+  :akinsho/git-conflict.nvim {:mod :gitconflict}
   :hrsh7th/nvim-compe {:mod :compe}
   :windwp/nvim-ts-autotag {:mod :autotag}
   :mhartington/formatter.nvim {:mod :formatter}
   :terrortylor/nvim-comment {:mod :comment}
   :hoob3rt/lualine.nvim {:mod :lualine}
   :numToStr/Navigator.nvim {:mod :navigator}
-  :rmagatti/auto-session {:mod :session}
   :nvim-treesitter/nvim-treesitter {:mod :treesitter}
+  :williamboman/nvim-lsp-installer {:mod :lsp}
+  :danymat/neogen {:mod :neogen}
 
   :tami5/compe-conjure {}
   :kyazdani42/nvim-web-devicons {}
